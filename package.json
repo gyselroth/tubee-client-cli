@@ -10,7 +10,7 @@
     "build": "npm run format && npm run prebuild",
     "test": "jest --coverage",
     "coveralls": "coveralls < coverage/lcov.info",
-    "pack": "npm run build && nexe -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i src/main.ts -n tubeectl --build"
+    "pack": "npm run build && nexe -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i src/main.ts -o dist/tubeectl --build"
   },
   "repository": {
     "type": "git",
