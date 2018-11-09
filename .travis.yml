@@ -1,0 +1,14 @@
+sudo: required
+language: node_js
+node_js:
+  - 10
+script:
+  - npm install
+  - npm run pack
+os:
+  - windows
+  - linux
+  - osx
+cache:
+  directories:
+    - "node_modules"
