@@ -11,6 +11,7 @@ export default class Create extends AbstractCreate {
   public applyOptions() {
     return this.optparse
       .subCommand<CreateOptions, CreateArgs>('access-roles [name]')
+      .alias('ar')
       .description('Create new access roles')
       .action(this.execute.bind(this));
   }

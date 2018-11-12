@@ -11,6 +11,7 @@ export default class Edit extends AbstractEdit {
   public applyOptions() {
     return this.optparse
       .subCommand<EditOptions, EditArgs>('workflows <mandator> <datatype> <endpoint> [name]')
+      .alias('wf')
       .description('Edit workflows')
       .action(this.execute.bind(this));
   }

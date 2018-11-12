@@ -11,6 +11,7 @@ export default class Edit extends AbstractEdit {
   public applyOptions() {
     return this.optparse
       .subCommand<EditOptions, EditArgs>('access-rules [name]')
+      .alias('au')
       .description('Edit access roles')
       .action(this.execute.bind(this));
   }

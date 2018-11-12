@@ -7,7 +7,7 @@ const editor = process.env.EDITOR || 'vim';
 const child_process = require('child_process');
 const md5File = require('md5-file');
 const jsonpatch = require('fast-json-patch');
-const randomstring = require("randomstring");
+const randomstring = require('randomstring');
 import AbstractOperation from './abstract.operation';
 const os = require('os');
 const fspath = require('path');
@@ -44,7 +44,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
         body = yaml.dump(response.response.toJSON().body);
     }
 
-    var path: string = fspath.join(os.tmpdir(),'.'+randomstring.generate(7) + '.' + opts.output[0]);
+    var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + opts.output[0]);
 
     await fs.writeFile(path, body, function(err) {
       if (err) {

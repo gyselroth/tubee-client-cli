@@ -11,6 +11,7 @@ export default class Sync extends AbstractSync {
   public applyOptions() {
     return this.optparse
       .subCommand<SyncOptions, SyncArgs>('data-objects <mandator> <datatype> [name]')
+      .alias('do')
       .description('Sync data objects')
       .action(this.execute.bind(this));
   }

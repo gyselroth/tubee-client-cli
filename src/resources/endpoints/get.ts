@@ -11,6 +11,7 @@ export default class Get extends AbstractGet {
   public applyOptions() {
     return this.optparse
       .subCommand<GetOptions, GetArgs>('endpoints <mandator> <datatype> [name]')
+      .alias('ep')
       .description('Get endpoints')
       .action(this.execute.bind(this));
   }

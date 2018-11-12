@@ -11,6 +11,7 @@ export default class Delete extends AbstractDelete {
   public applyOptions() {
     return this.optparse
       .subCommand<DeleteOptions, DeleteArgs>('access-roles <mandator> <name>')
+      .alias('ar')
       .description('Delete access role')
       .action(this.execute.bind(this));
   }

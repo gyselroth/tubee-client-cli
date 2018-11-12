@@ -11,6 +11,7 @@ export default class Create extends AbstractCreate {
   public applyOptions() {
     return this.optparse
       .subCommand<CreateOptions, CreateArgs>('datatypes [mandator] [name]')
+      .alias('dt')
       .description('Create new datatypes')
       .action(this.execute.bind(this));
   }

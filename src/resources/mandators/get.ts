@@ -11,6 +11,7 @@ export default class Get extends AbstractGet {
   public applyOptions() {
     return this.optparse
       .subCommand<GetOptions, GetArgs>('mandators [name]')
+      .alias('ma')
       .description('Get mandators')
       .action(this.execute.bind(this));
   }

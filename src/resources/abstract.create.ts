@@ -8,7 +8,7 @@ const child_process = require('child_process');
 import AbstractOperation from './abstract.operation';
 const SwaggerParser = require('swagger-parser');
 const specPath = 'node_modules/@gyselroth/tubee-sdk-node/swagger.yml';
-const randomstring = require("randomstring");
+const randomstring = require('randomstring');
 const os = require('os');
 const fspath = require('path');
 
@@ -36,7 +36,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var path: string;
 
     if (opts.fromTemplate == true) {
-      var path: string = fspath.join(os.tmpdir(),'.'+randomstring.generate(7) + '.yml');
+      var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
 
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
@@ -77,7 +77,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
         }
       }
 
-      path = fspath.join(os.tmpdir(),'.'+randomstring.generate(7) + '.'+(opts.input[0] || 'yml'));
+      path = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + (opts.input[0] || 'yml'));
       await fs.writeFile(path, body, function(err) {
         if (err) {
           return console.log(err);

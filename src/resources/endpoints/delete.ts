@@ -11,6 +11,7 @@ export default class Delete extends AbstractDelete {
   public applyOptions() {
     return this.optparse
       .subCommand<DeleteOptions, DeleteArgs>('endpoints <mandator> <datatype> <name>')
+      .alias('ep')
       .description('Delete endpoint')
       .action(this.execute.bind(this));
   }

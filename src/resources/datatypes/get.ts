@@ -10,7 +10,8 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('datatypes [mandator] [name]')
+      .subCommand<GetOptions, GetArgs>('datatypes <mandator> [name]')
+      .alias('dt')
       .description('Get datatypes')
       .action(this.execute.bind(this));
   }

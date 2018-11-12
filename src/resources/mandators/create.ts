@@ -11,6 +11,7 @@ export default class Create extends AbstractCreate {
   public applyOptions() {
     return this.optparse
       .subCommand<CreateOptions, CreateArgs>('mandators [name]')
+      .alias('ma')
       .description('Create new mandators')
       .option('-s, --sync', 'Sync mandator immediately')
       .option('-l, --follow', 'Watch triggered sync process in forderground (requires --sync)')

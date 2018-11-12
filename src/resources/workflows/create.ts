@@ -11,6 +11,7 @@ export default class Create extends AbstractCreate {
   public applyOptions() {
     return this.optparse
       .subCommand<CreateOptions, CreateArgs>('workflows [mandator] [datatype] [endpoint] [name]')
+      .alias('wf')
       .description('Create workflows')
       .action(this.execute.bind(this));
   }

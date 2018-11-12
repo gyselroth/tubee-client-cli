@@ -3,14 +3,14 @@
   "description": "tubee console client",
   "main": "main.js",
   "scripts": {
-    "prebuild": "tsc",
+    "prebuild": "cd node_modules/commandpost; npm install && npm run build && cd ../../; tsc",
     "start": "tsc && nodejs build/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint --fix -p tsconfig.json",
     "build": "npm run format && npm run prebuild",
     "test": "jest --coverage",
     "coveralls": "coveralls < coverage/lcov.info",
-    "pack": "npm run build && nexe -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i src/main.ts -o dist/tubeectl --build"
+    "pack": "mkdir dist; npm run build && nexe -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i src/main.ts -o dist/tubeectl --build"
   },
   "repository": {
     "type": "git",
@@ -34,7 +34,7 @@
     "JSONStream": "^1.3.5",
     "bluebird": "^3.5.3",
     "colors": "^1.3.2",
-    "commandpost": "^1.4.0",
+    "commandpost": "https://github.com/raffis/commandpost/tarball/alias",
     "event-stream": "^4.0.1",
     "fast-json-patch": "^2.0.7",
     "js-yaml": "^3.12.0",

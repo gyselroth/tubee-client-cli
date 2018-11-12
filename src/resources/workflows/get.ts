@@ -11,6 +11,7 @@ export default class Get extends AbstractGet {
   public applyOptions() {
     return this.optparse
       .subCommand<GetOptions, GetArgs>('workflows <mandator> <datatype> <endpoint> [name]')
+      .alias('wf')
       .description('Get workflows')
       .action(this.execute.bind(this));
   }

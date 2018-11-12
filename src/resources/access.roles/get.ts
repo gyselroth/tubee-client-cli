@@ -11,6 +11,7 @@ export default class Get extends AbstractGet {
   public applyOptions() {
     return this.optparse
       .subCommand<GetOptions, GetArgs>('access-roles [name]')
+      .alias('ar')
       .description('Get access roles')
       .action(this.execute.bind(this));
   }

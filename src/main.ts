@@ -28,10 +28,7 @@ Create.factory(root, client);
 Sync.factory(root, client);
 
 commandpost.exec(root, process.argv).catch(err => {
-  if (err instanceof Error) {
-    console.error(err.stack);
-  } else {
-    console.error(err);
-  }
+  console.log(err.message + '\n');
+  console.log(err.params.params.origin.command.helpText());
   process.exit(1);
 });

@@ -11,6 +11,7 @@ export default class Edit extends AbstractEdit {
   public applyOptions() {
     return this.optparse
       .subCommand<EditOptions, EditArgs>('endpoints <mandator> <datatype> [name]')
+      .alias('ep')
       .description('Edit endpoints')
       .action(this.execute.bind(this));
   }

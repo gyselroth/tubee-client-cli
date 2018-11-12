@@ -11,6 +11,7 @@ export default class Delete extends AbstractDelete {
   public applyOptions() {
     return this.optparse
       .subCommand<DeleteOptions, DeleteArgs>('workflows <mandator> <datatype> <endpoint> <name>')
+      .alias('wf')
       .description('Delete workflow')
       .action(this.execute.bind(this));
   }

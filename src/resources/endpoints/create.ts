@@ -11,6 +11,7 @@ export default class Create extends AbstractCreate {
   public applyOptions() {
     return this.optparse
       .subCommand<CreateOptions, CreateArgs>('endpoints [mandator] [datatype] [name]')
+      .alias('ep')
       .description('Create new endpoints')
       .action(this.execute.bind(this));
   }

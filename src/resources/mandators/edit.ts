@@ -11,6 +11,7 @@ export default class Edit extends AbstractEdit {
   public applyOptions() {
     return this.optparse
       .subCommand<EditOptions, EditArgs>('mandators [name]')
+      .alias('ma')
       .description('Edit mandators')
       .action(this.execute.bind(this));
   }
