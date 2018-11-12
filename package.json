@@ -10,7 +10,7 @@
     "build": "npm run format && npm run prebuild",
     "test": "jest --coverage",
     "coveralls": "coveralls < coverage/lcov.info",
-    "pack": "mkdir dist; npm run build && nexe -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i src/main.ts -o dist/tubeectl --build"
+    "pack": "mkdir dist; npm run build && nexe -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i build/main.js -o dist/tubeectl --build"
   },
   "repository": {
     "type": "git",
@@ -53,7 +53,7 @@
     "@types/node": "^10.12.5",
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
-    "nexe": "2.0.0-rc.29",
+    "nexe": "3.0.0-beta.1",
     "prettier": "^1.15.2",
     "source-map-support": "^0.5.9",
     "ts-jest": "^22.4.6",
