@@ -3,12 +3,14 @@ import { EditOptions, EditArgs } from '../operations/edit';
 import TubeeClient from '../tubee.client';
 const yaml = require('js-yaml');
 const fs = require('fs');
-const tmp = require('temp');
 const editor = process.env.EDITOR || 'vim';
 const child_process = require('child_process');
 const md5File = require('md5-file');
 const jsonpatch = require('fast-json-patch');
+const randomstring = require("randomstring");
 import AbstractOperation from './abstract.operation';
+const os = require('os');
+const fspath = require('path');
 
 /**
  * Edit resources
@@ -42,7 +44,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
         body = yaml.dump(response.response.toJSON().body);
     }
 
-    var path: string = tmp.path() + '.' + opts.output[0];
+    var path: string = fspath.join(os.tmpdir(),'.'+randomstring.generate(7) + '.' + opts.output[0]);
 
     await fs.writeFile(path, body, function(err) {
       if (err) {

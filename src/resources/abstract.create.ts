@@ -3,12 +3,14 @@ import { CreateOptions, CreateArgs } from '../operations/create';
 import TubeeClient from '../tubee.client';
 const yaml = require('js-yaml');
 const fs = require('fs');
-const tmp = require('temp');
 const editor = process.env.EDITOR || 'vim';
 const child_process = require('child_process');
 import AbstractOperation from './abstract.operation';
 const SwaggerParser = require('swagger-parser');
 const specPath = 'node_modules/@gyselroth/tubee-sdk-node/swagger.yml';
+const randomstring = require("randomstring");
+const os = require('os');
+const fspath = require('path');
 
 /**
  * Create resources
@@ -34,7 +36,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var path: string;
 
     if (opts.fromTemplate == true) {
-      path = tmp.path() + '.yaml';
+      var path: string = fspath.join(os.tmpdir(),'.'+randomstring.generate(7) + '.yml');
 
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
@@ -75,7 +77,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
         }
       }
 
-      path = tmp.path() + '.' + (opts.input[0] || 'yaml');
+      path = fspath.join(os.tmpdir(),'.'+randomstring.generate(7) + '.'+(opts.input[0] || 'yml'));
       await fs.writeFile(path, body, function(err) {
         if (err) {
           return console.log(err);
