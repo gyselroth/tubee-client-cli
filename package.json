@@ -3,7 +3,7 @@
   "description": "tubee console client",
   "main": "main.js",
   "scripts": {
-    "prebuild": "cd node_modules/commandpost; npm install && npm run build && cd ../../; tsc",
+    "prebuild": "cd node_modules/commandpost; npm install && npm update && npm run build && cd ../../; tsc",
     "start": "tsc && nodejs build/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint --fix -p tsconfig.json",
