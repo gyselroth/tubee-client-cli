@@ -1,5 +1,5 @@
 sudo: required
-language: python
+language: node_js
 node_js:
   - 10
 before_script: npm update
@@ -16,7 +16,7 @@ addons:
     - libsecret-1-dev
     - libgnome-keyring-dev
 python:
-  - "3.4"
+  - "2.7"
 before_deploy:
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then export version=$(cat package.json | grep
   '"version"' | cut -d '"' -f4); if [[ "$TRAVIS_TAG" == *"-"* ]]; then export deb_distribution=unstable;
