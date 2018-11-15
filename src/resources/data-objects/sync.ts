@@ -20,18 +20,19 @@ export default class Sync extends AbstractSync {
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
-
+    var filter = null;
     if (args.name) {
       rest.push(args.name);
     }
+    
+    var resource = {
+      data: {
+        mandators: [args.mandator],
+        datatypes: [args.datatype],
+        filter: rest
+      }
+    };
 
-    var result = await api.addProcess({
-      mandators: [args.mandator],
-      datatypes: [args.datatype],
-      filter: rest,
-    });
-
-    this.sync(result, opts);
+    this.addProcess(resource, opts, args, rest);
   }
 }

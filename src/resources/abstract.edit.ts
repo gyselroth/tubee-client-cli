@@ -44,7 +44,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
         body = yaml.dump(response.response.toJSON().body);
     }
 
-    var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + opts.output[0]);
+    var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + (opts.output[0] || 'yml'));
 
     await fs.writeFile(path, body, function(err) {
       if (err) {
@@ -82,6 +82,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
           await this.updateObjects(objects, update, callback).catch(response => {
             throw new Error(response.response.body.error + ' - ' + response.response.body.message);
           });
+
           resolve();
         } catch (error) {
           body = '#' + error + '\n' + body;
@@ -125,7 +126,8 @@ export default abstract class AbstractEdit extends AbstractOperation {
         let patch = jsonpatch.compare(to, from);
 
         if (patch.length > 0) {
-          return await callback(resource.name, patch);
+          var result = await callback(resource.name, patch);
+          console.log('Updated resource %s', resource.name);
         } else {
           console.log('No changes have been made for %s', resource.name);
         }

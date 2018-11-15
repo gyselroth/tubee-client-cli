@@ -10,6 +10,8 @@ const map = [Mandators, DataTypes, DataObjects, Endpoints];
 
 export interface SyncOptions {
   follow: boolean;
+  abortOnError: boolean;
+  level: string;
 }
 
 export interface SyncArgs {
@@ -30,7 +32,9 @@ export default class Sync {
     for (let resource of map) {
       let instance = new resource(remote, client);
       let sub = instance.applyOptions();
-      sub.option('-l, --follow', 'Follow process and watch in forderground');
+      sub.option('-t, --follow', 'Follow process and watch in forderground');
+      sub.option('-l, --level <name>', 'Specify log level for the process (emerg,error,warning,info,debug)');
+      sub.option('--abort-on-error', 'Abort process if an error occurs');
     }
   }
 }

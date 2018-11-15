@@ -4,8 +4,8 @@ const colors = require('colors');
 const ta = require('time-ago');
 
 /**
- *  * Edit resources
- *   */
+ * Edit resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
@@ -50,7 +50,6 @@ export default class Get extends AbstractGet {
   /**
    * Colorize process status
    */
-
   protected colorize(status): string {
     switch (status) {
       case 0:

@@ -9,6 +9,7 @@ export interface Config {
   url: string;
   username: string;
   password: string;
+  allowSelfSigned: boolean;
 }
 
 /**
@@ -35,7 +36,12 @@ export default class TubeeClient {
       }
     }
 
-    var server = config.url || 'http://localhost:8090';
+
+    if(config.allowSelfSigned) {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    }
+
+    var server = config.url || 'https://localhost:8090';
     var password = (await keytar.getPassword('tubee', config.username || 'admin')) || config.password;
     var client = new api[category + 'Api'](server + '/api/v1');
     var auth = new api.HttpBasicAuth();

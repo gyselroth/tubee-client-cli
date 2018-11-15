@@ -8,6 +8,12 @@ const es = require('event-stream');
 import AbstractOperation from './abstract.operation';
 const ta = require('time-ago');
 const colors = require('colors');
+const fs = require('fs');
+const os = require('os');
+const fspath = require('path');
+const difftool = process.env.DIFFTOOL || 'diff';
+const child_process = require('child_process');
+const randomstring = require('randomstring');
 
 export const tableConfig = {
   border: getBorderCharacters('ramac'),
@@ -56,6 +62,10 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    if(opts.diff[0]) {
+      return this.compare(response.response.toJSON().body, opts); 
+    }
+
     var body: string;
     switch (opts.output[0]) {
       case 'json':
@@ -88,6 +98,51 @@ export default abstract class AbstractGet extends AbstractOperation {
 
         console.log(table(data, tableConfig));
     }
+  }
+
+  /**
+   * Start difftool
+   */ 
+  protected async compare(objects, opts) {
+    var result = null;
+    for(let resource of objects.data) {
+      if(resource.version == opts.diff[0]) {
+        result = resource;
+      }
+    }
+
+    if(result === null) {
+      console.log("No version %s found in resource history", opts.diff[0]);
+    }
+    
+    var current = objects.data.shift();
+    var path1: string = this.createDiffFile(current, opts);
+    var path2: string = this.createDiffFile(result, opts);
+
+    var child = child_process.spawn(difftool, [path1, path2],{
+      stdio: 'inherit',
+    });
+  }
+
+  /**
+   * Prepare resource to diff
+   */
+  protected createDiffFile(resource, opts) {
+    var body: string;
+    switch (opts.output[0]) {
+      case 'json':
+        body = JSON.stringify(resource, null, 2);
+        break;
+      case 'yaml':
+      default:
+        body = yaml.dump(resource);
+        break;
+    }
+
+    var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + (opts.output[0] || 'yml'));
+    
+    fs.writeFileSync(path, body);
+    return path;
   }
 
   /**

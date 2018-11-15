@@ -14,6 +14,7 @@ export interface LoginOptions {
   prompt: boolean;
   server: string;
   config: string;
+  allowSelfSigned: boolean;
 }
 
 export interface LoginArgs {
@@ -35,6 +36,7 @@ export default class Login {
       .option('-p, --password <name>', 'Define the output format (One of yaml,json)')
       .option('-P, --prompt <name>', 'Define the output format (One of yaml,json)')
       .option('-s, --server <name>', 'File to read from')
+      .option('-a, --allow-self-signed', 'Allow self signed server certificate')
       .action(async (opts, args, rest) => {
         var config = {} as Config;
 
@@ -50,7 +52,15 @@ export default class Login {
           config.url = opts.server[0];
         }
 
-        var server = config.url || 'http://localhost:8090';
+
+        if(opts.allowSelfSigned[0]) {
+          process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+          config.allowSelfSigned = true;
+        } else {
+          config.allowSelfSigned = false;
+        } 
+
+        var server = config.url || 'https://localhost:8090';
         var client = new api['DefaultApi'](server + '/api/v1');
         var auth = new api.HttpBasicAuth();
         auth.username = config.username || 'admin';

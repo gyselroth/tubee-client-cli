@@ -27,7 +27,7 @@ export default class Get extends AbstractGet {
         console.log(
           '%s %s %s',
           resource.data.created,
-          this.colorize(resource.data.level_name),
+          Get.colorize(resource.data.level_name),
           resource.data.category,
           resource.data.message,
         );
@@ -49,7 +49,7 @@ export default class Get extends AbstractGet {
           console.log(
             '%s %s %s',
             data[1].created,
-            this.colorize(data[1].data.level_name),
+            Get.colorize(data[1].data.level_name),
             data[1].data.category,
             data[1].data.message,
           );
@@ -63,8 +63,7 @@ export default class Get extends AbstractGet {
   /**
    * Colorize log level
    */
-
-  protected colorize(status): string {
+  public static colorize(status): string {
     switch (status) {
       case 'DEBUG':
         return colors.bgBlue(status);

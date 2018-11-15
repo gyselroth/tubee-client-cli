@@ -29,7 +29,9 @@ export default class Create extends AbstractCreate {
       delete resource.datatype;
       console.log(resource);
       console.log('add');
+
       var result = await api.addEndpoint(mandator, datatype, resource);
+console.log(result);
       return result;
     });
   }
