@@ -27,7 +27,7 @@ export default class Sync extends AbstractSync {
     var resource = {
       data: {
         mandators: rest,
-      }
+      },
     };
 
     this.addProcess(resource, opts, args, rest);

@@ -62,8 +62,8 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    if(opts.diff[0]) {
-      return this.compare(response.response.toJSON().body, opts); 
+    if (opts.diff[0]) {
+      return this.compare(response.response.toJSON().body, opts);
     }
 
     var body: string;
@@ -102,24 +102,25 @@ export default abstract class AbstractGet extends AbstractOperation {
 
   /**
    * Start difftool
-   */ 
+   */
+
   protected async compare(objects, opts) {
     var result = null;
-    for(let resource of objects.data) {
-      if(resource.version == opts.diff[0]) {
+    for (let resource of objects.data) {
+      if (resource.version == opts.diff[0]) {
         result = resource;
       }
     }
 
-    if(result === null) {
-      console.log("No version %s found in resource history", opts.diff[0]);
+    if (result === null) {
+      console.log('No version %s found in resource history', opts.diff[0]);
     }
-    
+
     var current = objects.data.shift();
     var path1: string = this.createDiffFile(current, opts);
     var path2: string = this.createDiffFile(result, opts);
 
-    var child = child_process.spawn(difftool, [path1, path2],{
+    var child = child_process.spawn(difftool, [path1, path2], {
       stdio: 'inherit',
     });
   }
@@ -140,7 +141,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     }
 
     var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + (opts.output[0] || 'yml'));
-    
+
     fs.writeFileSync(path, body);
     return path;
   }

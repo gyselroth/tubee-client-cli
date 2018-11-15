@@ -24,13 +24,13 @@ export default class Sync extends AbstractSync {
     if (args.name) {
       rest.push(args.name);
     }
-    
+
     var resource = {
       data: {
         mandators: [args.mandator],
         datatypes: [args.datatype],
-        filter: rest
-      }
+        filter: rest,
+      },
     };
 
     this.addProcess(resource, opts, args, rest);

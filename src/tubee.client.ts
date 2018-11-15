@@ -36,9 +36,8 @@ export default class TubeeClient {
       }
     }
 
-
-    if(config.allowSelfSigned) {
-      process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+    if (config.allowSelfSigned) {
+      process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
 
     var server = config.url || 'https://localhost:8090';

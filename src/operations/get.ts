@@ -58,7 +58,10 @@ export default class Get {
       sub.option('--json-query <name>', 'Specify an advanced json query');
       sub.option('--field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)');
       sub.option('-H, --history', 'Will fetch the histroy of the requested resource');
-      sub.option('-d, --diff <name>', 'Compare current version to another version (You will need to expose an environment variable DIFFTOOL (Example: DIFFTOOL=vimdiff tubeectl))');
+      sub.option(
+        '-d, --diff <name>',
+        'Compare current version to another version (You will need to expose an environment variable DIFFTOOL (Example: DIFFTOOL=vimdiff tubeectl))',
+      );
       sub.option(
         '--field-filter <name>',
         'Specify a comma separated list what attributes should be requested, by default all attributes gets returned. (Example: kind,name)',

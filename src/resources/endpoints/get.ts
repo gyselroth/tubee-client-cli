@@ -31,7 +31,13 @@ export default class Get extends AbstractGet {
       } else {
         var request = category.watchEndpoints(args.mandator, args.datatype, ...this.getQueryOptions(opts, args));
         this.watchObjects(response, opts, ['Name', 'Status', 'Version', 'Created', 'Changed'], resource => {
-          return [resource.name, this.colorize(resource.status.available), resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
+          return [
+            resource.name,
+            this.colorize(resource.status.available),
+            resource.version,
+            ta.ago(resource.changed),
+            ta.ago(resource.created),
+          ];
         });
       }
     } else {
@@ -41,7 +47,13 @@ export default class Get extends AbstractGet {
       } else {
         var response = await category.getEndpoints(args.mandator, args.datatype, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts, ['Name', 'Status', 'Version', 'Created', 'Changed'], resource => {
-          return [resource.name, this.colorize(resource.status.available), resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
+          return [
+            resource.name,
+            this.colorize(resource.status.available),
+            resource.version,
+            ta.ago(resource.changed),
+            ta.ago(resource.created),
+          ];
         });
       }
     }
@@ -51,7 +63,7 @@ export default class Get extends AbstractGet {
    * Colorize status
    */
   protected colorize(status): string {
-    if(status === true) {
+    if (status === true) {
       return colors.bgGreen('ONLINE');
     }
 

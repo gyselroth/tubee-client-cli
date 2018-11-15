@@ -52,13 +52,12 @@ export default class Login {
           config.url = opts.server[0];
         }
 
-
-        if(opts.allowSelfSigned[0]) {
-          process.env.NODE_TLS_REJECT_UNAUTHORIZED = "0";
+        if (opts.allowSelfSigned[0]) {
+          process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
           config.allowSelfSigned = true;
         } else {
           config.allowSelfSigned = false;
-        } 
+        }
 
         var server = config.url || 'https://localhost:8090';
         var client = new api['DefaultApi'](server + '/api/v1');

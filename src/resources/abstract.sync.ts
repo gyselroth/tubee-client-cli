@@ -29,7 +29,7 @@ export default abstract class AbstractSync {
     resource.ignore = !opts.abortOnError;
     resource.log_level = opts.level[0];
     var result = await api.addProcess(resource);
-console.log(result);
+    console.log(result);
     this.sync(result, opts);
   }
 
@@ -53,7 +53,13 @@ console.log(result);
   public async watchObjects(request, opts) {
     return request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(data => {
-        console.log('%s %s %s', data[1].created, Log.colorize(data[1].data.level_name), data[1].data.category, data[1].data.message);
+        console.log(
+          '%s %s %s',
+          data[1].created,
+          Log.colorize(data[1].data.level_name),
+          data[1].data.category,
+          data[1].data.message,
+        );
       }),
     );
   }

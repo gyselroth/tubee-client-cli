@@ -30,9 +30,9 @@ Sync.factory(root, client);
 commandpost.exec(root, process.argv).catch(err => {
   console.log(err.message + '\n');
 
-  if(err.params.params.option) {
+  if (err.params.params.option) {
     console.log(err.params.params.option.command.helpText());
-  } else if(err.params.params.origin) {
+  } else if (err.params.params.origin) {
     console.log(err.params.params.origin.command.helpText());
   }
 
