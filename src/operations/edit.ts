@@ -41,7 +41,7 @@ export default class Edit {
         .option('-o, --output <name>', 'Define the output format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')
         .option('--json-query <name>', 'Specify an advanced json query')
-        .option('--field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)')
+        .option('-F, --field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)')
         .option(
           '--field-filter <name>',
           'Specify a comma separated list what attributes should be requested, by default all attributes gets returned. (Example: kind,name)',

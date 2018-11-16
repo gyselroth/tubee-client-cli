@@ -56,7 +56,10 @@ export default class Get {
       sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json)');
       sub.option('-w, --watch', 'Monitor updates in realtime.');
       sub.option('--json-query <name>', 'Specify an advanced json query');
-      sub.option('--field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)');
+      sub.option(
+        '-F, --field-selector <name>',
+        'Specify a comma separated field based query (Example: foo=bar,bar=foo)',
+      );
       sub.option('-H, --history', 'Will fetch the histroy of the requested resource');
       sub.option(
         '-d, --diff <name>',
