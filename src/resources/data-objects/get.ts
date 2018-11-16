@@ -32,7 +32,7 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        if (opts.history) {
+        if (opts.history || opts.diff[0]) {
           var response = await category.getObjectHistory(args.mandator, args.datatype, args.name, this.getFields(opts));
           this.getObjects(response, opts);
         } else {

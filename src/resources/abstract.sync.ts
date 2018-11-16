@@ -25,11 +25,12 @@ export default abstract class AbstractSync {
    */
   protected async addProcess(resource, opts, args, rest) {
     var api = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
-    resource.loadbalance = false;
-    resource.ignore = !opts.abortOnError;
-    resource.log_level = opts.level[0];
+    resource.data.loadbalance = false;
+    resource.data.ignore = !opts.abortOnError;
+    resource.data.log_level = opts.level[0];
+console.log(resource);
     var result = await api.addProcess(resource);
-    console.log(result);
+console.log(result);
     this.sync(result, opts);
   }
 

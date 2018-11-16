@@ -52,10 +52,13 @@ export default abstract class AbstractCreate extends AbstractOperation {
         
       return this.openEditor(callback, path, opts.input[0]);
     });*/
-
-    if (opts.fromTemplate == true) {
+    if (opts.fromTemplate.length > 0) {
       var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
 
+      if(opts.fromTemplate[0] !== '') {
+        resourceType = opts.fromTemplate[0];
+      }
+console.log(opts);
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);

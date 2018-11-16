@@ -41,12 +41,12 @@
     "json-stream": "^1.0.0",
     "keytar": "^4.3.0",
     "md5-file": "^4.0.0",
+    "password-prompt": "^1.0.7",
     "randomstring": "^1.1.5",
     "rewire": "^3.0.2",
     "swagger-parser": "^6.0.2",
     "table": "^5.1.0",
-    "time-ago": "^0.2.1",
-    "tmp": "0.0.33"
+    "time-ago": "^0.2.1"
   },
   "devDependencies": {
     "@types/jest": "^22.2.3",

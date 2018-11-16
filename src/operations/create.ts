@@ -15,8 +15,7 @@ const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Endpoi
 export interface CreateOptions {
   file: string;
   input: string;
-  fromTemplate: boolean;
-  copyFrom: string;
+  fromTemplate: string;
 }
 
 export interface CreateArgs {
@@ -40,8 +39,7 @@ export default class Create {
       sub
         .option('-i, --input <name>', 'Define the input format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')
-        .option('--from-template', 'Opens the editor with a predefined template')
-        .option('--copy-from <name>', 'Clones an existing objects data');
+        .option('--from-template [name]', 'Opens the editor with a predefined template')
     }
   }
 }

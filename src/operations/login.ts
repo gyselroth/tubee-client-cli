@@ -7,6 +7,7 @@ import { Config, configPath } from '../tubee.client';
 const keytar = require('keytar');
 const path = require('path');
 const api = require('@gyselroth/tubee-sdk-typescript-node');
+const prompt = require('password-prompt');
 
 export interface LoginOptions {
   username: string;
@@ -29,17 +30,16 @@ export default class Login {
   /**
    * Apply cli options
    */
-  public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
+  public static async factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
     let remote = optparse.subCommand<LoginOptions, LoginArgs>('login').description('Login resources');
     remote
-      .option('-u, --username <name>', 'Define the output format (One of yaml,json)')
-      .option('-p, --password <name>', 'Define the output format (One of yaml,json)')
-      .option('-P, --prompt <name>', 'Define the output format (One of yaml,json)')
-      .option('-s, --server <name>', 'File to read from')
+      .option('-u, --username <name>', 'HTTP basic auth username')
+      .option('-p, --password <name>', 'HTTP basic auth password')
+      .option('-P, --prompt', 'HTTP basuc auth prompt for password input')
+      .option('-s, --server <name>', 'URL to tubee server (For example https://example.org)')
       .option('-a, --allow-self-signed', 'Allow self signed server certificate')
       .action(async (opts, args, rest) => {
         var config = {} as Config;
-
         if (opts.username[0]) {
           config.username = opts.username[0];
         }
@@ -48,11 +48,16 @@ export default class Login {
           keytar.setPassword('tubee', config.username || 'admin', opts.password[0]);
         }
 
+        if(opts.prompt) {
+          let password = await prompt('Enter password: ');
+          keytar.setPassword('tubee', config.username || 'admin', password);
+        }
+
         if (opts.server[0]) {
           config.url = opts.server[0];
         }
 
-        if (opts.allowSelfSigned[0]) {
+        if (opts.allowSelfSigned) {
           process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
           config.allowSelfSigned = true;
         } else {
