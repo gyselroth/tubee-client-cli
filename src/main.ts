@@ -28,12 +28,20 @@ Create.factory(root, client);
 Sync.factory(root, client);
 
 commandpost.exec(root, process.argv).catch(err => {
-  console.log(err.message + '\n');
+  if(err.response.body) {
+    console.log("%s: %s [code: %s]", err.response.body.error, err.response.body.message, err.response.body.code);
+  }
 
-  if (err.params.params.option) {
-    console.log(err.params.params.option.command.helpText());
-  } else if (err.params.params.origin) {
-    console.log(err.params.params.origin.command.helpText());
+  if(err.message) {
+    console.log(err.message + '\n');
+  }
+
+  if(err.params) {
+    if (err.params.params.option) {
+      console.log(err.params.params.option.command.helpText());
+    } else if (err.params.params.origin) {
+      console.log(err.params.params.origin.command.helpText());
+    }
   }
 
   process.exit(1);

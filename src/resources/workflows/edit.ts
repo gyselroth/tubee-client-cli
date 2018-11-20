@@ -40,9 +40,7 @@ export default class Edit extends AbstractEdit {
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      console.log(patch);
-      var result = await api.updateWorkflow(args.mandator, args.datatype, args.endpoint, name, patch);
-      console.log(result);
+      return await api.updateWorkflow(args.mandator, args.datatype, args.endpoint, name, patch);
     });
   }
 }

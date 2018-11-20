@@ -68,21 +68,15 @@ export default class Login {
         var client = new api['DefaultApi'](server + '/api/v1');
         var auth = new api.HttpBasicAuth();
         auth.username = config.username || 'admin';
-        auth.password = config.password;
+        auth.password = opts.password[0];
         client.setDefaultAuthentication(auth);
+        var result = await client.root();
 
-        try {
-          var result = await client.root();
-
-          if (result.response.body.name !== 'tubee') {
-            throw new Error('server is not a tubee server');
-          }
-
-          console.log('Successfully connected to server %s', server);
-        } catch (Error) {
-          console.log('Failed connect to server %s', server);
-          return;
+        if (result.response.body.name !== 'tubee') {
+          throw new Error('server is not a tubee server');
         }
+
+        console.log('Successfully connected to server %s', server);
 
         var writePath = optparse.parsedOpts.config[0] || configPath;
         var configDir = path.dirname(writePath);

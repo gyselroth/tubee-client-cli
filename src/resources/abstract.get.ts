@@ -62,7 +62,6 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-console.log(response.response.toJSON().body);
     if (opts.diff[0]) {
       return this.compare(response.response.toJSON().body, opts);
     }

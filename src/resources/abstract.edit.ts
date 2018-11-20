@@ -152,8 +152,6 @@ export default abstract class AbstractEdit extends AbstractOperation {
    * Get resource data
    */
   protected getData(resource) {
-    return {
-      data: resource.data,
-    };
+    return resource;
   }
 }

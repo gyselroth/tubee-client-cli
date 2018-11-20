@@ -12,6 +12,9 @@ import Jobs from '../resources/jobs/get';
 import Processes from '../resources/processes/get';
 import Logs from '../resources/logs/get';
 import Workflows from '../resources/workflows/get';
+import Secrets from '../resources/secrets/get';
+import Users from '../resources/users/get';
+
 
 const map = [
   AccessRoles,
@@ -25,6 +28,8 @@ const map = [
   Processes,
   Logs,
   Workflows,
+  Secrets,
+  Users
 ];
 
 export interface GetOptions {

@@ -23,18 +23,13 @@ export default class Create extends AbstractCreate {
     var api = await this.client.factory('Workflows', this.optparse.parent.parsedOpts);
 
     this.createObjects('workflow', args, opts, async resource => {
-      console.log(resource);
-      console.log('1');
       let mandator = resource.mandator;
       delete resource.mandator;
       let datatype = resource.datatype;
       delete resource.datatype;
       let endpoint = resource.endpoint;
       delete resource.endpoint;
-      console.log('ADD');
-      var res = await api.addWorkflow(mandator, datatype, endpoint, resource);
-      console.log(res);
-      return res;
+      return await api.addWorkflow(mandator, datatype, endpoint, resource);
     });
   }
 }

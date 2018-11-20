@@ -30,9 +30,7 @@ export default class Create extends AbstractCreate {
       console.log(resource);
       console.log('add');
 
-      var result = await api.addEndpoint(mandator, datatype, resource);
-      console.log(result);
-      return result;
+      return await api.addEndpoint(mandator, datatype, resource);
     });
   }
 }

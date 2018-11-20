@@ -9,8 +9,10 @@ import DataObjects from '../resources/data-objects/delete';
 import Endpoints from '../resources/endpoints/delete';
 import Jobs from '../resources/jobs/delete';
 import Workflows from '../resources/workflows/delete';
+import Secrets from '../resources/secrets/delete';
+import Users from '../resources/users/delete';
 
-const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Endpoints, Jobs, Workflows];
+const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Endpoints, Jobs, Workflows, Secrets, Users];
 
 export interface DeleteOptions {}
 

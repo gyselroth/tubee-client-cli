@@ -58,7 +58,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
       if(opts.fromTemplate[0] !== '') {
         resourceType = opts.fromTemplate[0];
       }
-console.log(opts);
+      
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);

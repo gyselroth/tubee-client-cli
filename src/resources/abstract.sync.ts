@@ -28,9 +28,7 @@ export default abstract class AbstractSync {
     resource.data.loadbalance = false;
     resource.data.ignore = !opts.abortOnError;
     resource.data.log_level = opts.level[0];
-console.log(resource);
     var result = await api.addProcess(resource);
-console.log(result);
     this.sync(result, opts);
   }
 
