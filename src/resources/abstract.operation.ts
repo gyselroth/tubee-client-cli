@@ -28,7 +28,7 @@ export default abstract class AbstractOperation {
           }
         }
       }
-      
+
       query = JSON.stringify(query);
     }
 

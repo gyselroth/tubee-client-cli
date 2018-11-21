@@ -1,4 +1,4 @@
-const api = require('@gyselroth/tubee-sdk-typescript-node');
+const api = require('@gyselroth/tubee-sdk-node');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const keytar = require('keytar');
