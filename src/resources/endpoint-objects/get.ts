@@ -38,7 +38,7 @@ export default class Get extends AbstractGet {
         args.endpoint,
         ...this.getQueryOptions(opts, args),
       );
-      
+
       this.getObjects(response, opts);
     }
   }

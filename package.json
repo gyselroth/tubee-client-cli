@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "prebuild": "cd node_modules/commandpost && npm install && npm update && npm run build && cd ../../ && tsc",
-    "start": "tsc && nodejs build/main.js",
+    "start": "tsc && node build/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint --fix -p tsconfig.json",
     "build": "npm run format && npm run prebuild",

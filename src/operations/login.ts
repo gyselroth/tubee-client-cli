@@ -6,7 +6,7 @@ const fs = require('fs');
 import { Config, configPath } from '../tubee.client';
 const keytar = require('keytar');
 const path = require('path');
-const api = require('@gyselroth/tubee-sdk-typescript-node');
+const api = require('@gyselroth/tubee-sdk-node');
 const prompt = require('password-prompt');
 
 export interface LoginOptions {
@@ -48,7 +48,7 @@ export default class Login {
           keytar.setPassword('tubee', config.username || 'admin', opts.password[0]);
         }
 
-        if(opts.prompt) {
+        if (opts.prompt) {
           let password = await prompt('Enter password: ');
           keytar.setPassword('tubee', config.username || 'admin', password);
         }

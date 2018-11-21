@@ -15,7 +15,6 @@ import Workflows from '../resources/workflows/get';
 import Secrets from '../resources/secrets/get';
 import Users from '../resources/users/get';
 
-
 const map = [
   AccessRoles,
   AccessRules,
@@ -29,7 +28,7 @@ const map = [
   Logs,
   Workflows,
   Secrets,
-  Users
+  Users,
 ];
 
 export interface GetOptions {
