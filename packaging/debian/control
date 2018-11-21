@@ -1,4 +1,4 @@
-Package: tubeectl
+Package: tubectl
 Version: {version}
 Architecture: all
 Maintainer: Raffael Sahli <sahli@gyselroth.com>

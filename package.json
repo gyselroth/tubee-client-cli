@@ -7,7 +7,7 @@
     "start": "tsc && node build/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint --fix -p tsconfig.json",
-    "build": "npm run format && npm run prebuild && npm run coveralls",
+    "build": "npm run format && npm run prebuild",
     "test": "jest --coverage",
     "coveralls": "coveralls < coverage/lcov.info",
     "dist-linux": "nexe --verbose -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i build/main.js -o dist/tubectl -t linux-x64-8.12.0",

@@ -13,16 +13,16 @@ VERSION := "0.0.1"
 endif
 
 # PACKAGES
-DEB = $(DIST_DIR)/tubeectl-$(VERSION).deb
+DEB = $(DIST_DIR)/tubectl-$(VERSION).deb
 
 # NPM STUFF
 NPM_BIN = npm
 
 # TARGET ALIASES
-INSTALL_TARGET = "$(INSTALL_PREFIX)/tubeectl"
+INSTALL_TARGET = "$(INSTALL_PREFIX)/tubectl"
 NPM_TARGET = $(NODE_MODULES_DIR)
 CHANGELOG_TARGET = $(PACK_DIR)/DEBIAN/changelog
-BUILD_TARGET = $(BUILD_DIR) $(DIST_DIR)/tubeectl
+BUILD_TARGET = $(BUILD_DIR) $(NPM_TARGET)
 
 # TARGETS
 .PHONY: all
@@ -44,8 +44,8 @@ mostlyclean:
 deps: npm
 
 
-.PHONY: build
-build: $(BUILD_TARGET)
+#.PHONY: build
+#build: $(BUILD_TARGET)
 
 
 .PHONY: dist
@@ -53,15 +53,15 @@ dist: deb
 
 
 .PHONY: deb
-deb: $(DIST_DIR)/tubeectl-$(VERSION).deb
+deb: $(DIST_DIR)/tubectl-$(VERSION).deb
 
-$(DIST_DIR)/tubeectl-$(VERSION).deb: $(CHANGELOG_TARGET) $(BUILD_TARGET)
+$(DIST_DIR)/tubectl-$(VERSION).deb: $(CHANGELOG_TARGET) $(BUILD_TARGET)
 	@-test ! -d $(PACK_DIR) || rm -rfv $(PACK_DIR)
 	@mkdir -p $(PACK_DIR)/DEBIAN
 	@cp $(BASE_DIR)/packaging/debian/control $(PACK_DIR)/DEBIAN/control
 	@sed -i s/'{version}'/$(VERSION)/g $(PACK_DIR)/DEBIAN/control
 	@mkdir -p $(PACK_DIR)/$(INSTALL_PREFIX)
-	@cp  $(DIST_DIR)/tubeectl $(PACK_DIR)/$(INSTALL_PREFIX)
+	@cp  $(DIST_DIR)/tubectl $(PACK_DIR)/$(INSTALL_PREFIX)
 	@-test -d $(DIST_DIR) || mkdir $(DIST_DIR)
 	@dpkg-deb --build $(PACK_DIR) $@
 	@rm -rf $(PACK_DIR)
@@ -85,7 +85,7 @@ $(CHANGELOG_TARGET): CHANGELOG.md
 		then \
 	 		if [ "$$v" != "" ]; \
 	 		then \
-	 			echo "tubeectl ($$v) $$stable; urgency=low" >> $@; \
+	 			echo "tubectl ($$v) $$stable; urgency=low" >> $@; \
 	 			echo -e "$$changes" >> $@; \
 	 			echo >>  $@; \
 	 			echo " -- $$author  $$date" >> $@; \
@@ -140,12 +140,12 @@ $(NPM_TARGET) : $(BASE_DIR)/package.json
 	@touch $@
 
 
-.PHONY: pack
-pack: $(BUILD_TARGET)
+.PHONY: build
+build: $(BUILD_TARGET)
 
 $(BUILD_TARGET) : $(BASE_DIR)/build
 	@test "`$(NPM_BIN) install --dry-run 2>&1 >/dev/null | grep Failed`" == ""
-	$(NPM_BIN) run pack
+	$(NPM_BIN) run build
 	@touch $@
 
 
@@ -153,5 +153,5 @@ $(BUILD_TARGET) : $(BASE_DIR)/build
 install: $(INSTALL_TARGET)
 
 $(INSTALL_TARGET): $(BUILD_TARGET)
-	@cp -Rp $(DIST_DIR)/tubeectl $(INSTALL_PREFIX)/tubeectl
-	@chmod +x $(INSTALL_PREFIX)/tubeectl
+	@cp -Rp $(DIST_DIR)/tubectl $(INSTALL_PREFIX)/tubectl
+	@chmod +x $(INSTALL_PREFIX)/tubectl

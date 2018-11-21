@@ -1,6 +1,6 @@
 {
     "package": {
-        "name": "tubeectl",
+        "name": "tubectl",
         "repo": "tubee",
         "subject": "gyselroth",
         "desc": "tubee console client",
