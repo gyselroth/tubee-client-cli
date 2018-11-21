@@ -4,7 +4,7 @@
   "main": "main.js",
   "scripts": {
     "prebuild": "cd node_modules/commandpost && npm install && npm update && npm run build && cd ../../ && tsc",
-    "start": "tsc && nodejs build/main.js",
+    "start": "tsc && node build/main.js",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint --fix -p tsconfig.json",
     "build": "npm run format && npm run prebuild",
@@ -52,7 +52,7 @@
     "@types/node": "^10.12.9",
     "coveralls": "^3.0.2",
     "jest": "^23.6.0",
-    "nexe": "^3.0.0-beta.1",
+    "nexe": "3.0.0-beta.8",
     "prettier": "^1.15.2",
     "source-map-support": "^0.5.9",
     "ts-jest": "^22.4.6",
