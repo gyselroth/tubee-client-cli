@@ -6,13 +6,14 @@ import Mandators from '../resources/mandators/edit';
 import AccessRules from '../resources/access.rules/edit';
 import DataTypes from '../resources/datatypes/edit';
 import DataObjects from '../resources/data-objects/edit';
+import Relations from '../resources/relations/edit';
 import Endpoints from '../resources/endpoints/edit';
 import Jobs from '../resources/jobs/edit';
 import Workflows from '../resources/workflows/edit';
 import Secrets from '../resources/secrets/edit';
 import Users from '../resources/users/edit';
 
-const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Endpoints, Jobs, Workflows, Secrets, Users];
+const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Relations, Endpoints, Jobs, Workflows, Secrets, Users];
 
 export interface EditOptions {
   output: string;
@@ -43,7 +44,7 @@ export default class Edit {
         .option('-o, --output <name>', 'Define the output format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')
         .option('--json-query <name>', 'Specify an advanced json query')
-        .option('-F, --field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)')
+        .option('-q, --field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)')
         .option(
           '--field-filter <name>',
           'Specify a comma separated list what attributes should be requested, by default all attributes gets returned. (Example: kind,name)',

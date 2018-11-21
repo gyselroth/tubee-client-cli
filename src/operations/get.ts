@@ -6,6 +6,7 @@ import Mandators from '../resources/mandators/get';
 import AccessRules from '../resources/access.rules/get';
 import DataTypes from '../resources/datatypes/get';
 import DataObjects from '../resources/data-objects/get';
+import Relations from '../resources/relations/get';
 import Endpoints from '../resources/endpoints/get';
 import EndpointObjects from '../resources/endpoint-objects/get';
 import Jobs from '../resources/jobs/get';
@@ -21,6 +22,7 @@ const map = [
   Mandators,
   DataTypes,
   DataObjects,
+  Relations,
   Endpoints,
   EndpointObjects,
   Jobs,
@@ -61,7 +63,7 @@ export default class Get {
       sub.option('-w, --watch', 'Monitor updates in realtime.');
       sub.option('--json-query <name>', 'Specify an advanced json query');
       sub.option(
-        '-F, --field-selector <name>',
+        '-q, --field-selector <name>',
         'Specify a comma separated field based query (Example: foo=bar,bar=foo)',
       );
       sub.option('-H, --history', 'Will fetch the histroy of the requested resource');

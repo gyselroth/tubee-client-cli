@@ -17,28 +17,9 @@ const randomstring = require('randomstring');
 
 export const tableConfig = {
   border: getBorderCharacters('ramac'),
-  columns: {
-    0: {
-      name: 'tes',
-      alignment: 'left',
-      width: 50,
-    },
-    1: {
-      alignment: 'left',
-      width: 20,
-    },
-    2: {
-      alignment: 'left',
-      width: 30,
-    },
-    3: {
-      alignment: 'left',
-      width: 40,
-    },
-  },
   columnCount: 4,
   columnDefault: {
-    width: 40,
+    width: 25,
   },
 };
 
@@ -65,7 +46,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     if (opts.diff[0]) {
       return this.compare(response.response.toJSON().body, opts);
     }
-
+    
     var body: string;
     switch (opts.output[0]) {
       case 'json':

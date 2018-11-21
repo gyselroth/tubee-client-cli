@@ -6,13 +6,14 @@ import Mandators from '../resources/mandators/create';
 import AccessRules from '../resources/access.rules/create';
 import DataTypes from '../resources/datatypes/create';
 import DataObjects from '../resources/data-objects/create';
+import Relations from '../resources/relations/create';
 import Endpoints from '../resources/endpoints/create';
 import Jobs from '../resources/jobs/create';
 import Workflows from '../resources/workflows/create';
 import Secrets from '../resources/secrets/create';
 import Users from '../resources/users/create';
 
-const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Endpoints, Jobs, Workflows, Secrets, Users];
+const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Relations, Endpoints, Jobs, Workflows, Secrets, Users];
 
 export interface CreateOptions {
   file: string;
