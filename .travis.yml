@@ -24,7 +24,7 @@ before_deploy:
   else export deb_distribution=stable; fi; if [[ "$TRAVIS_BRANCH" == "master" ]];
   then export deb_distribution=nightly; fi; export date=$(date +%Y-%m-%d); cp packaging/debian/bintray.json
   bintray.json; sed -i s/'{version}'/$version/g bintray.json; sed -i s/'{date}'/$date/g
-  bintray.json; sed -i s/'{deb_distribution}'/$deb_distribution/g bintray.json; make deb; fi;
+  bintray.json; sed -i s/'{deb_distribution}'/$deb_distribution/g bintray.json; make deb VERSION=$version; fi;
 deploy:
 - provider: releases
   api_key:
