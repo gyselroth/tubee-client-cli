@@ -61,7 +61,7 @@ $(DIST_DIR)/tubectl-$(VERSION).deb: $(CHANGELOG_TARGET) $(BUILD_TARGET)
 	@cp $(BASE_DIR)/packaging/debian/control $(PACK_DIR)/DEBIAN/control
 	@sed -i s/'{version}'/$(VERSION)/g $(PACK_DIR)/DEBIAN/control
 	@mkdir -p $(PACK_DIR)/$(INSTALL_PREFIX)
-	@cp  $(DIST_DIR)/tubectl $(PACK_DIR)/$(INSTALL_PREFIX)
+	@cp  $(DIST_DIR)/tubectl-linux-x64 $(PACK_DIR)/$(INSTALL_PREFIX)
 	@-test -d $(DIST_DIR) || mkdir $(DIST_DIR)
 	@dpkg-deb --build $(PACK_DIR) $@
 	@rm -rf $(PACK_DIR)
@@ -153,5 +153,5 @@ $(BUILD_TARGET) : $(BASE_DIR)/build
 install: $(INSTALL_TARGET)
 
 $(INSTALL_TARGET): $(BUILD_TARGET)
-	@cp -Rp $(DIST_DIR)/tubectl $(INSTALL_PREFIX)/tubectl
+	@cp -Rp $(DIST_DIR)/tubectl-linux-x64 $(INSTALL_PREFIX)/tubectl
 	@chmod +x $(INSTALL_PREFIX)/tubectl

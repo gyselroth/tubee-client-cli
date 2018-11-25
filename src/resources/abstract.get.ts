@@ -77,7 +77,7 @@ export default abstract class AbstractGet extends AbstractOperation {
           data.push(callback(resource));
         }
 
-        if(data.length === 1) {
+        if (data.length === 1) {
           console.log('It is empty here. Either create new resources or change your query.');
         } else {
           console.log(table(data, tableConfig));
