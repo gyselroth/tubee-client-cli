@@ -10,7 +10,7 @@ export default class Delete extends AbstractDelete {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<DeleteOptions, DeleteArgs>('workflows <mandator> <datatype> <endpoint> <name>')
+      .subCommand<DeleteOptions, DeleteArgs>('workflows <namespace> <collection> <endpoint> <name>')
       .alias('wf')
       .description('Delete workflow')
       .action(this.execute.bind(this));
@@ -21,7 +21,7 @@ export default class Delete extends AbstractDelete {
    */
   public async execute(opts, args, rest) {
     var api = await this.client.factory('Workflows', this.optparse.parent.parsedOpts);
-    var re = await api.deleteWorkflow(args.mandator, args.datatype, args.endpoint, args.name);
+    var re = await api.deleteWorkflow(args.namespace, args.collection, args.endpoint, args.name);
     console.log(re);
     console.log('resource %s has been deleted', args.name);
   }

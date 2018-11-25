@@ -10,8 +10,8 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('relations <mandator> <datatype> <object> [name]')
-      .alias('or')
+      .subCommand<GetOptions, GetArgs>('relations <namespace> <collection> <object> [name]')
+      .alias('re')
       .description('Get data object relations')
       .action(this.execute.bind(this));
   }
@@ -24,18 +24,40 @@ export default class Get extends AbstractGet {
 
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchObjectRelatives(args.mandator, args.datatype, args.object, args.name, ...this.getQueryOptions(opts, args));
+        var request = category.watchObjectRelatives(
+          args.namespace,
+          args.collection,
+          args.object,
+          args.name,
+          ...this.getQueryOptions(opts, args),
+        );
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchObjectRelative(args.mandator, args.datatype, args.name, ...this.getQueryOptions(opts, args));
+        var request = category.watchObjectRelative(
+          args.namespace,
+          args.collection,
+          args.name,
+          ...this.getQueryOptions(opts, args),
+        );
         this.watchObjects(request, opts);
       }
     } else {
       if (args.name) {
-        var response = await category.getObjectRelative(args.mandator, args.datatype, args.object, args.name, this.getFields(opts));
+        var response = await category.getObjectRelative(
+          args.namespace,
+          args.collection,
+          args.object,
+          args.name,
+          this.getFields(opts),
+        );
         this.getObjects(response, opts);
       } else {
-        var response = await category.getObjectRelatives(args.mandator, args.datatype, args.object, ...this.getQueryOptions(opts, args));
+        var response = await category.getObjectRelatives(
+          args.namespace,
+          args.collection,
+          args.object,
+          ...this.getQueryOptions(opts, args),
+        );
         this.getObjects(response, opts);
       }
     }

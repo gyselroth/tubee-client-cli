@@ -10,7 +10,7 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('workflows <mandator> <datatype> <endpoint> [name]')
+      .subCommand<GetOptions, GetArgs>('workflows <namespace> <collection> <endpoint> [name]')
       .alias('wf')
       .description('Get workflows')
       .action(this.execute.bind(this));
@@ -25,16 +25,16 @@ export default class Get extends AbstractGet {
     if (opts.watch) {
       if (args.name) {
         var request = category.watchWorkflows(
-          args.mandator,
-          args.datatype,
+          args.namespace,
+          args.collection,
           args.endpoint,
           ...this.getQueryOptions(opts, args),
         );
         this.watchObjects(request, opts);
       } else {
         var request = category.watchWorkflows(
-          args.mandator,
-          args.datatype,
+          args.namespace,
+          args.collection,
           args.endpoint,
           ...this.getQueryOptions(opts, args),
         );
@@ -43,8 +43,8 @@ export default class Get extends AbstractGet {
     } else {
       if (args.name) {
         var response = await category.getWorkflow(
-          args.mandator,
-          args.datatype,
+          args.namespace,
+          args.collection,
           args.endpoint,
           args.name,
           this.getFields(opts),
@@ -52,8 +52,8 @@ export default class Get extends AbstractGet {
         this.getObjects(response, opts);
       } else {
         var response = await category.getWorkflows(
-          args.mandator,
-          args.datatype,
+          args.namespace,
+          args.collection,
           args.endpoint,
           ...this.getQueryOptions(opts, args),
         );

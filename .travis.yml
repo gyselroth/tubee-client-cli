@@ -2,7 +2,11 @@ sudo: required
 language: node_js
 node_js:
   - 10
-before_script: npm update
+before_script: 
+  - npm update
+  - export version=$TRAVIS_TAG
+  - if [[ "${version:0:1}" == "v" ]]; then version=${version:1}; fi;
+  - if [ "$version" == "" ]; then version=$TRAVIS_BUILD_NUMBER; fi;
 script:
   - npm run dist-$TRAVIS_OS_NAME
 os:
@@ -19,8 +23,7 @@ addons:
 python:
   - "2.7"
 before_deploy:
-- if [ "$TRAVIS_OS_NAME" == "linux" ]; then export version=$(cat package.json | grep
-  '"version"' | cut -d '"' -f4); if [[ "$TRAVIS_TAG" == *"-"* ]]; then export deb_distribution=unstable;
+- if [ "$TRAVIS_OS_NAME" == "linux" ]; then if [[ "$TRAVIS_TAG" == *"-"* ]]; then export deb_distribution=unstable;
   else export deb_distribution=stable; fi; if [[ "$TRAVIS_BRANCH" == "master" ]];
   then export deb_distribution=nightly; fi; export date=$(date +%Y-%m-%d); cp packaging/debian/bintray.json
   bintray.json; sed -i s/'{version}'/$version/g bintray.json; sed -i s/'{date}'/$date/g

@@ -46,7 +46,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     if (opts.diff[0]) {
       return this.compare(response.response.toJSON().body, opts);
     }
-    
+
     var body: string;
     switch (opts.output[0]) {
       case 'json':
@@ -77,7 +77,11 @@ export default abstract class AbstractGet extends AbstractOperation {
           data.push(callback(resource));
         }
 
-        console.log(table(data, tableConfig));
+        if(data.length === 1) {
+          console.log('It is empty here. Either create new resources or change your query.');
+        } else {
+          console.log(table(data, tableConfig));
+        }
     }
   }
 

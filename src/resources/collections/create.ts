@@ -10,9 +10,9 @@ export default class Create extends AbstractCreate {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<CreateOptions, CreateArgs>('datatypes [mandator] [name]')
-      .alias('dt')
-      .description('Create new datatypes')
+      .subCommand<CreateOptions, CreateArgs>('collections [namespace] [name]')
+      .alias('co')
+      .description('Create new collections')
       .action(this.execute.bind(this));
   }
 
@@ -22,10 +22,10 @@ export default class Create extends AbstractCreate {
   public async execute(opts, args, rest) {
     var api = await this.client.factory('Datatypes', this.optparse.parent.parsedOpts);
 
-    this.createObjects('datatype', args, opts, async resource => {
-      var mandator = resource.mandator;
-      delete resource.mandator;
-      return await api.addDatatype(args.mandator, resource);
+    this.createObjects('collection', args, opts, async resource => {
+      var namespace = resource.namespace;
+      delete resource.namespace;
+      return await api.addDatatype(args.namespace, resource);
     });
   }
 }

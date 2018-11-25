@@ -10,10 +10,10 @@ export default class Create extends AbstractCreate {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<CreateOptions, CreateArgs>('mandators [name]')
-      .alias('ma')
-      .description('Create new mandators')
-      .option('-s, --sync', 'Sync mandator immediately')
+      .subCommand<CreateOptions, CreateArgs>('namespaces [name]')
+      .alias('ns')
+      .description('Create new namespaces')
+      .option('-s, --sync', 'Sync namespace immediately')
       .option('-l, --follow', 'Watch triggered sync process in forderground (requires --sync)')
       .action(this.execute.bind(this));
   }
@@ -24,7 +24,7 @@ export default class Create extends AbstractCreate {
   public async execute(opts, args, rest) {
     var api = await this.client.factory('Mandators', this.optparse.parent.parsedOpts);
 
-    this.createObjects('mandator', args, opts, async resource => {
+    this.createObjects('namespace', args, opts, async resource => {
       return await api.addMandator(resource.name, resource);
     });
   }

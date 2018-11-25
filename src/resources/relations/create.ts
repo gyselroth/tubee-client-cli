@@ -10,8 +10,8 @@ export default class Create extends AbstractCreate {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<CreateOptions, CreateArgs>('relations [mandator] [datatype] [name]')
-      .alias('or')
+      .subCommand<CreateOptions, CreateArgs>('relations [namespace] [collection] [name]')
+      .alias('re')
       .description('Create new data object relations')
       .action(this.execute.bind(this));
   }
@@ -23,12 +23,12 @@ export default class Create extends AbstractCreate {
     var api = await this.client.factory('Data', this.optparse.parent.parsedOpts);
 
     this.createObjects('object-relative', args, opts, async resource => {
-      let mandator = resource.mandator;
-      delete resource.mandator;
-      let datatype = resource.datatype;
-      delete resource.datatype;
+      let namespace = resource.namespace;
+      delete resource.namespace;
+      let collection = resource.collection;
+      delete resource.collection;
 
-      return await api.addObjectRelative(mandator, datatype, resource);
+      return await api.addObjectRelative(namespace, collection, resource);
     });
   }
 }

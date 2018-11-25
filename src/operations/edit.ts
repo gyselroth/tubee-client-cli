@@ -2,9 +2,9 @@ import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 import AccessRoles from '../resources/access.roles/edit';
-import Mandators from '../resources/mandators/edit';
+import Mandators from '../resources/namespaces/edit';
 import AccessRules from '../resources/access.rules/edit';
-import DataTypes from '../resources/datatypes/edit';
+import DataTypes from '../resources/collections/edit';
 import DataObjects from '../resources/data-objects/edit';
 import Relations from '../resources/relations/edit';
 import Endpoints from '../resources/endpoints/edit';
@@ -13,7 +13,19 @@ import Workflows from '../resources/workflows/edit';
 import Secrets from '../resources/secrets/edit';
 import Users from '../resources/users/edit';
 
-const map = [AccessRoles, AccessRules, Mandators, DataTypes, DataObjects, Relations, Endpoints, Jobs, Workflows, Secrets, Users];
+const map = [
+  AccessRoles,
+  AccessRules,
+  Mandators,
+  DataTypes,
+  DataObjects,
+  Relations,
+  Endpoints,
+  Jobs,
+  Workflows,
+  Secrets,
+  Users,
+];
 
 export interface EditOptions {
   output: string;

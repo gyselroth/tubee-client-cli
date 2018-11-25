@@ -10,7 +10,7 @@ export default class Delete extends AbstractDelete {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<DeleteOptions, DeleteArgs>('secrets <mandator> <name>')
+      .subCommand<DeleteOptions, DeleteArgs>('secrets <namespace> <name>')
       .alias('ar')
       .description('Delete secret')
       .action(this.execute.bind(this));

@@ -10,7 +10,7 @@ export default class Sync extends AbstractSync {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<SyncOptions, SyncArgs>('endpoints <mandator> <datatype> [name]')
+      .subCommand<SyncOptions, SyncArgs>('endpoints <namespace> <collection> [name]')
       .alias('ep')
       .description('Sync endpoints')
       .action(this.execute.bind(this));
@@ -26,9 +26,9 @@ export default class Sync extends AbstractSync {
 
     var resource = {
       data: {
-        mandators: [args.mandator],
-        datatypes: [args.datatype],
-        endpoints: rest,
+        namespaces: [args.namespace],
+        collections: [args.collection],
+        endpoints: rest || ['*'],
       },
     };
 

@@ -53,28 +53,28 @@ export default class Get extends AbstractGet {
   protected prettify(resource) {
     var started = '<Not yet>';
     var ended = '<Not yet>';
-    
-    if(resource.status.code > 0) {
+
+    if (resource.status.code > 0) {
       started = ta.ago(resource.status.started);
     }
-    
-    if(resource.status.code > 2) {
+
+    if (resource.status.code > 2) {
       ended = ta.ago(resource.status.ended);
     }
-  
-    return [resource.name, Get.colorize(resource.status), this.timeDiff(resource)+'s', started, ended];
+
+    return [resource.name, Get.colorize(resource.status), this.timeDiff(resource) + 's', started, ended];
   }
 
   /**
    * Calc diff
    */
   protected timeDiff(process) {
-    if(process.status.started == null || process.status.ended == null) {
+    if (process.status.started == null || process.status.ended == null) {
       return 0;
     }
 
     var startDate = new Date(process.status.started);
-    var endDate   = new Date(process.status.ended);
+    var endDate = new Date(process.status.ended);
     return (endDate.getTime() - startDate.getTime()) / 1000;
   }
 
@@ -94,7 +94,7 @@ export default class Get extends AbstractGet {
         break;
       case 3:
         return colors.bgGreen(status.result);
-      break;
+        break;
       case 4:
       case 5:
       case 6:

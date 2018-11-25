@@ -10,8 +10,8 @@ export default class Edit extends AbstractEdit {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<EditOptions, EditArgs>('relations <mandator> <datatype> <object> [name]')
-      .alias('or')
+      .subCommand<EditOptions, EditArgs>('relations <namespace> <collection> <object> [name]')
+      .alias('re')
       .description('Edit data object relations')
       .action(this.execute.bind(this));
   }
@@ -23,13 +23,24 @@ export default class Edit extends AbstractEdit {
     var api = await this.client.factory('Data', this.optparse.parent.parsedOpts);
 
     if (args.name) {
-      var response = await api.getObjectRelative(args.mandator, args.datatype, args.object, args.name, this.getFields(opts));
+      var response = await api.getObjectRelative(
+        args.namespace,
+        args.collection,
+        args.object,
+        args.name,
+        this.getFields(opts),
+      );
     } else {
-      var response = await api.getObjectRelatives(args.mandator, args.datatype, args.object, this.getQueryOptions(opts, args));
+      var response = await api.getObjectRelatives(
+        args.namespace,
+        args.collection,
+        args.object,
+        this.getQueryOptions(opts, args),
+      );
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await api.updateObjectRelative(args.mandator, args.datatype, args.object, name, patch);
+      return await api.updateObjectRelative(args.namespace, args.collection, args.object, name, patch);
     });
   }
 }

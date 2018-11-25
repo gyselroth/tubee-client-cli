@@ -10,7 +10,7 @@ export default class Create extends AbstractCreate {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<CreateOptions, CreateArgs>('workflows [mandator] [datatype] [endpoint] [name]')
+      .subCommand<CreateOptions, CreateArgs>('workflows [namespace] [collection] [endpoint] [name]')
       .alias('wf')
       .description('Create workflows')
       .action(this.execute.bind(this));
@@ -23,13 +23,14 @@ export default class Create extends AbstractCreate {
     var api = await this.client.factory('Workflows', this.optparse.parent.parsedOpts);
 
     this.createObjects('workflow', args, opts, async resource => {
-      let mandator = resource.mandator;
-      delete resource.mandator;
-      let datatype = resource.datatype;
-      delete resource.datatype;
+      let namespace = resource.namespace;
+      delete resource.namespace;
+      let collection = resource.collection;
+      delete resource.collection;
       let endpoint = resource.endpoint;
       delete resource.endpoint;
-      return await api.addWorkflow(mandator, datatype, endpoint, resource);
+      var r = await api.addWorkflow(namespace, collection, endpoint, resource);
+      console.log(r);
     });
   }
 }

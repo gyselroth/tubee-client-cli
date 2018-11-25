@@ -10,7 +10,7 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('endpoint-objects <mandator> <datatype> <endpoint> [name]')
+      .subCommand<GetOptions, GetArgs>('endpoint-objects <namespace> <collection> <endpoint> [name]')
       .alias('eo')
       .description('Get objects from endpoint')
       .action(this.execute.bind(this));
@@ -24,8 +24,8 @@ export default class Get extends AbstractGet {
 
     if (args.name) {
       var response = await category.getEndpointObject(
-        args.mandator,
-        args.datatype,
+        args.namespace,
+        args.collection,
         args.endpoint,
         args.name,
         this.getFields(opts),
@@ -33,8 +33,8 @@ export default class Get extends AbstractGet {
       this.getObjects(response, opts);
     } else {
       var response = await category.getEndpointObjects(
-        args.mandator,
-        args.datatype,
+        args.namespace,
+        args.collection,
         args.endpoint,
         ...this.getQueryOptions(opts, args),
       );

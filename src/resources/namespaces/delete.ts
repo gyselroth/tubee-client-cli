@@ -10,9 +10,9 @@ export default class Delete extends AbstractDelete {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<DeleteOptions, DeleteArgs>('mandators <name>')
-      .alias('ma')
-      .description('Delete mandator')
+      .subCommand<DeleteOptions, DeleteArgs>('namespaces <name>')
+      .alias('ns')
+      .description('Delete namespace')
       .action(this.execute.bind(this));
   }
 

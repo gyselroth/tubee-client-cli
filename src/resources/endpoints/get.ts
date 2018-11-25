@@ -12,7 +12,7 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('endpoints <mandator> <datatype> [name]')
+      .subCommand<GetOptions, GetArgs>('endpoints <namespace> <collection> [name]')
       .alias('ep')
       .description('Get endpoints')
       .action(this.execute.bind(this));
@@ -26,10 +26,10 @@ export default class Get extends AbstractGet {
 
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchEndpoints(args.mandator, args.datatype, ...this.getQueryOptions(opts, args));
+        var request = category.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchEndpoints(args.mandator, args.datatype, ...this.getQueryOptions(opts, args));
+        var request = category.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
         this.watchObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
           return [
             resource.name,
@@ -43,10 +43,14 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await category.getEndpoint(args.mandator, args.datatype, args.name, this.getFields(opts));
+        var response = await category.getEndpoint(args.namespace, args.collection, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getEndpoints(args.mandator, args.datatype, ...this.getQueryOptions(opts, args));
+        var response = await category.getEndpoints(
+          args.namespace,
+          args.collection,
+          ...this.getQueryOptions(opts, args),
+        );
         this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
           return [
             resource.name,

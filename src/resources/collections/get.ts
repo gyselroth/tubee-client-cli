@@ -10,9 +10,9 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('datatypes <mandator> [name]')
-      .alias('dt')
-      .description('Get datatypes')
+      .subCommand<GetOptions, GetArgs>('collections <namespace> [name]')
+      .alias('co')
+      .description('Get collections')
       .action(this.execute.bind(this));
   }
 
@@ -24,18 +24,18 @@ export default class Get extends AbstractGet {
 
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchDatatypes(args.mandator, ...this.getQueryOptions(opts, args));
+        var request = category.watchDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchDatatypes(args.mandator, ...this.getQueryOptions(opts, args));
+        var request = category.watchDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.name) {
-        var response = await category.getDatatype(args.mandator, args.name, this.getFields(opts));
+        var response = await category.getDatatype(args.namespace, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getDatatypes(args.mandator, ...this.getQueryOptions(opts, args));
+        var response = await category.getDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

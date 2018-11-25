@@ -10,8 +10,8 @@ export default class Delete extends AbstractDelete {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<DeleteOptions, DeleteArgs>('relations <mandator> <datatype> <object> <relative')
-      .alias('or')
+      .subCommand<DeleteOptions, DeleteArgs>('relations <namespace> <collection> <object> <relative')
+      .alias('re')
       .description('Delete data object relation')
       .action(this.execute.bind(this));
   }
@@ -21,7 +21,7 @@ export default class Delete extends AbstractDelete {
    */
   public async execute(opts, args, rest) {
     var api = await this.client.factory('Data', this.optparse.parent.parsedOpts);
-    await api.deleteObjectRelative(args.mandator, args.datatype, args.object, args.relative);
+    await api.deleteObjectRelative(args.namespace, args.collection, args.object, args.relative);
     console.log('resource %s has been deleted', args.name);
   }
 }

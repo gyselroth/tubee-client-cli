@@ -10,9 +10,9 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('mandators [name]')
-      .alias('ma')
-      .description('Get mandators')
+      .subCommand<GetOptions, GetArgs>('namespaces [name]')
+      .alias('ns')
+      .description('Get namespaces')
       .action(this.execute.bind(this));
   }
 

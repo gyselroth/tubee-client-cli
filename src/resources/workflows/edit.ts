@@ -10,7 +10,7 @@ export default class Edit extends AbstractEdit {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<EditOptions, EditArgs>('workflows <mandator> <datatype> <endpoint> [name]')
+      .subCommand<EditOptions, EditArgs>('workflows <namespace> <collection> <endpoint> [name]')
       .alias('wf')
       .description('Edit workflows')
       .action(this.execute.bind(this));
@@ -24,23 +24,23 @@ export default class Edit extends AbstractEdit {
 
     if (args.name) {
       var response = await api.getWorkflow(
-        args.mandator,
-        args.datatype,
+        args.namespace,
+        args.collection,
         args.endpoint,
         args.name,
         this.getFields(opts),
       );
     } else {
       var response = await api.getWorkflows(
-        args.mandator,
-        args.datatype,
+        args.namespace,
+        args.collection,
         args.endpoint,
         ...this.getQueryOptions(opts, args),
       );
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await api.updateWorkflow(args.mandator, args.datatype, args.endpoint, name, patch);
+      return await api.updateWorkflow(args.namespace, args.collection, args.endpoint, name, patch);
     });
   }
 }

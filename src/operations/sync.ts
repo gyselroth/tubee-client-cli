@@ -1,8 +1,8 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
-import Mandators from '../resources/mandators/sync';
-import DataTypes from '../resources/datatypes/sync';
+import Mandators from '../resources/namespaces/sync';
+import DataTypes from '../resources/collections/sync';
 import DataObjects from '../resources/data-objects/sync';
 import Endpoints from '../resources/endpoints/sync';
 
