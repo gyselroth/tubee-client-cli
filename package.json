@@ -1,0 +1,78 @@
+{
+  "name": "tubee-client-cli",
+  "description": "tubee console client",
+  "main": "main.js",
+  "scripts": {
+    "prebuild": "cd node_modules/commandpost && npm install && npm update && npm run build && cd ../../ && tsc",
+    "start": "tsc && node build/main.js",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "tslint --fix -p tsconfig.json",
+    "build": "npm run format && npm run prebuild",
+    "test": "jest --coverage",
+    "coveralls": "coveralls < coverage/lcov.info",
+    "dist-linux": "nexe --verbose -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i build/main.js -o dist/tubectl-linux-x64 -t linux-x64-8.12.0",
+    "dist-windows": "nexe --verbose -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i build/main.js -o dist/tubectl-win-x64 -t windows-x64-8.12.0",
+    "dist-osx": "nexe --verbose -r ./node_modules/@gyselroth/tubee-sdk-node/swagger.yml -i build/main.js -o dist/tubectl-osx-x64 -t mac-x64-8.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gyselroth/tubee-client-cli.git"
+  },
+  "keywords": [
+    "tubee",
+    "cli",
+    "client"
+  ],
+  "author": "Raffael Sahli <sahli@gyselroth.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/gyselroth/tubee-client-cli/issues"
+  },
+  "homepage": "https://github.com/gyselroth/tubee-client-cli#readme",
+  "dependencies": {
+    "@gyselroth/tubee-sdk-node": "^0.0.17",
+    "@types/request": "^2.48.1",
+    "JSONStream": "^1.3.5",
+    "bluebird": "^3.5.3",
+    "colors": "^1.3.2",
+    "commandpost": "https://github.com/raffis/commandpost/tarball/alias",
+    "event-stream": "^4.0.1",
+    "fast-json-patch": "^2.0.7",
+    "js-yaml": "^3.12.0",
+    "json-stream": "^1.0.0",
+    "keytar": "^4.3.0",
+    "md5-file": "^4.0.0",
+    "password-prompt": "^1.0.7",
+    "randomstring": "^1.1.5",
+    "rewire": "^3.0.2",
+    "swagger-parser": "^6.0.2",
+    "table": "^5.1.0",
+    "time-ago": "^0.2.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^22.2.3",
+    "@types/node": "^10.12.9",
+    "coveralls": "^3.0.2",
+    "jest": "^23.6.0",
+    "nexe": "2.0.0-rc.34",
+    "prettier": "^1.15.2",
+    "source-map-support": "^0.5.9",
+    "ts-jest": "^22.4.6",
+    "tslint": "^5.11.0",
+    "tslint-config-prettier": "^1.16.0",
+    "typescript": "^2.9.2"
+  },
+  "jest": {
+    "transform": {
+      "^.+\\.tsx?$": "<rootDir>/node_modules/ts-jest/preprocessor.js"
+    },
+    "testRegex": "(/__tests__/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$",
+    "moduleFileExtensions": [
+      "ts",
+      "tsx",
+      "js",
+      "jsx",
+      "json"
+    ]
+  }
+}
