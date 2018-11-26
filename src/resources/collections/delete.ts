@@ -20,8 +20,8 @@ export default class Delete extends AbstractDelete {
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Datatypes', this.optparse.parent.parsedOpts);
-    await api.deleteDatatype(args.namespace, args.name);
+    var api = await this.client.factory('Collections', this.optparse.parent.parsedOpts);
+    await api.deleteCollection(args.namespace, args.name);
     console.log('resource %s has been deleted', args.name);
   }
 }

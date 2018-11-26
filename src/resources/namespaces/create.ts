@@ -22,10 +22,10 @@ export default class Create extends AbstractCreate {
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Mandators', this.optparse.parent.parsedOpts);
+    var api = await this.client.factory('Namespaces', this.optparse.parent.parsedOpts);
 
     this.createObjects('namespace', args, opts, async resource => {
-      return await api.addMandator(resource.name, resource);
+      return await api.addNamespace(resource.name, resource);
     });
   }
 }

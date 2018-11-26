@@ -20,16 +20,16 @@ export default class Edit extends AbstractEdit {
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Mandators', this.optparse.parent.parsedOpts);
+    var api = await this.client.factory('Namespaces', this.optparse.parent.parsedOpts);
 
     if (args.name) {
-      var response = await api.getMandator(args.name, this.getFields(opts));
+      var response = await api.getNamespace(args.name, this.getFields(opts));
     } else {
-      var response = await api.getMandators(...this.getQueryOptions(opts, args));
+      var response = await api.getNamespaces(...this.getQueryOptions(opts, args));
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await api.updateMandator(name, patch);
+      return await api.updateNamespace(name, patch);
     });
   }
 }

@@ -2,16 +2,17 @@ import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 import AccessRoles from '../resources/access.roles/get';
-import Mandators from '../resources/namespaces/get';
+import Namespaces from '../resources/namespaces/get';
 import AccessRules from '../resources/access.rules/get';
-import DataTypes from '../resources/collections/get';
+import Collections from '../resources/collections/get';
 import DataObjects from '../resources/data-objects/get';
 import Relations from '../resources/relations/get';
 import Endpoints from '../resources/endpoints/get';
 import EndpointObjects from '../resources/endpoint-objects/get';
 import Jobs from '../resources/jobs/get';
 import Processes from '../resources/processes/get';
-import Logs from '../resources/logs/get';
+import JobLogs from '../resources/job-logs/get';
+import ProcessLogs from '../resources/process-logs/get';
 import Workflows from '../resources/workflows/get';
 import Secrets from '../resources/secrets/get';
 import Users from '../resources/users/get';
@@ -19,15 +20,16 @@ import Users from '../resources/users/get';
 const map = [
   AccessRoles,
   AccessRules,
-  Mandators,
-  DataTypes,
+  Namespaces,
+  Collections,
   DataObjects,
   Relations,
   Endpoints,
   EndpointObjects,
+  JobLogs,
   Jobs,
+  ProcessLogs,
   Processes,
-  Logs,
   Workflows,
   Secrets,
   Users,

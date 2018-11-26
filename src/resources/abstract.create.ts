@@ -63,7 +63,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);
         } else if (api.definitions[resourceType]) {
-          let resourceDefinition = api.definitions[resourceType].allOf[0].properties;
+          let resourceDefinition = api.definitions[resourceType].allOf[0].allOf[0].properties;
           body +=
             'name: ' +
             (resources.name || '') +

@@ -13,7 +13,8 @@ export default class Get extends AbstractGet {
    */
   public applyOptions() {
     return this.optparse
-      .subCommand<GetOptions, GetArgs>('logs <job> [process] [name]')
+      .subCommand<GetOptions, GetArgs>('process-logs <process> [name]')
+      .alias('pl')
       .description('Get synchronization logs')
       .action(this.execute.bind(this));
   }
@@ -72,7 +73,7 @@ export default class Get extends AbstractGet {
         return colors.bgCyan(status);
         break;
       case 'WARNING':
-        return colors.bgOrange(status);
+        return colors.bgYellow(status);
         break;
       case 'ERROR':
       default:
@@ -87,22 +88,19 @@ export default class Get extends AbstractGet {
     var category = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
 
     if (opts.watch) {
-      if (args.process) {
-        var request = category.watchProcessLogs(args.job, args.process, ...this.getQueryOptions(opts, args));
+      if (args.name) {
+        var request = category.watchProcessLogs(args.process, args.name, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = await category.watchJobLogs(args.job, ...this.getQueryOptions(opts, args));
+        var request = await category.watchProcessLogs(args.process, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
-      if (args.log) {
-        var response = await category.getProcessLog(args.job, args.process, args.logs, this.getFields(opts));
-        this.getObjects(response, opts);
-      } else if (args.process) {
-        var response = await category.getProcessLogs(args.job, args.process, ...this.getQueryOptions(opts, args));
+      if (args.name) {
+        var response = await category.getProcessLog(args.process, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getJobLogs(args.job, ...this.getQueryOptions(opts, args));
+        var response = await category.getProcessLogs(args.process, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

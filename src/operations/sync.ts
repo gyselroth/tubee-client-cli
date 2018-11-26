@@ -1,12 +1,12 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
-import Mandators from '../resources/namespaces/sync';
-import DataTypes from '../resources/collections/sync';
+import Namespaces from '../resources/namespaces/sync';
+import Collections from '../resources/collections/sync';
 import DataObjects from '../resources/data-objects/sync';
 import Endpoints from '../resources/endpoints/sync';
 
-const map = [Mandators, DataTypes, DataObjects, Endpoints];
+const map = [Namespaces, Collections, DataObjects, Endpoints];
 
 export interface SyncOptions {
   follow: boolean;

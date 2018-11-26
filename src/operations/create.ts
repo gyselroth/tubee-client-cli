@@ -2,9 +2,9 @@ import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 import AccessRoles from '../resources/access.roles/create';
-import Mandators from '../resources/namespaces/create';
+import Namespaces from '../resources/namespaces/create';
 import AccessRules from '../resources/access.rules/create';
-import DataTypes from '../resources/collections/create';
+import Collections from '../resources/collections/create';
 import DataObjects from '../resources/data-objects/create';
 import Relations from '../resources/relations/create';
 import Endpoints from '../resources/endpoints/create';
@@ -16,8 +16,8 @@ import Users from '../resources/users/create';
 const map = [
   AccessRoles,
   AccessRules,
-  Mandators,
-  DataTypes,
+  Namespaces,
+  Collections,
   DataObjects,
   Relations,
   Endpoints,

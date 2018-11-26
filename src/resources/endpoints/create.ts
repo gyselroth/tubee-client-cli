@@ -27,9 +27,6 @@ export default class Create extends AbstractCreate {
       delete resource.namespace;
       let collection = resource.collection;
       delete resource.collection;
-      console.log(resource);
-      console.log('add');
-
       return await api.addEndpoint(namespace, collection, resource);
     });
   }

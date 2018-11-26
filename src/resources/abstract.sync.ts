@@ -3,7 +3,7 @@ import { SyncOptions, SyncArgs } from '../operations/sync';
 import TubeeClient from '../tubee.client';
 const JSONStream = require('JSONStream');
 const es = require('event-stream');
-import Log from './logs/get';
+import ProcessLog from './process-logs/get';
 
 /**
  * Sync resources
@@ -55,7 +55,7 @@ export default abstract class AbstractSync {
         console.log(
           '%s %s %s',
           data[1].created,
-          Log.colorize(data[1].data.level_name),
+          ProcessLog.colorize(data[1].data.level_name),
           data[1].data.category,
           data[1].data.message,
         );

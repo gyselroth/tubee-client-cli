@@ -20,22 +20,22 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Datatypes', this.optparse.parent.parsedOpts);
+    var category = await this.client.factory('Collections', this.optparse.parent.parsedOpts);
 
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = category.watchCollections(args.namespace, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = category.watchCollections(args.namespace, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.name) {
-        var response = await category.getDatatype(args.namespace, args.name, this.getFields(opts));
+        var response = await category.getCollection(args.namespace, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
+        var response = await category.getCollections(args.namespace, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }
