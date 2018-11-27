@@ -1,13 +1,14 @@
 sudo: required
 language: node_js
 node_js:
-  - 8 
+  - 10
 before_script: 
   - npm update
   - export version=$TRAVIS_TAG
   - if [[ "${version:0:1}" == "v" ]]; then version=${version:1}; fi;
   - if [ "$version" == "" ]; then version=$TRAVIS_BUILD_NUMBER; fi;
 script:
+  - echo "test"
   - npm run dist-$TRAVIS_OS_NAME
 os:
   - windows
@@ -20,8 +21,8 @@ addons:
     - libsecret-1-0
     - libsecret-1-dev
     - libgnome-keyring-dev
-python:
-  - "2.7"
+#python:
+#  - "2.7"
 before_deploy:
 - if [ "$TRAVIS_OS_NAME" == "linux" ]; then if [[ "$TRAVIS_TAG" == *"-"* ]]; then export deb_distribution=unstable;
   else export deb_distribution=stable; fi; if [[ "$TRAVIS_BRANCH" == "master" ]];
