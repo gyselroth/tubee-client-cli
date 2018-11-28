@@ -13,8 +13,6 @@ export default class Create extends AbstractCreate {
       .subCommand<CreateOptions, CreateArgs>('namespaces [name]')
       .alias('ns')
       .description('Create new namespaces')
-      .option('-s, --sync', 'Sync namespace immediately')
-      .option('-l, --follow', 'Watch triggered sync process in forderground (requires --sync)')
       .action(this.execute.bind(this));
   }
 

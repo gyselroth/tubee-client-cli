@@ -29,6 +29,7 @@ const map = [
 
 export interface CreateOptions {
   file: string;
+  stdin: boolean;
   input: string;
   fromTemplate: string;
 }
@@ -53,7 +54,8 @@ export default class Create {
       let sub = instance.applyOptions();
       sub
         .option('-i, --input <name>', 'Define the input format (One of yaml,json)')
-        .option('-f, -file <name>', 'File to read from')
+        .option('-f, --file <name>', 'File to read from')
+        .option('-s, --stdin', 'Read from stdin')
         .option('--from-template [name]', 'Opens the editor with a predefined template');
     }
   }
