@@ -25,7 +25,7 @@ export default class Create extends AbstractCreate {
     var api = await this.client.factory('Namespaces', this.optparse.parent.parsedOpts);
 
     this.createObjects('namespace', args, opts, async resource => {
-      return await api.addNamespace(resource.name, resource);
+      return await api.addNamespace(resource);
     });
   }
 }
