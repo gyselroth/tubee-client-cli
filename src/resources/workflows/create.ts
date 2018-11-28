@@ -29,8 +29,7 @@ export default class Create extends AbstractCreate {
       delete resource.collection;
       let endpoint = resource.endpoint;
       delete resource.endpoint;
-      var r = await api.addWorkflow(namespace, collection, endpoint, resource);
-      console.log(r);
+      return await api.addWorkflow(namespace, collection, endpoint, resource);
     });
   }
 }
