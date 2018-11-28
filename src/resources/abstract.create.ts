@@ -40,8 +40,10 @@ export default abstract class AbstractCreate extends AbstractOperation {
       process.stdin.resume();
       var reader = function(buf) { content += buf.toString(); };
       process.stdin.on('data', reader);
-      process.stdin.on('end', async () => {
+      process.stdin.once('end', async () => {
         process.stdin.removeListener('data', reader)
+        process.stdin.removeAllListeners('keypress');
+
         if(content === '') {
           return;
         }
@@ -52,8 +54,8 @@ export default abstract class AbstractCreate extends AbstractOperation {
             return console.log(err);
           }
         });
-        console.log(path, content, opts.input);
-        //return this.openEditor(callback, path, opts.input[0]);
+        
+        return this.openEditor(callback, path, opts.input[0]);
       });
     } else if (opts.fromTemplate.length > 0) {
       var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
