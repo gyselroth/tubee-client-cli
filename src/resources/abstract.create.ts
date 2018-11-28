@@ -35,13 +35,16 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
     var path: string;
 
-    /*var content: string = '';
-    process.stdin.resume();
+    var content: string = '';
+    /*process.stdin.resume();
     process.stdin.on('data', function(buf) { content += buf.toString(); });
-    process.stdin.on('end', async () => {
+    await process.stdin.on('end', async () => {
+console.log('end'+content);
       if(content === '') {
         return;
       }
+console.log(2);
+
 
       var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
       await fs.writeFile(path, content, function(err) {
@@ -49,9 +52,13 @@ export default abstract class AbstractCreate extends AbstractOperation {
           return console.log(err);
         }
       });
+console.log(1);
         
-      return this.openEditor(callback, path, opts.input[0]);
-    });*/
+      //return this.openEditor(callback, path, opts.input[0]);
+    });
+console.log(4);
+    return;
+*/
     if (opts.fromTemplate.length > 0) {
       var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
 

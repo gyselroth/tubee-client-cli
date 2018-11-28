@@ -5,7 +5,7 @@ const keytar = require('keytar');
 const homedir = require('os').homedir();
 export const tubectlFolder = homedir + '/.tubectl';
 export const configPath = tubectlFolder + '/config';
-const keytarPath = tubectlFolder+'/.keytar.node';
+export const keytarPath = tubectlFolder+'/.keytar.node';
 const keytarPathOrig = './node_modules/keytar/build/Release/keytar.node';
 
 if(!fs.existsSync(tubectlFolder)) {
