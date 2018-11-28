@@ -3,7 +3,20 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const keytar = require('keytar');
 const homedir = require('os').homedir();
-export const configPath = homedir + '/.tubee/config';
+export const tubectlFolder = homedir + '/.tubectl';
+export const configPath = tubectlFolder + '/config';
+const keytarPath = tubectlFolder+'/.keytar.node';
+const keytarPathOrig = './node_modules/keytar/build/Release/keytar.node';
+
+if(!fs.existsSync(tubectlFolder)) {
+  fs.mkdirSync(tubectlFolder);
+}
+
+if(!fs.existsSync(keytarPath)) {
+  fs.writeFileSync(keytarPath, fs.readFileSync(keytarPathOrig));
+}
+
+keytar.setPath(keytarPath);
 
 export interface Config {
   url: string;
@@ -41,7 +54,7 @@ export default class TubeeClient {
     }
 
     var server = config.url || 'https://localhost:8090';
-    var password = (await keytar.getPassword('tubee', config.username || 'admin')) || config.password;
+    var password = (await keytar.getPassword('tubee', config.username || 'admin')) || 'admin';
     var client = new api[category + 'Api'](server + '/api/v1');
     var auth = new api.HttpBasicAuth();
     auth.username = config.username || 'admin';
