@@ -4,8 +4,8 @@ const colors = require('colors');
 const ta = require('time-ago');
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options

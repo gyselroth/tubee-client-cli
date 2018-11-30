@@ -1,9 +1,9 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
-import AccessRoles from '../resources/access.roles/get';
+import AccessRoles from '../resources/access-roles/get';
 import Namespaces from '../resources/namespaces/get';
-import AccessRules from '../resources/access.rules/get';
+import AccessRules from '../resources/access-rules/get';
 import Collections from '../resources/collections/get';
 import DataObjects from '../resources/data-objects/get';
 import Relations from '../resources/relations/get';
@@ -18,7 +18,7 @@ import Secrets from '../resources/secrets/get';
 import Users from '../resources/users/get';
 
 const map = [
-  AccessRoles,
+  /*AccessRoles,
   AccessRules,
   Namespaces,
   Collections,
@@ -32,7 +32,8 @@ const map = [
   Processes,
   Workflows,
   Secrets,
-  Users,
+  Users,*/
+  Jobs
 ];
 
 export interface GetOptions {
@@ -60,7 +61,7 @@ export default class Get {
 
     for (let resource of map) {
       let instance = new resource(remote, client);
-      let sub = instance.applyOptions();
+      let sub = instance.applyOptions(remote, client);
       sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json)');
       sub.option('-w, --watch', 'Monitor updates in realtime.');
       sub.option('--json-query <name>', 'Specify an advanced json query');

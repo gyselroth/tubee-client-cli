@@ -35,7 +35,9 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
     var path: string;
 
-    if (opts.stdin) {
+    if(opts.file[0]) {
+      return this.openEditor(callback, opts.file[0], opts.input[0]);
+    } else if (opts.stdin) {
       var content: string = '';
       process.stdin.resume();
       var reader = function(buf) {

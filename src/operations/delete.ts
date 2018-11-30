@@ -1,9 +1,9 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
-import AccessRoles from '../resources/access.roles/delete';
+import AccessRoles from '../resources/access-roles/delete';
 import Namespaces from '../resources/namespaces/delete';
-import AccessRules from '../resources/access.rules/delete';
+import AccessRules from '../resources/access-rules/delete';
 import Collections from '../resources/collections/delete';
 import DataObjects from '../resources/data-objects/delete';
 import Relations from '../resources/relations/delete';

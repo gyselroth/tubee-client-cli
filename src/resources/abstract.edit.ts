@@ -121,8 +121,8 @@ export default abstract class AbstractEdit extends AbstractOperation {
   protected async updateObjects(update, existing, callback) {
     if (update.kind == 'List') {
       for (let resource of update.data) {
-        let to = this.getData(resource);
-        let from = this.getData(this.findObject(existing, resource.name));
+        let to = resource;
+        let from = this.findObject(existing, resource.name);
         let patch = jsonpatch.compare(to, from);
 
         if (patch.length > 0) {
@@ -146,12 +146,5 @@ export default abstract class AbstractEdit extends AbstractOperation {
         return resource;
       }
     }
-  }
-
-  /**
-   * Get resource data
-   */
-  protected getData(resource) {
-    return resource;
   }
 }
