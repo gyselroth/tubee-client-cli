@@ -34,6 +34,7 @@ export default class Sync {
       let sub = instance.applyOptions();
       sub.option('-t, --follow', 'Follow process and watch in forderground');
       sub.option('-l, --level <name>', 'Specify log level for the process (emerg,error,warning,info,debug)');
+      sub.option('-s, --simulate', 'Simulate sync process (No changes are made)');
       sub.option('--abort-on-error', 'Abort process if an error occurs');
     }
   }

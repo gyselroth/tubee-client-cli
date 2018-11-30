@@ -35,26 +35,28 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
     var path: string;
 
-    if(opts.stdin) {
+    if (opts.stdin) {
       var content: string = '';
       process.stdin.resume();
-      var reader = function(buf) { content += buf.toString(); };
+      var reader = function(buf) {
+        content += buf.toString();
+      };
       process.stdin.on('data', reader);
       process.stdin.once('end', async () => {
-        process.stdin.removeListener('data', reader)
+        process.stdin.removeListener('data', reader);
         process.stdin.removeAllListeners('keypress');
 
-        if(content === '') {
+        if (content === '') {
           return;
         }
-        
+
         var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
         await fs.writeFile(path, content, function(err) {
           if (err) {
             return console.log(err);
           }
         });
-        
+
         return this.openEditor(callback, path, opts.input[0]);
       });
     } else if (opts.fromTemplate.length > 0) {

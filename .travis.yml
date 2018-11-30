@@ -1,7 +1,7 @@
 sudo: required
 language: node_js
 node_js:
-  - 10
+  - 8
 before_script: 
   - npm update
   - export version=$TRAVIS_TAG
@@ -11,7 +11,6 @@ script:
   - npm run build
   - npm run dist-$TRAVIS_OS_NAME
 os:
-  - windows
   - linux
   - osx
 addons:
