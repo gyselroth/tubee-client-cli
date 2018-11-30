@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 import ProcessGet from '../processes/get';
@@ -11,25 +13,27 @@ export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('jobs [name]')
       .description('Get synchronization jobs')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
-
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchJobs(...this.getQueryOptions(opts, args));
+        var request = this.api.watchJobs(...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchJobs(...this.getQueryOptions(opts, args));
+        var request = this.api.watchJobs(...this.getQueryOptions(opts, args));
         this.watchObjects(
           response,
           opts,
@@ -41,10 +45,10 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await category.getJob(args.name, this.getFields(opts));
+        var response = await this.api.getJob(args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getJobs(...this.getQueryOptions(opts, args));
+        var response = await this.api.getJobs(...this.getQueryOptions(opts, args));
         this.getObjects(
           response,
           opts,

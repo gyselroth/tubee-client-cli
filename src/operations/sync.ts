@@ -30,8 +30,7 @@ export default class Sync {
     let remote = optparse.subCommand<SyncOptions, SyncArgs>('sync').description('Sync resources');
 
     for (let resource of map) {
-      let instance = new resource(remote, client);
-      let sub = instance.applyOptions();
+      let sub = resource.applyOptions(remote, client);
       sub.option('-t, --follow', 'Follow process and watch in forderground');
       sub.option('-l, --level <name>', 'Specify log level for the process (emerg,error,warning,info,debug)');
       sub.option('-s, --simulate', 'Simulate sync process (No changes are made)');

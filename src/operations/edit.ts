@@ -50,8 +50,7 @@ export default class Edit {
     let remote = optparse.subCommand<EditOptions, EditArgs>('edit').description('Edit resources');
 
     for (let resource of map) {
-      let instance = new resource(remote, client);
-      let sub = instance.applyOptions();
+      let sub = resource.applyOptions(remote, client);
       sub
         .option('-o, --output <name>', 'Define the output format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')

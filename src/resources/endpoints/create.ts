@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { CreateOptions, CreateArgs } from '../../operations/create';
 import AbstractCreate from '../abstract.create';
 
@@ -8,12 +10,16 @@ export default class Create extends AbstractCreate {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<CreateOptions, CreateArgs>('endpoints [namespace] [collection] [name]')
       .alias('ep')
       .description('Create new endpoints')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Endpoints', optparse.parent.parsedOpts);
+        var instance = new Create(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
@@ -27,11 +33,10 @@ export default class Create extends AbstractCreate {
    * Create
    */
   public async create(resource) {
-    var api = await this.client.factory('Endpoints', this.optparse.parent.parsedOpts);
     let namespace = resource.namespace;
     delete resource.namespace;
     let collection = resource.collection;
     delete resource.collection;
-    return api.addEndpoint(namespace, collection, resource);
+    return this.api.addEndpoint(namespace, collection, resource);
   }
 }

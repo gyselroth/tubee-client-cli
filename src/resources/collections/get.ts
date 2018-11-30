@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
@@ -8,34 +10,36 @@ export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('collections <namespace> [name]')
       .alias('co')
       .description('Get collections')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Collections', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Collections', this.optparse.parent.parsedOpts);
-
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchCollections(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchCollections(args.namespace, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchCollections(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchCollections(args.namespace, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.name) {
-        var response = await category.getCollection(args.namespace, args.name, this.getFields(opts));
+        var response = await this.api.getCollection(args.namespace, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getCollections(args.namespace, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getCollections(args.namespace, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

@@ -16,16 +16,14 @@ const fspath = require('path');
  * Create resources
  */
 export default abstract class AbstractCreate extends AbstractOperation {
-  protected optparse: Command<CreateOptions, CreateArgs>;
-  protected client: TubeeClient;
+  protected api;
 
   /**
    * Construct
    */
-  constructor(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
+  constructor(api) {
     super();
-    this.optparse = optparse;
-    this.client = client;
+    this.api = api;
   }
 
   /**

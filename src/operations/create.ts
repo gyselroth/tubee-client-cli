@@ -27,9 +27,8 @@ const map = {
   'Workflow': Workflows,
   'Secret': Secrets,
   'User': Users,
+  'Job': Jobs,
 };
-
-var instances = {};
 
 export interface CreateOptions {
   file: string;
@@ -47,28 +46,40 @@ export interface CreateArgs {
  * Operation
  */
 export default class Create {
+  protected instances;
+
+  public constructor(instances) {
+    this.instances = instances;
+  }
+
   /**
    * Apply cli options
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
     let remote = optparse.subCommand<CreateOptions, CreateArgs>('create').description('Create resources')
     .option('-f, --file <name>', 'File to read from')
-    .action(Create.execute);
+    .action(async (opts, args, rest) => {
+      var instances = {};
+      for(let instance in map) {
+        var api = await client.factory(instance+'s', optparse.parsedOpts);
+        instances[instance] = new map[instance](api)
+      }
+
+      var op = new Create(instances);
+      op.execute(opts, args, rest);
+    });
 
     for (let resource in map) {
-      let instance = new map[resource](remote, client);
-      let sub = instance.applyOptions();
+      let sub = map[resource].applyOptions(remote, client);
       sub
         .option('-i, --input <name>', 'Define the input format (One of yaml,json)')
         .option('-f, --file <name>', 'File to read from')
         .option('-s, --stdin', 'Read from stdin')
         .option('--from-template [name]', 'Opens the editor with a predefined template');
-
-      instances[resource] = instance;
     }
   }
 
-  public static execute(opts) {
+  public execute(opts, args, rest) {
     var body = fs.readFileSync(opts.file[0]);
     var input = 'yaml';
     var resources;
@@ -83,15 +94,15 @@ export default class Create {
               resources = yaml.safeLoad(body);
           }
 
-          Create.create(resources);
+          this.create(resources);
         } catch (error) {
         }
   }
 
-  protected static async create(resources) {
+  protected async create(resources) {
     if (resources instanceof Array) {
       for (let resource of resources) {
-        let result = Create.getKind(resource);
+        let result = this.getKind(resource);
 
         if(result === null) {
           continue;
@@ -104,23 +115,23 @@ export default class Create {
         });
       }
     } else if (resources instanceof Object) {
-      return Create.create([resources]);
+      return this.create([resources]);
     } else {
       console.log('Invalid resource definition, neither a list of resources nor a single valid resource');
     }
   }
 
-  protected static getKind(resource) {
+  protected getKind(resource) {
     var endpoint = new RegExp("Endpoint$");
     if(endpoint.test(resource.kind)) {
       resource.kind = 'Endpoint';
     }
 
-    if(!resource.kind || !instances[resource.kind]) {
+    if(!resource.kind || !this.instances[resource.kind]) {
       console.log('Invalid resource definition, invalid kind given');
       return null;
     }
-    
-    return instances[resource.kind];
+
+    return this.instances[resource.kind];
   }
 }

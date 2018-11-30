@@ -27,6 +27,7 @@ const map = {
   'Relation': Relations,
   'Job': Jobs,
   'Workflow': Workflows,
+  'Job': Jobs,
 };
 
 var priorities = [];
@@ -34,8 +35,6 @@ var i=0;
 for(let resource in map) {
   priorities[resource] = i++;
 }
-
-var instances = {};
 
 export interface ApplyOptions {
   file: string;
@@ -47,17 +46,31 @@ export interface ApplyArgs {}
  * Operation
  */
 export default class Apply {
+  protected instances;
+
+  /**
+   * Construct
+   */
+  public constructor(instances) {
+    this.instances = instances;
+  } 
+
   /**
    * Apply cli options
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
     let remote = optparse.subCommand<ApplyOptions, ApplyArgs>('apply').description('Apply resources')
     .option('-f, --file <name>', 'File to read from')
-    .action(Apply.execute);
-      
-    for (let resource in map) {
-      instances[resource] = new map[resource](remote, client);
-    }
+    .action(async (opts, args, rest) => {
+      var instances = {};
+      for(let instance in map) {
+        var api = await client.factory(instance+'s', optparse.parsedOpts);
+        instances[instance] = new map[instance](api)
+      }
+
+      var op = new Apply(instances);
+      op.execute(opts, args, rest);
+    });
   }
 
   /**
@@ -140,11 +153,11 @@ export default class Apply {
    */
   protected getKind(resource) {
     var kind = this.transformKind(resource.kind);
-    if(!resource.kind || !instances[kind]) {
+    if(!resource.kind || !this.instances[kind]) {
       console.log('Invalid resource definition, invalid kind given');
       return null;
     }
     
-    return instances[kind];
+    return this.instances[kind];
   }
 }

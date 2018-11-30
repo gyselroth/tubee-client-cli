@@ -16,16 +16,14 @@ const fspath = require('path');
  * Edit resources
  */
 export default abstract class AbstractEdit extends AbstractOperation {
-  protected optparse: Command<EditOptions, EditArgs>;
-  protected client: TubeeClient;
+  protected api;
 
   /**
    * Construct
    */
-  constructor(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
+  constructor(api) {
     super();
-    this.optparse = optparse;
-    this.client = client;
+    this.api = api;
   }
 
   /**

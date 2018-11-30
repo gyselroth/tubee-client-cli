@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
@@ -8,34 +10,36 @@ export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('access-rules [name]')
       .alias('au')
-      .description('Get access roles')
-      .action(this.execute.bind(this));
+      .description('Get access rules')
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('AccessRules', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('AccessRules', this.optparse.parent.parsedOpts);
-
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchAccessRules(...this.getQueryOptions(opts, args));
+        var request = this.api.watchAccessRules(...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchAccessRules(...this.getQueryOptions(opts, args));
+        var request = this.api.watchAccessRules(...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.name) {
-        var response = await category.getAccessRule(args.name, ...this.getFields(opts));
+        var response = await this.api.getAccessRule(args.name, ...this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getAccessRules(...this.getQueryOptions(opts, args));
+        var response = await this.api.getAccessRules(...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

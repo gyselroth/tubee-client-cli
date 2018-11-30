@@ -7,15 +7,13 @@ import AbstractOperation from './abstract.operation';
  * Delete resources
  */
 export default abstract class AbstractDelete extends AbstractOperation {
-  protected optparse: Command<DeleteOptions, DeleteArgs>;
-  protected client: TubeeClient;
+  protected api;
 
   /**
    * Construct
    */
-  constructor(optparse: Command<DeleteOptions, DeleteArgs>, client: TubeeClient) {
+  constructor(api) {
     super();
-    this.optparse = optparse;
-    this.client = client;
+    this.api = api;
   }
 }

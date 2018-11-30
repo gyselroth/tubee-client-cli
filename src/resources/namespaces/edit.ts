@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { EditOptions, EditArgs } from '../../operations/edit';
 import AbstractEdit from '../abstract.edit';
 
@@ -8,28 +10,30 @@ export default class Edit extends AbstractEdit {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<EditOptions, EditArgs>('namespaces [name]')
       .alias('ns')
       .description('Edit namespaces')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Namespaces', optparse.parent.parsedOpts);
+        var instance = new Edit(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Namespaces', this.optparse.parent.parsedOpts);
-
     if (args.name) {
-      var response = await api.getNamespace(args.name, this.getFields(opts));
+      var response = await this.api.getNamespace(args.name, this.getFields(opts));
     } else {
-      var response = await api.getNamespaces(...this.getQueryOptions(opts, args));
+      var response = await this.api.getNamespaces(...this.getQueryOptions(opts, args));
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await api.updateNamespace(name, patch);
+      return await this.api.updateNamespace(name, patch);
     });
   }
 }

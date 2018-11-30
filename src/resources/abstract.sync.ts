@@ -9,26 +9,23 @@ import ProcessLog from './process-logs/get';
  * Sync resources
  */
 export default abstract class AbstractSync {
-  protected optparse: Command<SyncOptions, SyncArgs>;
-  protected client: TubeeClient;
+  protected api;
 
   /**
    * Construct
    */
-  constructor(optparse: Command<SyncOptions, SyncArgs>, client: TubeeClient) {
-    this.optparse = optparse;
-    this.client = client;
+  constructor(api) {
+    this.api = api;
   }
 
   /**
    * Add process
    */
   protected async addProcess(resource, opts, args, rest) {
-    var api = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
     resource.data.ignore = !opts.abortOnError;
     resource.data.log_level = opts.level[0];
     resource.data.simulate = opts.simulate;
-    var result = await api.addProcess(resource);
+    var result = await this.api.addProcess(resource);
     this.sync(result, opts);
   }
 
@@ -40,8 +37,7 @@ export default abstract class AbstractSync {
 
     if (opts.follow) {
       console.log('\n');
-      var api = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
-      var request = api.watchProcessLogs(result.body.id);
+      var request = this.api.watchProcessLogs(result.body.id);
       this.watchObjects(request, opts);
     }
   }

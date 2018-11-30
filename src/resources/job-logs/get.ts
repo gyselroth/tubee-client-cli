@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const JSONStream = require('JSONStream');
@@ -5,18 +7,22 @@ const es = require('event-stream');
 const colors = require('colors');
 
 /**
- *  * Edit resources
- *   */
+ * Edit resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('job-logs <job> [name]')
       .alias('jl')
       .description('Get synchronization logs')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Logs', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
@@ -29,7 +35,7 @@ export default class Get extends AbstractGet {
           '%s %s %s',
           resource.data.created,
           Get.colorize(resource.data.level_name),
-          resource.data.category,
+          resource.data.this.api,
           resource.data.message,
         );
       }
@@ -51,7 +57,7 @@ export default class Get extends AbstractGet {
             '%s %s %s',
             data[1].created,
             Get.colorize(data[1].data.level_name),
-            data[1].data.category,
+            data[1].data.this.api,
             data[1].data.message,
           );
         }),
@@ -85,22 +91,20 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
-
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchJobLogs(args.job, args.name, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchJobLogs(args.job, args.name, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = await category.watchJobLogs(args.job, ...this.getQueryOptions(opts, args));
+        var request = await this.api.watchJobLogs(args.job, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.log) {
-        var response = await category.getJobLog(args.job, args.name, this.getFields(opts));
+        var response = await this.api.getJobLog(args.job, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getJobLogs(args.job, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getJobLogs(args.job, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

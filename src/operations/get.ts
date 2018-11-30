@@ -60,8 +60,7 @@ export default class Get {
     let remote = optparse.subCommand<GetOptions, GetArgs>('get').description('Get resources');
 
     for (let resource of map) {
-      let instance = new resource(remote, client);
-      let sub = instance.applyOptions(remote, client);
+      let sub = resource.applyOptions(remote, client);
       sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json)');
       sub.option('-w, --watch', 'Monitor updates in realtime.');
       sub.option('--json-query <name>', 'Specify an advanced json query');

@@ -27,16 +27,13 @@ export const tableConfig = {
  * Get resources
  */
 export default abstract class AbstractGet extends AbstractOperation {
-  protected optparse: Command<GetOptions, GetArgs>;
-  protected client: TubeeClient;
-
+  protected api;
   /**
    * Construct
    */
-  constructor(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+  constructor(api) {
     super();
-    this.optparse = optparse;
-    this.client = client;
+    this.api = api;
   }
 
   /**

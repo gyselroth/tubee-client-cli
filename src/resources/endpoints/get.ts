@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
@@ -10,27 +12,29 @@ export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('endpoints <namespace> <collection> [name]')
       .alias('ep')
       .description('Get endpoints')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Endpoints', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Endpoints', this.optparse.parent.parsedOpts);
-
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
-        this.watchObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
+        var request = this.api.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        this.watchObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Getd', 'Changed'], resource => {
           return [
             resource.name,
             resource.data.type,
@@ -43,15 +47,15 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await category.getEndpoint(args.namespace, args.collection, args.name, this.getFields(opts));
+        var response = await this.api.getEndpoint(args.namespace, args.collection, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await category.getEndpoints(
+        var response = await this.api.getEndpoints(
           args.namespace,
           args.collection,
           ...this.getQueryOptions(opts, args),
         );
-        this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
+        this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Getd', 'Changed'], resource => {
           return [
             resource.name,
             resource.data.type,

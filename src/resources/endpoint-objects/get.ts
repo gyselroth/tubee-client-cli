@@ -1,29 +1,33 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('endpoint-objects <namespace> <collection> <endpoint> [name]')
       .alias('eo')
       .description('Get objects from endpoint')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('EndpointObjects', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Data', this.optparse.parent.parsedOpts);
-
     if (args.name) {
-      var response = await category.getEndpointObject(
+      var response = await this.api.getEndpointObject(
         args.namespace,
         args.collection,
         args.endpoint,
@@ -32,7 +36,7 @@ export default class Get extends AbstractGet {
       );
       this.getObjects(response, opts);
     } else {
-      var response = await category.getEndpointObjects(
+      var response = await this.api.getEndpointObjects(
         args.namespace,
         args.collection,
         args.endpoint,
