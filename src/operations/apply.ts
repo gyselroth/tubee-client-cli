@@ -24,7 +24,7 @@ const map = {
   'Collection': Collections,
   'Endpoint': Endpoints,
   'DataObject': DataObjects,
-  'Relation': Relations,
+  'DataObjectRelation': Relations,
   'Workflow': Workflows,
   'Job': Jobs,
 };
@@ -63,12 +63,12 @@ export default class Apply {
     .action(async (opts, args, rest) => {
       var instances = {};
       for(let instance in map) {
-console.log(instance);
         var api = await client.factory(instance+'s', optparse.parsedOpts);
         instances[instance] = new map[instance](api)
       }
 
       var op = new Apply(instances);
+      op.execute(opts);
     });
   }
 
