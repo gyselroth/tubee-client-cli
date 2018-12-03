@@ -1,30 +1,34 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resoures
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<GetOptions, GetArgs>('workflows <namespace> <collection> <endpoint> [name]')
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<GetOptions, GetArgs>('workflows [namespace] [collection] [endpoint] [name]')
       .alias('wf')
       .description('Get workflows')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Workflows', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Workflows', this.optparse.parent.parsedOpts);
-
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchWorkflows(
+        var request = this.api.watchWorkflows(
           args.namespace,
           args.collection,
           args.endpoint,
@@ -32,7 +36,7 @@ export default class Get extends AbstractGet {
         );
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchWorkflows(
+        var request = this.api.watchWorkflows(
           args.namespace,
           args.collection,
           args.endpoint,
@@ -42,7 +46,7 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await category.getWorkflow(
+        var response = await this.api.getWorkflow(
           args.namespace,
           args.collection,
           args.endpoint,
@@ -51,7 +55,7 @@ export default class Get extends AbstractGet {
         );
         this.getObjects(response, opts);
       } else {
-        var response = await category.getWorkflows(
+        var response = await this.api.getWorkflows(
           args.namespace,
           args.collection,
           args.endpoint,

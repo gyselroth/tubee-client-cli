@@ -27,7 +27,6 @@ const map = {
   'Workflow': Workflows,
   'Secret': Secrets,
   'User': Users,
-  'Job': Jobs,
 };
 
 export interface CreateOptions {

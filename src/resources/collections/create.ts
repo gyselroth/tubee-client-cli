@@ -37,6 +37,6 @@ export default class Create extends AbstractCreate {
   public create(resource) {
     var namespace = resource.namespace;
     delete resource.namespace;
-    return this.api.addCollection(args.namespace, resource);
+    return this.api.addCollection(namespace, resource);
   }
 }

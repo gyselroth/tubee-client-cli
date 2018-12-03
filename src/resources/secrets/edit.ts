@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { EditOptions, EditArgs } from '../../operations/edit';
 import AbstractEdit from '../abstract.edit';
 
@@ -8,28 +10,30 @@ export default class Edit extends AbstractEdit {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<EditOptions, EditArgs>('secrets [name]')
       .alias('ar')
       .description('Edit secrets')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Secrets', optparse.parent.parsedOpts);
+        var instance = new Edit(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Secrets', this.optparse.parent.parsedOpts);
-
     if (args.name) {
-      var response = await api.getSecret(args.name, this.getFields(opts));
+      var response = await this.api.getSecret(args.name, this.getFields(opts));
     } else {
-      var response = await api.getSecrets(...this.getQueryOptions(opts, args));
+      var response = await this.api.getSecrets(...this.getQueryOptions(opts, args));
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await api.updateSecret(name, patch);
+      return await this.api.updateSecret(name, patch);
     });
   }
 }

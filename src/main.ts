@@ -17,7 +17,7 @@ const map = [
   Explain,
   Delete,
   Sync,
-  //Apply
+  Apply
 ];
 
 export interface RootOptions {

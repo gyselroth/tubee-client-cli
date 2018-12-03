@@ -18,7 +18,7 @@ import Secrets from '../resources/secrets/get';
 import Users from '../resources/users/get';
 
 const map = [
-  /*AccessRoles,
+  AccessRoles,
   AccessRules,
   Namespaces,
   Collections,
@@ -32,8 +32,7 @@ const map = [
   Processes,
   Workflows,
   Secrets,
-  Users,*/
-  Jobs
+  Users,
 ];
 
 export interface GetOptions {

@@ -45,7 +45,7 @@ export default class Delete {
     let remote = optparse.subCommand<DeleteOptions, DeleteArgs>('delete').description('Delete resources');
 
     for (let resource of map) {
-      resourece.applyOptions(remote, client);
+      resource.applyOptions(remote, client);
     }
   }
 }

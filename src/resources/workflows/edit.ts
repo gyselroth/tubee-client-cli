@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { EditOptions, EditArgs } from '../../operations/edit';
 import AbstractEdit from '../abstract.edit';
 
@@ -8,22 +10,24 @@ export default class Edit extends AbstractEdit {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<EditOptions, EditArgs>('workflows <namespace> <collection> <endpoint> [name]')
+  public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<EditOptions, EditArgs>('workflows [namespace] [collection] [endpoint] [name]')
       .alias('wf')
       .description('Edit workflows')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Workflows', optparse.parent.parsedOpts);
+        var instance = new Edit(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Workflows', this.optparse.parent.parsedOpts);
-
     if (args.name) {
-      var response = await api.getWorkflow(
+      var response = await this.api.getWorkflow(
         args.namespace,
         args.collection,
         args.endpoint,
@@ -31,7 +35,7 @@ export default class Edit extends AbstractEdit {
         this.getFields(opts),
       );
     } else {
-      var response = await api.getWorkflows(
+      var response = await this.api.getWorkflows(
         args.namespace,
         args.collection,
         args.endpoint,
@@ -40,7 +44,7 @@ export default class Edit extends AbstractEdit {
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await api.updateWorkflow(args.namespace, args.collection, args.endpoint, name, patch);
+      return await this.api.updateWorkflow(args.namespace, args.collection, args.endpoint, name, patch);
     });
   }
 }

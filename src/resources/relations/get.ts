@@ -1,30 +1,34 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<GetOptions, GetArgs>('relations <namespace> <collection> <object> [name]')
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<GetOptions, GetArgs>('relations [namespace] [collection] [name]')
       .alias('re')
       .description('Get data object relations')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Data', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Data', this.optparse.parent.parsedOpts);
-
     if (opts.watch) {
       if (args.name) {
-        var request = category.watchObjectRelatives(
+        var request = this.api.watchObjectRelatives(
           args.namespace,
           args.collection,
           args.object,
@@ -33,7 +37,7 @@ export default class Get extends AbstractGet {
         );
         this.watchObjects(request, opts);
       } else {
-        var request = category.watchObjectRelative(
+        var request = this.api.watchObjectRelative(
           args.namespace,
           args.collection,
           args.name,
@@ -43,7 +47,7 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await category.getObjectRelative(
+        var response = await this.api.getObjectRelative(
           args.namespace,
           args.collection,
           args.object,
@@ -52,7 +56,7 @@ export default class Get extends AbstractGet {
         );
         this.getObjects(response, opts);
       } else {
-        var response = await category.getObjectRelatives(
+        var response = await this.api.getObjectRelatives(
           args.namespace,
           args.collection,
           args.object,

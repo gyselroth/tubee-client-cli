@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { CreateOptions, CreateArgs } from '../../operations/create';
 import AbstractCreate from '../abstract.create';
 
@@ -8,27 +10,37 @@ export default class Create extends AbstractCreate {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<CreateOptions, CreateArgs>('relations [namespace] [collection] [name]')
       .alias('re')
       .description('Create new data object relations')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Data', optparse.parent.parsedOpts);
+        var instance = new Create(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Data', this.optparse.parent.parsedOpts);
-
     this.createObjects('object-relative', args, opts, async resource => {
+      return await this.create(resource);
+    });
+  }
+
+  /**
+   * Create
+   */
+  public create(resource) {
       let namespace = resource.namespace;
       delete resource.namespace;
       let collection = resource.collection;
       delete resource.collection;
 
-      return await api.addObjectRelative(namespace, collection, resource);
-    });
+      return this.api.addObjectRelative(namespace, collection, resource);
+   
   }
 }

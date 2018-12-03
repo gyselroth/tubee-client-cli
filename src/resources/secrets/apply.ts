@@ -9,15 +9,13 @@ export default class Apply extends AbstractApply {
    * Apply
    */
   public async apply(resource) {
-    var api = await this.client.factory('Secrets', this.optparse.parent.parsedOpts);
-    
-    return api.getSecret(resource.name).then((response) => {
+    return this.api.getSecret(resource.name).then((response) => {
       let to = resource;
       let from = response.body;
       let patch = jsonpatch.compare(to, from);
-      return api.updateSecret(resource.name, patch);  
+      return this.api.updateSecret(resource.name, patch);  
     }).catch((error) => {
-      return api.addSecret(resource);  
+      return this.api.addSecret(resource);  
     })
   }
 }

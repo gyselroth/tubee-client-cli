@@ -34,7 +34,7 @@ export default class Create extends AbstractCreate {
   /**
    * Create
    */
-  public create() {
+  public create(resource) {
     return this.api.addNamespace(resource);
   }
 }
