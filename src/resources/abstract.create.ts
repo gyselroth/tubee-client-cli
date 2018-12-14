@@ -11,6 +11,7 @@ const specPath = 'node_modules/@gyselroth/tubee-sdk-node/swagger.yml';
 const randomstring = require('randomstring');
 const os = require('os');
 const fspath = require('path');
+const merge = require('lodash.merge');
 
 /**
  * Create resources
@@ -70,24 +71,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);
         } else if (api.definitions[resourceType]) {
-          let resourceDefinition = api.definitions[resourceType].allOf[0].allOf[0].properties;
-          body +=
-            'name: ' +
-            (resources.name || '') +
-            '#<' +
-            resourceDefinition.name.type +
-            '>' +
-            ' ' +
-            resourceDefinition.name.description +
-            '\n';
-
-          for (let field in resources) {
-            if (resources[field] != undefined) {
-              body += field + ': ' + resources[field] + '\n';
-            }
-          }
-
-          body += this.createTemplate(api.definitions[resourceType].allOf[1].properties);
+          body = this.createTemplate(this.merge(api.definitions[resourceType]).properties);
         }
 
         await fs.writeFile(path, body, function(err) {
@@ -117,6 +101,26 @@ export default abstract class AbstractCreate extends AbstractOperation {
   }
 
   /**
+   * Swagger perse
+   */
+  protected merge(definition) {
+    if(!definition.allOf) {
+      return definition;
+    } 
+
+    var result = {};
+    for(let resource of definition.allOf) {
+      if(resource.allOf) {
+        result = merge(result, this.merge(resource));
+      } else {
+        result = merge(result, resource); 
+      }
+    }
+
+    return result;
+  }
+
+  /**
    * Create resource template from openapi specs
    */
   protected createTemplate(definition, depth = 0) {
@@ -127,19 +131,31 @@ export default abstract class AbstractCreate extends AbstractOperation {
         ''.padStart(depth, ' ') +
         attr +
         ': ' +
-        (definition[attr].default || '') +
-        '#<' +
+        (definition[attr].default || null) +
+        ' #<' +
         definition[attr].type +
+        this.parseEnum(definition[attr]) +
         '> ' +
         definition[attr].description +
         '\n';
-
-      if (definition.type == 'object') {
-        body += this.createTemplate(definition[attr].properties, depth + 4);
+      
+      if (definition[attr].type == 'object' || !definition[attr].type && definition[attr].properties) {
+        body += this.createTemplate(definition[attr].properties, depth + 2);
       }
     }
 
     return body;
+  }
+
+  /**
+   * Parse enum list
+   */
+  protected parseEnum(definition): string {
+    if(definition.enum) {
+      return ' ['+definition.enum.join(',')+']';
+    }
+
+    return '';
   }
 
   /**
