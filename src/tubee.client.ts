@@ -1,4 +1,4 @@
-const api = require('@gyselroth/tubee-sdk-node');
+const { v1, auth } = require('@gyselroth/tubee-sdk-node');
 const yaml = require('js-yaml');
 const fs = require('fs');
 const keytar = require('keytar');
@@ -55,12 +55,12 @@ export default class TubeeClient {
 
     var server = config.url || 'https://localhost:8090';
     var password = (await keytar.getPassword('tubee', config.username || 'admin')) || 'admin';
-    var client = new api[category + 'Api'](server + '/api/v1');
-    var auth = new api.HttpBasicAuth();
-    auth.username = config.username || 'admin';
-    auth.password = password;
+    var client = new v1[category + 'Api'](server + '/api/v1');
+    var basic = new auth.basic();
+    basic.username = config.username || 'admin';
+    basic.password = password;
 
-    client.setDefaultAuthentication(auth);
+    client.setDefaultAuthentication(basic);
     return client;
   }
 }
