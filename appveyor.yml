@@ -23,5 +23,6 @@ deploy:
     secure: jCxEiL6iLQGMyFkFptVvRACVSMy4HC9RzzLPzl1FCQsj9JNZObW+vnhYuP0tnfPy
   artifact: /dist\/.*\.exe/
   draft: false
+  force_update: true
   on:
     appveyor_repo_tag: true
