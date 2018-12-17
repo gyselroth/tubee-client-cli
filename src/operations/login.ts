@@ -7,7 +7,7 @@ import { Config, configPath, keytarPath } from '../tubee.client';
 const keytar = require('keytar');
 keytar.setPath(keytarPath);
 const path = require('path');
-const api = require('@gyselroth/tubee-sdk-node');
+const { v1, auth } = require('@gyselroth/tubee-sdk-node');
 const prompt = require('password-prompt');
 
 export interface LoginOptions {
@@ -66,13 +66,12 @@ export default class Login {
         }
 
         var server = config.url || 'https://localhost:8090';
-        var client = new api['DefaultApi'](server + '/api/v1');
-        var auth = new api.HttpBasicAuth();
-        auth.username = config.username || 'admin';
-        auth.password = opts.password[0];
-        client.setDefaultAuthentication(auth);
+        var client = new v1['DefaultApi'](server + '/api/v1');
+        var basic = new auth.basic();
+        basic.username = config.username || 'admin';
+        basic.password = opts.password[0];
+        client.setDefaultAuthentication(basic);
         var result = await client.root();
-
         if (result.response.body.name !== 'tubee') {
           throw new Error('server is not a tubee server');
         }
