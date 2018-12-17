@@ -60,14 +60,14 @@ export default class Get {
 
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
-      sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json)');
+      sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json,cc=field:my.field). Using cc you may request a customized list with the fields you want.');
       sub.option('-w, --watch', 'Monitor updates in realtime.');
       sub.option('--json-query <name>', 'Specify an advanced json query');
       sub.option(
         '-q, --field-selector <name>',
         'Specify a comma separated field based query (Example: foo=bar,bar=foo)',
       );
-      sub.option('-H, --history', 'Will fetch the histroy of the requested resource');
+      sub.option('-r, --history', 'Will fetch the histroy of the requested resource');
       sub.option(
         '-d, --diff <name>',
         'Compare current version to another version (You will need to expose an environment variable DIFFTOOL (Example: DIFFTOOL=vimdiff tubeectl))',

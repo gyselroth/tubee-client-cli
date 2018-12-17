@@ -14,6 +14,7 @@ const fspath = require('path');
 const difftool = process.env.DIFFTOOL || 'diff';
 const child_process = require('child_process');
 const randomstring = require('randomstring');
+const objectPath = require("object-path");
 
 export const tableConfig = {
   border: getBorderCharacters('ramac'),
@@ -28,6 +29,7 @@ export const tableConfig = {
  */
 export default abstract class AbstractGet extends AbstractOperation {
   protected api;
+
   /**
    * Construct
    */
@@ -43,9 +45,16 @@ export default abstract class AbstractGet extends AbstractOperation {
     if (opts.diff[0]) {
       return this.compare(response.response.toJSON().body, opts);
     }
+    
+    var output;
+    if(opts.output[0]) {
+      output = opts.output[0].split('=')[0];
+    } else {
+      output = opts.output[0]; 
+    }
 
     var body: string;
-    switch (opts.output[0]) {
+    switch (output) {
       case 'json':
         body = JSON.stringify(response.response.toJSON().body, null, 2);
         console.log(body);
@@ -54,6 +63,30 @@ export default abstract class AbstractGet extends AbstractOperation {
         body = yaml.dump(response.response.toJSON().body);
         console.log(body);
         break;
+      case 'cc': 
+        fields = [];
+        var values = [];
+        var cols = opts.output[0].split('=')[1];
+        
+        for(let col of cols.split(',')) {
+          fields.push(col.split(':')[0]);
+          values.push(col.split(':')[1]);
+        }
+    
+        callback = resource => {
+          var result = [];
+          for(let value of values) {
+            value = objectPath.get(resource, value);
+            if(value === undefined) {
+              result.push('<none>');
+            } else {
+              result.push(value);
+            }
+          }
+          
+          return result;      
+        }
+      
       case 'list':
       default:
         if (callback === null) {

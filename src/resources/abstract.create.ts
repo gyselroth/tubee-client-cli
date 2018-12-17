@@ -11,7 +11,7 @@ const specPath = 'node_modules/@gyselroth/tubee-sdk-node/swagger.yml';
 const randomstring = require('randomstring');
 const os = require('os');
 const fspath = require('path');
-const merge = require('lodash.merge');
+import { mergeAllOf } from '../swagger';
 
 /**
  * Create resources
@@ -35,7 +35,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var path: string;
 
     if(opts.file[0]) {
-      return this.openEditor(callback, opts.file[0], opts.input[0]);
+      return this.openEditor(opts.file[0], opts.input[0]);
     } else if (opts.stdin) {
       var content: string = '';
       process.stdin.resume();
@@ -58,7 +58,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           }
         });
 
-        return this.openEditor(callback, path, opts.input[0]);
+        return this.openEditor(path, opts.input[0]);
       });
     } else if (opts.fromTemplate.length > 0) {
       var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
@@ -71,7 +71,13 @@ export default abstract class AbstractCreate extends AbstractOperation {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);
         } else if (api.definitions[resourceType]) {
-          body = this.createTemplate(this.merge(api.definitions[resourceType]).properties);
+          for (let field in resources) {
+            if (resources[field] != undefined) {
+              body += field + ': ' + resources[field] + '\n';
+            }
+          }
+
+          body += this.createTemplate(mergeAllOf(api.definitions[resourceType]).properties);
         }
 
         await fs.writeFile(path, body, function(err) {
@@ -80,7 +86,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           }
         });
 
-        return this.openEditor(callback, path, opts.input[0]);
+        return this.openEditor(path, opts.input[0]);
       });
     } else {
       for (let field in resources) {
@@ -96,28 +102,8 @@ export default abstract class AbstractCreate extends AbstractOperation {
         }
       });
 
-      return this.openEditor(callback, path, opts.input[0]);
+      return this.openEditor(path, opts.input[0]);
     }
-  }
-
-  /**
-   * Swagger perse
-   */
-  protected merge(definition) {
-    if(!definition.allOf) {
-      return definition;
-    } 
-
-    var result = {};
-    for(let resource of definition.allOf) {
-      if(resource.allOf) {
-        result = merge(result, this.merge(resource));
-      } else {
-        result = merge(result, resource); 
-      }
-    }
-
-    return result;
   }
 
   /**
@@ -127,24 +113,43 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
 
     for (let attr in definition) {
-      body +=
-        ''.padStart(depth, ' ') +
-        attr +
-        ': ' +
-        (definition[attr].default || null) +
-        ' #<' +
-        definition[attr].type +
-        this.parseEnum(definition[attr]) +
-        '> ' +
-        definition[attr].description +
-        '\n';
-      
       if (definition[attr].type == 'object' || !definition[attr].type && definition[attr].properties) {
+        body +=
+          ''.padStart(depth, ' ') +
+          attr +
+          ':\n';
         body += this.createTemplate(definition[attr].properties, depth + 2);
+      } else {
+        body +=
+          ''.padStart(depth, ' ') +
+          attr +
+          ': ' +
+          (this.quote(definition[attr].default) || null) +
+          ' #<' +
+          definition[attr].type +
+          this.parseEnum(definition[attr]) +
+          '> ' +
+          definition[attr].description +
+          '\n';
       }
     }
 
     return body;
+  }
+
+  /**
+   * Quote string if required
+   */
+  protected quote(value) {
+    if(typeof(value) == 'string') {
+      if(value == '"' || value == '\\') {
+        value = '\\'+value;
+      }
+
+      return '"'+value+'"';
+    }   
+
+    return value;
   }
 
   /**
@@ -161,7 +166,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
   /**
    * Open editor to edit resources
    */
-  protected async openEditor(callback, path: string, input: string, existing?: string) {
+  protected async openEditor(path: string, input: string, existing?: string) {
     return new Promise(async (resolve, reject) => {
       var child = child_process.spawn(editor, [path], {
         stdio: 'inherit',
@@ -184,7 +189,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           }
           new_hash = JSON.stringify(update);
 
-          await this.applyObjects(update, callback).catch(response => {
+          await this.applyObjects(update).catch(response => {
             if (response.response) {
               throw new Error(response.response.body.error + ' - ' + response.response.body.message);
             } else {
@@ -206,23 +211,28 @@ export default abstract class AbstractCreate extends AbstractOperation {
             }
           });
 
-          this.openEditor(callback, path, input, new_hash);
+          this.openEditor(path, input, new_hash);
         }
       });
     });
   }
 
   /**
+   * Create
+   */
+  abstract async create(resource);
+
+  /**
    * Update Objects
    */
-  protected async applyObjects(update, callback) {
+  protected async applyObjects(update) {
     if (update instanceof Array) {
       for (let resource of update) {
-        let result = await callback(resource);
+        let result = await this.create(resource);
         console.log('Created new resource %s', resource.name);
       }
     } else if (update instanceof Object) {
-      return await this.applyObjects([update], callback);
+      return await this.applyObjects([update]);
     } else {
       console.log('Invalid resource definition, neither a list of resources nor a single valid resource');
     }
