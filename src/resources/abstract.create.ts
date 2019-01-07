@@ -33,7 +33,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
   public async createObjects(resourceType, resources, opts, callback) {
     var body: string = '';
     var path: string;
-
+    
     if(opts.file[0]) {
       return this.openEditor(opts.file[0], opts.input[0]);
     } else if (opts.stdin) {
@@ -66,7 +66,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
       if (opts.fromTemplate[0] !== '') {
         resourceType = opts.fromTemplate[0];
       }
-
+      
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);
@@ -79,7 +79,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
 
           body += this.createTemplate(mergeAllOf(api.definitions[resourceType]).properties);
         }
-
+        
         await fs.writeFile(path, body, function(err) {
           if (err) {
             return console.log(err);
@@ -113,18 +113,19 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
 
     for (let attr in definition) {
-      if (definition[attr].type == 'object' || !definition[attr].type && definition[attr].properties) {
+      if (definition[attr].type == 'object' && definition[attr].properties) {
         body +=
           ''.padStart(depth, ' ') +
           attr +
           ':\n';
+
         body += this.createTemplate(definition[attr].properties, depth + 2);
       } else {
         body +=
           ''.padStart(depth, ' ') +
           attr +
           ': ' +
-          (this.quote(definition[attr].default) || null) +
+          (this.quote(definition[attr])) +
           ' #<' +
           definition[attr].type +
           this.parseEnum(definition[attr]) +
@@ -140,7 +141,17 @@ export default abstract class AbstractCreate extends AbstractOperation {
   /**
    * Quote string if required
    */
-  protected quote(value) {
+  protected quote(property) {
+    if(property.type === 'object') {
+      return '{}';
+    }
+
+    if(property.default === undefined) {
+      return null;
+    }
+
+    var value = property.default;
+
     if(typeof(value) == 'string') {
       if(value == '"' || value == '\\') {
         value = '\\'+value;
@@ -149,7 +160,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
       return '"'+value+'"';
     }   
 
-    return value;
+    return JSON.stringify(value);
   }
 
   /**

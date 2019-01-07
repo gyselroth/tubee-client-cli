@@ -16,8 +16,9 @@ export default class Apply extends AbstractApply {
     
     return this.api.getEndpoint(namespace, collection, resource.name).then((response) => {
       let to = resource;
-      let from = response.body;
+      let from = response.response.toJSON().body;
       let patch = jsonpatch.compare(to, from);
+
       return this.api.updateEndpoint(namespace, collection, resource.name, patch);  
     }).catch((error) => {
       return this.api.addEndpoint(namespace, collection, resource);  

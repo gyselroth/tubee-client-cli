@@ -74,7 +74,7 @@ export default class Create {
         .option('-i, --input <name>', 'Define the input format (One of yaml,json)')
         .option('-f, --file <name>', 'File to read from')
         .option('-s, --stdin', 'Read from stdin')
-        .option('--from-template [name]', 'Opens the editor with a predefined template');
+        .option('-t, --from-template [name]', 'Opens the editor with a predefined template');
     }
   }
 
@@ -82,20 +82,21 @@ export default class Create {
     var body = fs.readFileSync(opts.file[0]);
     var input = 'yaml';
     var resources;
-        try {
-          switch (input) {
-            case 'json':
-               resources = JSON.parse(body);
-              break;
 
-            case 'yaml':
-            default:
-              resources = yaml.safeLoad(body);
-          }
+    try {
+      switch (input) {
+        case 'json':
+           resources = JSON.parse(body);
+          break;
 
-          this.create(resources);
-        } catch (error) {
-        }
+        case 'yaml':
+        default:
+          resources = yaml.safeLoad(body);
+      }
+
+      this.create(resources);
+    } catch (error) {
+    }
   }
 
   protected async create(resources) {

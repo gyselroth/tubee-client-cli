@@ -12,7 +12,7 @@ export default class Create extends AbstractCreate {
    */
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<CreateOptions, CreateArgs>('jobs [name]')
+      .subCommand<CreateOptions, CreateArgs>('jobs [namespace] [name]')
       .description('Create new synchronization jobs')
       .action(async (opts, args, rest) => {
         var api = await client.factory('Jobs', optparse.parent.parsedOpts);
@@ -25,7 +25,7 @@ export default class Create extends AbstractCreate {
    * Execute
    */
   public async execute(opts, args, rest) {
-    this.createObjects('job', args, opts, async resource => {
+    this.createObjects('Job', args, opts, async resource => {
       return await this.create(resource);
     });
   }
@@ -34,6 +34,8 @@ export default class Create extends AbstractCreate {
    * Create
    */
   public create(resource) {
-    return this.api.addJob(resource);
+    var namespace = resource.namespace;
+    delete resource.namespace;
+    return this.api.addJob(namespace, resource);
   }
 }

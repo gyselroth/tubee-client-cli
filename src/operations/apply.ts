@@ -11,6 +11,7 @@ import Collections from '../resources/collections/apply';
 import DataObjects from '../resources/data-objects/apply';
 import Relations from '../resources/relations/apply';
 import Jobs from '../resources/jobs/apply';
+import Processes from '../resources/processes/apply';
 import Workflows from '../resources/workflows/apply';
 import Secrets from '../resources/secrets/apply';
 import Users from '../resources/users/apply';
@@ -27,7 +28,23 @@ const map = {
   'DataObjectRelation': Relations,
   'Workflow': Workflows,
   'Job': Jobs,
+  'Process': Processes,
 };
+
+const apiMap = {
+  'Namespace': 'Namespaces',
+  'Secret': 'Secrets',
+  'User': 'Users',
+  'AccessRole': 'AccessRoles',
+  'AccessRule': 'AccessRules',
+  'Collection': 'Collections',
+  'Endpoint': 'Endpoints',
+  'DataObject': 'DataObjects',
+  'DataObjectRelation': 'DataObjectRelations',
+  'Workflow': 'Workflows',
+  'Job': 'Jobs',
+  'Process': 'Jobs',
+}
 
 var priorities = [];
 var i=0;
@@ -63,7 +80,7 @@ export default class Apply {
     .action(async (opts, args, rest) => {
       var instances = {};
       for(let instance in map) {
-        var api = await client.factory(instance+'s', optparse.parsedOpts);
+        var api = await client.factory(apiMap[instance], optparse.parsedOpts);
         instances[instance] = new map[instance](api)
       }
 
@@ -137,6 +154,7 @@ export default class Apply {
         result.apply(resource).then(() => {
           console.log('%s <%s> updated', resource.kind, resource.name);
         }).catch((error) => {
+console.log(error);
           console.log('%s <%s> failed [%s: %s]', resource.kind, resource.name, error.response.body.error, error.response.body.message);
         });
       }

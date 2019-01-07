@@ -14,7 +14,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('processes [name]')
+      .subCommand<GetOptions, GetArgs>('processes <namespace> [name]')
       .alias('ps')
       .description('Get processes')
       .action(async (opts, args, rest) => {
@@ -30,9 +30,9 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchProcesses(...this.getQueryOptions(opts, args));
+        var request = this.api.watchProcesses(args.namespace, ...this.getQueryOptions(opts, args));
       } else {
-        var request = this.api.watchProcesses(...this.getQueryOptions(opts, args));
+        var request = this.api.watchProcesses(args.namespace, ...this.getQueryOptions(opts, args));
       }
 
       this.watchObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended'], resource => {
@@ -40,9 +40,9 @@ export default class Get extends AbstractGet {
       });
     } else {
       if (args.name) {
-        var response = await this.api.getProcess(this.getFields(opts));
+        var response = await this.api.getProcess(args.namespace, this.getFields(opts));
       } else {
-        var response = await this.api.getProcesses(...this.getQueryOptions(opts, args));
+        var response = await this.api.getProcesses(args.namespace, ...this.getQueryOptions(opts, args));
       }
 
       this.getObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended'], resource => {

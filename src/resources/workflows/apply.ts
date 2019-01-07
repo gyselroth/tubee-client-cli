@@ -18,11 +18,11 @@ export default class Apply extends AbstractApply {
     
     return this.api.getWorkflow(namespace, collection, endpoint, resource.name).then((response) => {
       let to = resource;
-      let from = response.body;
+      let from = response.response.toJSON().body;
       let patch = jsonpatch.compare(to, from);
       return this.api.updateWorkflow(namespace, collection, endpoint, resource.name, patch);  
     }).catch((error) => {
-      return this.api.addWorkflow(namespace, collection, resource);  
+      return this.api.addWorkflow(namespace, collection, endpoint, resource);  
     })
   }
 }

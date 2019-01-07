@@ -15,11 +15,11 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('job-logs <job> [name]')
+      .subCommand<GetOptions, GetArgs>('job-logs <namespace> <job> [name]')
       .alias('jl')
       .description('Get synchronization logs')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Logs', optparse.parent.parsedOpts);
+        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
         var instance = new Get(api);
         instance.execute(opts, args, rest);
       });
@@ -35,7 +35,6 @@ export default class Get extends AbstractGet {
           '%s %s %s',
           resource.data.created,
           Get.colorize(resource.data.level_name),
-          resource.data.this.api,
           resource.data.message,
         );
       }
@@ -57,7 +56,6 @@ export default class Get extends AbstractGet {
             '%s %s %s',
             data[1].created,
             Get.colorize(data[1].data.level_name),
-            data[1].data.this.api,
             data[1].data.message,
           );
         }),
@@ -93,18 +91,18 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchJobLogs(args.job, args.name, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchJobLogs(args.namespace, args.job, args.name, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = await this.api.watchJobLogs(args.job, ...this.getQueryOptions(opts, args));
+        var request = await this.api.watchJobLogs(args.namespace, args.job, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.log) {
-        var response = await this.api.getJobLog(args.job, args.name, this.getFields(opts));
+        var response = await this.api.getJobLog(args.namespace, args.job, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await this.api.getJobLogs(args.job, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getJobLogs(args.namespace, args.job, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

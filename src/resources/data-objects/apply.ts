@@ -14,13 +14,13 @@ export default class Apply extends AbstractApply {
     let collection = resource.collection;
     delete resource.collection;
     
-    return this.api.getDataObject(namespace, collection, resource.name).then((response) => {
+    return this.api.getObject(namespace, collection, resource.name).then((response) => {
       let to = resource;
-      let from = response.body;
+      let from = response.response.toJSON().body;
       let patch = jsonpatch.compare(to, from);
-      return this.api.updateDataObject(namespace, collection, resource.name, patch);  
+      return this.api.updateObject(namespace, collection, resource.name, patch);  
     }).catch((error) => {
-      return this.api.addDataObject(namespace, collection, resource);  
+      return this.api.addObject(namespace, collection, resource);  
     })
   }
 }

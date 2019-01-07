@@ -12,7 +12,7 @@ export default class Edit extends AbstractEdit {
    */
   public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<EditOptions, EditArgs>('jobs [name]')
+      .subCommand<EditOptions, EditArgs>('jobs <namespace> [name]')
       .description('Edit new synchronization jobs')
       .action(async (opts, args, rest) => {
         var api = await client.factory('Jobs', optparse.parent.parsedOpts);
@@ -32,7 +32,7 @@ export default class Edit extends AbstractEdit {
     }
 
     await this.editObjects(response, opts, async (name, patch) => {
-      return await this.api.updateJob(name, patch);
+      return await this.api.updateJob(args.namespace, name, patch);
     });
   }
 }

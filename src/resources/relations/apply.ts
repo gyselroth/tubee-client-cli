@@ -18,7 +18,7 @@ export default class Apply extends AbstractApply {
 
     return this.api.getRelative(namespace, collection, resource.name).then((response) => {
       let to = resource;
-      let from = response.body;
+      let from = response.response.toJSON().body;
       let patch = jsonpatch.compare(to, from);
       return this.api.updateRelative(namespace, collection, obj, resource.name, patch);  
     }).catch((error) => {

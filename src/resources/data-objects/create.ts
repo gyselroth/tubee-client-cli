@@ -40,6 +40,6 @@ export default class Create extends AbstractCreate {
     let collection = resource.collection;
     delete resource.collection;
 
-    return this.api.addDataObject(namespace, collection, resource);
+    return this.api.addObject(namespace, collection, resource);
   }
 }

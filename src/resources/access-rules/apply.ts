@@ -11,7 +11,7 @@ export default class Apply extends AbstractApply {
   public async apply(resource) {
     return this.api.getAccessRule(resource.name).then((response) => {
       let to = resource;
-      let from = response.body;
+      let from = response.response.toJSON().body;
       let patch = jsonpatch.compare(to, from);
       return this.api.updateAccessRule(resource.name, patch);  
     }).catch((error) => {

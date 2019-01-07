@@ -55,6 +55,7 @@ export default class Get extends AbstractGet {
           args.collection,
           ...this.getQueryOptions(opts, args),
         );
+
         this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Getd', 'Changed'], resource => {
           return [
             resource.name,

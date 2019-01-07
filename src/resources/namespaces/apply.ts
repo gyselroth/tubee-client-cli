@@ -11,7 +11,7 @@ export default class Apply extends AbstractApply {
   public async apply(resource) {
     return this.api.getNamespace(resource.name).then((response) => {
       let to = resource;
-      let from = response.body;
+      let from = response.response.toJSON().body;
       let patch = jsonpatch.compare(to, from);
       return this.api.updateNamespace(resource.name, patch);  
     }).catch((error) => {
