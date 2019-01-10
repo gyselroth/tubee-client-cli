@@ -11,13 +11,19 @@ export default class Apply extends AbstractApply {
   public async apply(resource) {
     let namespace = resource.namespace;
     delete resource.namespace;
-    
+    var update = false;
+
     return this.api.getCollection(namespace, resource.name).then((response) => {
+      update = true;
       let to = resource;
       let from = response.response.toJSON().body;
-      let patch = jsonpatch.compare(to, from);
+      let patch = jsonpatch.compare(from, to);
       return this.api.updateCollection(namespace, resource.name, patch);  
     }).catch((error) => {
+      if(update === true) {
+        throw error;
+      }
+
       return this.api.addCollection(namespace, resource);  
     })
   }

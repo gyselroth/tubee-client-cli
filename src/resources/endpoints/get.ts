@@ -34,7 +34,7 @@ export default class Get extends AbstractGet {
         this.watchObjects(request, opts);
       } else {
         var request = this.api.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
-        this.watchObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Getd', 'Changed'], resource => {
+        this.watchObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
           return [
             resource.name,
             resource.data.type,
@@ -48,25 +48,25 @@ export default class Get extends AbstractGet {
     } else {
       if (args.name) {
         var response = await this.api.getEndpoint(args.namespace, args.collection, args.name, this.getFields(opts));
-        this.getObjects(response, opts);
+        //this.getObjects(response, opts);
       } else {
         var response = await this.api.getEndpoints(
           args.namespace,
           args.collection,
           ...this.getQueryOptions(opts, args),
         );
-
-        this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Getd', 'Changed'], resource => {
-          return [
-            resource.name,
-            resource.data.type,
-            this.colorize(resource.status.available),
-            resource.version,
-            ta.ago(resource.changed),
-            ta.ago(resource.created),
-          ];
-        });
       }
+
+      this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
+        return [
+          resource.name,
+          resource.data.type,
+          this.colorize(resource.status.available),
+          resource.version,
+          ta.ago(resource.changed),
+          ta.ago(resource.created),
+        ];
+      });
     }
   }
 

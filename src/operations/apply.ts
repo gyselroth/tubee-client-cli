@@ -15,6 +15,7 @@ import Processes from '../resources/processes/apply';
 import Workflows from '../resources/workflows/apply';
 import Secrets from '../resources/secrets/apply';
 import Users from '../resources/users/apply';
+const colors = require('colors');
 
 const map = {
   'Namespace': Namespaces,
@@ -151,11 +152,10 @@ export default class Apply {
           continue;
         }
 
-        result.apply(resource).then(() => {
-          console.log('%s <%s> updated', resource.kind, resource.name);
+        result.apply(resource).then((response) => {
+          console.log('[%s] %s <%s> updated', colors.green.bold('OK'), resource.kind, resource.name);
         }).catch((error) => {
-console.log(error);
-          console.log('%s <%s> failed [%s: %s]', resource.kind, resource.name, error.response.body.error, error.response.body.message);
+          console.log('[%s] %s <%s> failed [%s: %s]', colors.red.bold('ERROR'), resource.kind, resource.name, error.response.body.error, error.response.body.message);
         });
       }
     } else if (resources instanceof Object) {

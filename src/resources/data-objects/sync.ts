@@ -33,12 +33,11 @@ export default class Sync extends AbstractSync {
 
     var resource = {
       data: {
-        namespaces: [args.namespace],
         collections: [args.collection],
         filter: rest,
       },
     };
 
-    this.addProcess(resource, opts, args, rest);
+    this.addProcess(args.namespace, resource, opts, args, rest);
   }
 }

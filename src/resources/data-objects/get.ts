@@ -13,6 +13,7 @@ export default class Get extends AbstractGet {
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
       .subCommand<GetOptions, GetArgs>('data-objects <namespace> <collection> [name]')
+      .option('-r, --relation [name]', 'Request object relations')
       .alias('do')
       .description('Get data objects')
       .action(async (opts, args, rest) => {
@@ -36,7 +37,19 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        if (opts.history || opts.diff[0]) {
+        if(opts.relation.length > 0) {
+          if(opts.relation[0] === '') {
+            var response = await this.api.getObjectRelations(
+              args.namespace,
+              args.collection,
+              args.name,
+              this.getFields(opts),
+            );
+            this.getObjects(response, opts);
+          } else {
+  
+          }
+        } else if (opts.history || opts.diff[0]) {
           var response = await this.api.getObjectHistory(
             args.namespace,
             args.collection,

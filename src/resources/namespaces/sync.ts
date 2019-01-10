@@ -12,7 +12,7 @@ export default class Sync extends AbstractSync {
    */
   public static applyOptions(optparse: Command<SyncOptions, SyncArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<SyncOptions, SyncArgs>('namespaces [name]')
+      .subCommand<SyncOptions, SyncArgs>('namespaces <name>')
       .alias('ns')
       .description('Sync namespaces')
       .action(async (opts, args, rest) => {
@@ -32,12 +32,11 @@ export default class Sync extends AbstractSync {
 
     var resource = {
       data: {
-        namespaces: rest || ['*'],
         collections: ['*'],
         endpoints: ['*'],
       },
     };
 
-    this.addProcess(resource, opts, args, rest);
+    this.addProcess(args.namespace, resource, opts, args, rest);
   }
 }

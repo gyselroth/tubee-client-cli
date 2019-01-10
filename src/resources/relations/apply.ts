@@ -11,18 +11,20 @@ export default class Apply extends AbstractApply {
   public async apply(resource) {
     let namespace = resource.namespace;
     delete resource.namespace;
-    let collection = resource.collection;
-    delete resource.collection;
-    let obj = resource.object;
-    delete resource.object;   
+    var update = false;
 
-    return this.api.getRelative(namespace, collection, resource.name).then((response) => {
+    return this.api.getRelation(namespace, resource.name).then((response) => {
+      update = true;
       let to = resource;
       let from = response.response.toJSON().body;
-      let patch = jsonpatch.compare(to, from);
-      return this.api.updateRelative(namespace, collection, obj, resource.name, patch);  
+      let patch = jsonpatch.compare(from, to);
+      return this.api.updateRelation(namespace, resource.name, patch);  
     }).catch((error) => {
-      return this.api.addRelative(namespace, collection, obj, resource);  
-    })
+      if(update === true) {
+        throw error;
+      }
+      
+      return this.api.addRelation(namespace, resource); 
+    });
   }
 }

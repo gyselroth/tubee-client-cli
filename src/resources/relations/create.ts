@@ -12,7 +12,7 @@ export default class Create extends AbstractCreate {
    */
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<CreateOptions, CreateArgs>('relations [namespace] [collection] [name]')
+      .subCommand<CreateOptions, CreateArgs>('relations <namespace> [name]')
       .alias('re')
       .description('Create new data object relations')
       .action(async (opts, args, rest) => {
@@ -26,7 +26,7 @@ export default class Create extends AbstractCreate {
    * Execute
    */
   public async execute(opts, args, rest) {
-    this.createObjects('object-relative', args, opts, async resource => {
+    this.createObjects('DataObjectRelation', args, opts, async resource => {
       return await this.create(resource);
     });
   }
@@ -35,12 +35,9 @@ export default class Create extends AbstractCreate {
    * Create
    */
   public create(resource) {
-      let namespace = resource.namespace;
-      delete resource.namespace;
-      let collection = resource.collection;
-      delete resource.collection;
+    let namespace = resource.namespace;
+    delete resource.namespace;
 
-      return this.api.addObjectRelative(namespace, collection, resource);
-   
+    return this.api.addObjectRelation(namespace, resource);
   }
 }

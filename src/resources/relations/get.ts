@@ -12,7 +12,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('relations [namespace] [collection] [name]')
+      .subCommand<GetOptions, GetArgs>('relations <namespace> [name]')
       .alias('re')
       .description('Get data object relations')
       .action(async (opts, args, rest) => {
@@ -28,18 +28,15 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchObjectRelatives(
+        var request = this.api.watchRelations(
           args.namespace,
-          args.collection,
-          args.object,
           args.name,
           ...this.getQueryOptions(opts, args),
         );
         this.watchObjects(request, opts);
       } else {
-        var request = this.api.watchObjectRelative(
+        var request = this.api.watchRelations(
           args.namespace,
-          args.collection,
           args.name,
           ...this.getQueryOptions(opts, args),
         );
@@ -47,19 +44,15 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await this.api.getObjectRelative(
+        var response = await this.api.getRelation(
           args.namespace,
-          args.collection,
-          args.object,
           args.name,
           this.getFields(opts),
         );
         this.getObjects(response, opts);
       } else {
-        var response = await this.api.getObjectRelatives(
+        var response = await this.api.getRelations(
           args.namespace,
-          args.collection,
-          args.object,
           ...this.getQueryOptions(opts, args),
         );
         this.getObjects(response, opts);

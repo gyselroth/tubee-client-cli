@@ -21,11 +21,11 @@ export default abstract class AbstractSync {
   /**
    * Add process
    */
-  protected async addProcess(resource, opts, args, rest) {
+  protected async addProcess(namespace, resource, opts, args, rest) {
     resource.data.ignore = !opts.abortOnError;
     resource.data.log_level = opts.level[0];
     resource.data.simulate = opts.simulate;
-    var result = await this.api.addProcess(resource);
+    var result = await this.api.addProcess(namespace, resource);
     this.sync(result, opts);
   }
 
@@ -34,10 +34,10 @@ export default abstract class AbstractSync {
    */
   protected async sync(result, opts: SyncOptions) {
     console.log('created new process %s', result.body.id);
-
+    
     if (opts.follow) {
       console.log('\n');
-      var request = this.api.watchProcessLogs(result.body.id);
+      var request = this.api.watchProcessLogs(result.body.namespace, result.body.id);
       this.watchObjects(request, opts);
     }
   }

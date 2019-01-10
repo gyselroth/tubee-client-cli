@@ -52,9 +52,9 @@ export default class TubeeClient {
     if (config.allowSelfSigned) {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }
-
+    
     var server = config.url || 'https://localhost:8090';
-    var password = (await keytar.getPassword('tubee', config.username || 'admin')) || 'admin';
+    var password = (await keytar.getPassword('tubee', config.username || 'admin'));
     var client = new v1[category + 'Api'](server + '/api/v1');
     var basic = new auth.basic();
     basic.username = config.username || 'admin';

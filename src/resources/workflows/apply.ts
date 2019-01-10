@@ -16,12 +16,18 @@ export default class Apply extends AbstractApply {
     let endpoint = resource.endpoint;
     delete resource.endpoint;
     
-    return this.api.getWorkflow(namespace, collection, endpoint, resource.name).then((response) => {
+    var update = false;
+    return this.api.getWorkflow(namespace, collection, endpoint, resource.name).then(async (response) => {
+      update = true;
       let to = resource;
       let from = response.response.toJSON().body;
-      let patch = jsonpatch.compare(to, from);
-      return this.api.updateWorkflow(namespace, collection, endpoint, resource.name, patch);  
+      let patch = jsonpatch.compare(from, to);
+      return await this.api.updateWorkflow(namespace, collection, endpoint, resource.name, patch);  
     }).catch((error) => {
+      if(update === true) {
+        throw error;
+      }
+
       return this.api.addWorkflow(namespace, collection, endpoint, resource);  
     })
   }

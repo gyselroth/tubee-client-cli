@@ -67,10 +67,10 @@ export default class Get {
         '-q, --field-selector <name>',
         'Specify a comma separated field based query (Example: foo=bar,bar=foo)',
       );
-      sub.option('-r, --history', 'Will fetch the histroy of the requested resource');
+      sub.option('-v, --history', 'Fetch the history of the requested resource');
       sub.option(
         '-d, --diff <name>',
-        'Compare current version to another version (You will need to expose an environment variable DIFFTOOL (Example: DIFFTOOL=vimdiff tubeectl))',
+        'Compare current version to another version (You will need to expose an env variable named DIFFTOOL (Example: DIFFTOOL=vimdiff tubectl))',
       );
       sub.option(
         '--field-filter <name>',
