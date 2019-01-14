@@ -22,7 +22,6 @@ export default class Apply extends AbstractApply {
       let patch = jsonpatch.compare(from, to);
       return this.api.updateObject(namespace, collection, resource.name, patch);  
     }).catch((error) => {
-console.log(error);
       if(update === true) {
         throw error;
       }

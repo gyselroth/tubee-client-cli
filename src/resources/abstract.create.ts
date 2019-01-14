@@ -89,6 +89,8 @@ export default abstract class AbstractCreate extends AbstractOperation {
         return this.openEditor(path, opts.input[0]);
       });
     } else {
+      body += "kind: "+resourceType+'\n';
+
       for (let field in resources) {
         if (resources[field] != undefined) {
           body += field + ': ' + resources[field] + '\n';

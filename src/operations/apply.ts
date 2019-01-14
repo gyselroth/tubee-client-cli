@@ -16,6 +16,7 @@ import Workflows from '../resources/workflows/apply';
 import Secrets from '../resources/secrets/apply';
 import Users from '../resources/users/apply';
 const colors = require('colors');
+import {getFile} from '../loader';
 
 const map = {
   'Namespace': Namespaces,
@@ -105,8 +106,8 @@ export default class Apply {
   /**
    * Execute
    */
-  public execute(opts) {
-    var body = fs.readFileSync(opts.file[0]);
+  public async execute(opts) {
+    var body: string = await getFile(opts.file[0]);
     var input = 'yaml';
     var resources;
     

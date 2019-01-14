@@ -11,22 +11,40 @@ import DataObjects from '../resources/data-objects/create';
 import Relations from '../resources/relations/create';
 import Endpoints from '../resources/endpoints/create';
 import Jobs from '../resources/jobs/create';
+import Processes from '../resources/processes/create';
 import Workflows from '../resources/workflows/create';
 import Secrets from '../resources/secrets/create';
 import Users from '../resources/users/create';
+import {getFile} from '../loader';
 
 const map = {
-  'AccessRole': AccessRoles,
-  'AccessRule': AccessRules,
   'Namespace': Namespaces,
-  'Collection': Collections,
-  'DataObject': DataObjects,
-  'Relation': Relations,
-  'Endpoint': Endpoints,
-  'Job': Jobs,
-  'Workflow': Workflows,
   'Secret': Secrets,
   'User': Users,
+  'AccessRole': AccessRoles,
+  'AccessRule': AccessRules,
+  'Collection': Collections,
+  'Endpoint': Endpoints,
+  'DataObject': DataObjects,
+  'DataObjectRelation': Relations,
+  'Workflow': Workflows,
+  'Job': Jobs,
+  'Process': Processes,
+};
+
+const apiMap = {
+  'Namespace': 'Namespaces',
+  'Secret': 'Secrets',
+  'User': 'Users',
+  'AccessRole': 'AccessRoles',
+  'AccessRule': 'AccessRules',
+  'Collection': 'Collections',
+  'Endpoint': 'Endpoints',
+  'DataObject': 'DataObjects',
+  'DataObjectRelation': 'DataObjectRelations',
+  'Workflow': 'Workflows',
+  'Job': 'Jobs',
+  'Process': 'Jobs',
 };
 
 export interface CreateOptions {
@@ -60,7 +78,7 @@ export default class Create {
     .action(async (opts, args, rest) => {
       var instances = {};
       for(let instance in map) {
-        var api = await client.factory(instance+'s', optparse.parsedOpts);
+        var api = await client.factory(apiMap[instance], optparse.parsedOpts);
         instances[instance] = new map[instance](api)
       }
 
@@ -78,8 +96,8 @@ export default class Create {
     }
   }
 
-  public execute(opts, args, rest) {
-    var body = fs.readFileSync(opts.file[0]);
+  public async execute(opts, args, rest) {
+    var body: string = await getFile(opts.file[0]);
     var input = 'yaml';
     var resources;
 
@@ -103,15 +121,14 @@ export default class Create {
     if (resources instanceof Array) {
       for (let resource of resources) {
         let result = this.getKind(resource);
-
         if(result === null) {
           continue;
         }
 
         result.create(resource).then(() => {
           console.log('Created new resource %s', resource.name);
-        }).catch(() => {
-          console.log('Failed to create new resource %s', resource);
+        }).catch((error) => {
+          console.log('%s <%s> failed [%s: %s]', resource.kind, resource.name, error.response.body.error, error.response.body.message);
         });
       }
     } else if (resources instanceof Object) {
