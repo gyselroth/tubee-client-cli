@@ -46,16 +46,20 @@ export default abstract class AbstractSync {
    * Realtime updates
    */
   public async watchObjects(request, opts) {
-    return request.pipe(JSONStream.parse('*')).pipe(
-      es.mapSync(data => {
-        console.log(
-          '%s %s %s',
-          data[1].created,
-          ProcessLog.colorize(data[1].data.level_name),
-          data[1].data.category,
-          data[1].data.message,
-        );
-      }),
-    );
+    return request.pipe(JSONStream.parse('*')).pipe(es.mapSync(data => {
+      var exception = null;
+      if(data[1].data.exception) {
+        exception = data[1].data.exception;
+      }
+
+      console.log(
+        '%s %s %s',
+        data[1].created,
+        ProcessLog.colorize(data[1].data.level_name),
+        data[1].data.category,
+        data[1].data.message,
+        exception
+      );
+    }));
   }
 }

@@ -12,6 +12,7 @@ import Jobs from '../resources/jobs/delete';
 import Workflows from '../resources/workflows/delete';
 import Secrets from '../resources/secrets/delete';
 import Users from '../resources/users/delete';
+import Processes from '../resources/processes/delete';
 
 const map = [
   AccessRoles,
@@ -25,6 +26,7 @@ const map = [
   Workflows,
   Secrets,
   Users,
+  Processes
 ];
 
 export interface DeleteOptions {}

@@ -70,11 +70,11 @@ export default class Get extends AbstractGet {
     var status;
 
     if (resource.status.status === true && resource.status.last_process.code > 0) {
-      started = ta.ago(resource.status.started);
+      started = ta.ago(resource.status.last_process.started);
     }
 
     if (resource.status.status === true && resource.status.last_process.code > 2) {
-      ended = ta.ago(resource.status.ended);
+      ended = ta.ago(resource.status.last_process.ended);
     }
 
     if (resource.status.status === false) {

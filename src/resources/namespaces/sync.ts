@@ -37,6 +37,6 @@ export default class Sync extends AbstractSync {
       },
     };
 
-    this.addProcess(args.namespace, resource, opts, args, rest);
+    this.addProcess(args.name, resource, opts, args, rest);
   }
 }
