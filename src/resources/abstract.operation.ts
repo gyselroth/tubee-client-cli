@@ -1,3 +1,5 @@
+import {ConfigStore} from '../config';
+
 /**
  * Abstract
  */
@@ -33,6 +35,16 @@ export default abstract class AbstractOperation {
     }
 
     return query;
+  }
+
+  protected getNamespace(opts): string {
+    if(opts.namespace) {
+      return opts.namespace[0];
+    } else if(ConfigStore.get().defaultNamespace) {
+      return ConfigStore.get().defaultNamespace;
+    } else {
+      return 'default';
+    }
   }
 
   /**

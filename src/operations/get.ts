@@ -42,6 +42,7 @@ export interface GetOptions {
   fieldSelector: string;
   history: boolean;
   diff: string;
+  namespace: string;
 }
 
 export interface GetArgs {
@@ -60,6 +61,7 @@ export default class Get {
 
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
+      sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
       sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json,cc=field:my.field). Using cc you may request a customized list with the fields you want.');
       sub.option('-w, --watch', 'Monitor updates in realtime.');
       sub.option('--json-query <name>', 'Specify an advanced json query');

@@ -3,7 +3,7 @@ import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 const yaml = require('js-yaml');
 const fs = require('fs');
-import { Config, configPath, keytarPath } from '../tubee.client';
+import { Config, ConfigStore, keytarPath, configPath } from '../config';
 const keytar = require('keytar');
 keytar.setPath(keytarPath);
 const path = require('path');
@@ -79,14 +79,7 @@ export default class Login {
         console.log('Successfully connected to server %s', server);
 
         var writePath = optparse.parsedOpts.config[0] || configPath;
-        var configDir = path.dirname(writePath);
-        if (!fs.existsSync(configDir)) {
-          fs.mkdirSync(configDir, {
-            recursive: true,
-          });
-        }
-
-        fs.writeFileSync(writePath, yaml.dump(config));
+        ConfigStore.write(writePath, config);
       });
   }
 }

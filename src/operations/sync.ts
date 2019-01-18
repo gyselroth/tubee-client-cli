@@ -12,6 +12,7 @@ export interface SyncOptions {
   follow: boolean;
   abortOnError: boolean;
   level: string;
+  namespace: string;
 }
 
 export interface SyncArgs {
@@ -31,6 +32,7 @@ export default class Sync {
 
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
+      sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
       sub.option('-t, --follow', 'Follow process and watch in forderground');
       sub.option('-l, --level <name>', 'Specify log level for the process (emerg,error,warning,info,debug)');
       sub.option('-s, --simulate', 'Simulate sync process (No changes are made)');

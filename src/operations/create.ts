@@ -52,6 +52,7 @@ export interface CreateOptions {
   stdin: boolean;
   input: string;
   fromTemplate: string;
+  namespace: string;
 }
 
 export interface CreateArgs {
@@ -89,6 +90,7 @@ export default class Create {
     for (let resource in map) {
       let sub = map[resource].applyOptions(remote, client);
       sub
+        .option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".')
         .option('-i, --input <name>', 'Define the input format (One of yaml,json)')
         .option('-f, --file <name>', 'File to read from')
         .option('-s, --stdin', 'Read from stdin')

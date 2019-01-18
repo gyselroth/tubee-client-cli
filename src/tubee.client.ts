@@ -1,12 +1,7 @@
 const { v1, auth } = require('@gyselroth/tubee-sdk-node');
-const yaml = require('js-yaml');
 const fs = require('fs');
 const keytar = require('keytar');
-const homedir = require('os').homedir();
-export const tubectlFolder = homedir + '/.tubectl';
-export const configPath = tubectlFolder + '/config';
-export const keytarPath = tubectlFolder + '/.keytar.node';
-const keytarPathOrig = './node_modules/keytar/build/Release/keytar.node';
+import {keytarPath, keytarPathOrig, Config, ConfigStore, configPath, tubectlFolder} from './config';
 
 if (!fs.existsSync(tubectlFolder)) {
   fs.mkdirSync(tubectlFolder);
@@ -18,13 +13,6 @@ if (!fs.existsSync(keytarPath)) {
 
 keytar.setPath(keytarPath);
 
-export interface Config {
-  url: string;
-  username: string;
-  password: string;
-  allowSelfSigned: boolean;
-}
-
 /**
  * Api factory
  */
@@ -33,21 +21,7 @@ export default class TubeeClient {
    * Factory
    */
   public async factory(category: string, options = null) {
-    var path = configPath;
-
-    if (options.config[0]) {
-      path = options.config[0];
-    }
-
-    var config = {} as Config;
-
-    if (fs.existsSync(path)) {
-      try {
-        config = yaml.safeLoad(fs.readFileSync(path, 'utf8')) as Config;
-      } catch (e) {
-        console.log(e);
-      }
-    }
+    const config: Config = ConfigStore.get(options);
 
     if (config.allowSelfSigned) {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';

@@ -32,6 +32,7 @@ export interface EditOptions {
   file: string;
   jsonQuery: string;
   fieldSelector: string;
+  namespace: string;
 }
 
 export interface EditArgs {
@@ -52,6 +53,7 @@ export default class Edit {
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
       sub
+        .option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".')
         .option('-o, --output <name>', 'Define the output format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')
         .option('--json-query <name>', 'Specify an advanced json query')
