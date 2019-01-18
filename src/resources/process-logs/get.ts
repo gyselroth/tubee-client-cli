@@ -15,7 +15,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('process-logs <namespace> <process> [name]')
+      .subCommand<GetOptions, GetArgs>('process-logs <process> [name]')
       .alias('pl')
       .description('Get synchronization logs')
       .action(async (opts, args, rest) => {
@@ -29,6 +29,10 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async getObjects(response, opts) {
+    if (!response.response) {
+      return this.streamObjects(response, opts);
+    }
+
     if (!opts.output[0] || opts.output[0] === 'message') {
       for (let resource of response.response.body.data) {
         console.log(
@@ -43,6 +47,32 @@ export default class Get extends AbstractGet {
     }
 
     return super.getObjects(response, opts);
+  }
+  
+  /**
+   * Stream
+   */
+  public async streamObjects(request, opts) {
+    if (!opts.output[0] || opts.output[0] === 'message') {
+      return request.pipe(JSONStream.parse('*')).pipe(
+        es.mapSync(data => {
+          console.log(
+            '%s %s %s',
+            data.created,
+            Get.colorize(data.data.level_name),
+            data.data.message,
+          );
+
+          if(data.data.exception) {
+            var e = data.data.exception;
+            var line = e.class+': '+e.message+' in '+e.file+' stacktrace: '+e.trace;
+            console.log(line);
+          }
+        }),
+      );
+    }
+
+    return super.streamObjects(request, opts);
   }
 
   /**
@@ -91,18 +121,18 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchProcessLogs(args.namespace, args.process, args.name, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchProcessLogs(this.getNamespace(opts), args.process, args.name, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = await this.api.watchProcessLogs(args.namespace, args.process, ...this.getQueryOptions(opts, args));
+        var request = await this.api.watchProcessLogs(this.getNamespace(opts), args.process, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.name) {
-        var response = await this.api.getProcessLog(args.namespace, args.process, args.name, this.getFields(opts));
+        var response = await this.api.getProcessLog(this.getNamespace(opts), args.process, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await this.api.getProcessLogs(args.namespace, args.process, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getProcessLogs(this.getNamespace(opts), args.process, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

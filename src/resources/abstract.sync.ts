@@ -4,17 +4,19 @@ import TubeeClient from '../tubee.client';
 const JSONStream = require('JSONStream');
 const es = require('event-stream');
 import ProcessLog from './process-logs/get';
+import AbstractOperation from './abstract.operation';
 
 /**
  * Sync resources
  */
-export default abstract class AbstractSync {
+export default abstract class AbstractSync extends AbstractOperation {
   protected api;
 
   /**
    * Construct
    */
   constructor(api) {
+    super();
     this.api = api;
   }
 

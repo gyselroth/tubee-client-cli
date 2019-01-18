@@ -27,13 +27,13 @@ export default class Edit extends AbstractEdit {
    */
   public async execute(opts, args, rest) {
     if (args.name) {
-      var response = await this.api.getSecret(args.name, this.getFields(opts));
+      var response = await this.api.getSecret(this.getNamespace(opts), args.name, this.getFields(opts));
     } else {
-      var response = await this.api.getSecrets(...this.getQueryOptions(opts, args));
+      var response = await this.api.getSecrets(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await this.api.updateSecret(name, patch);
+      return await this.api.updateSecret(this.getNamespace(opts), name, patch);
     });
   }
 }

@@ -12,7 +12,7 @@ export default class Create extends AbstractCreate {
    */
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<CreateOptions, CreateArgs>('collections [namespace] [name]')
+      .subCommand<CreateOptions, CreateArgs>('collections [name]')
       .alias('co')
       .description('Create new collections')
       .action(async (opts, args, rest) => {

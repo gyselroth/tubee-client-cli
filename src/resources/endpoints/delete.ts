@@ -12,7 +12,7 @@ export default class Delete extends AbstractDelete {
    */
   public static applyOptions(optparse: Command<DeleteOptions, DeleteArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<DeleteOptions, DeleteArgs>('endpoints <namespace> <collection> <name>')
+      .subCommand<DeleteOptions, DeleteArgs>('endpoints <collection> <name>')
       .alias('ep')
       .description('Delete endpoint')
       .action(async (opts, args, rest) => {
@@ -26,7 +26,7 @@ export default class Delete extends AbstractDelete {
    * Execute
    */
   public async execute(opts, args, rest) {
-    await this.api.deleteEndpoint(args.namespace, args.collection, args.name);
+    await this.api.deleteEndpoint(this.getNamespace(opts), args.collection, args.name);
     console.log('resource %s has been deleted', args.name);
   }
 }

@@ -14,7 +14,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('processes <namespace> [name]')
+      .subCommand<GetOptions, GetArgs>('processes [name]')
       .alias('ps')
       .description('Get processes')
       .action(async (opts, args, rest) => {
@@ -30,9 +30,9 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchProcesses(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
       } else {
-        var request = this.api.watchProcesses(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
       }
 
       this.watchObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended'], resource => {
@@ -40,9 +40,9 @@ export default class Get extends AbstractGet {
       });
     } else {
       if (args.name) {
-        var response = await this.api.getProcess(args.namespace, this.getFields(opts));
+        var response = await this.api.getProcess(this.getNamespace(opts), args.name, this.getFields(opts));
       } else {
-        var response = await this.api.getProcesses(args.namespace, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
       }
 
       this.getObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended'], resource => {
@@ -57,7 +57,6 @@ export default class Get extends AbstractGet {
   protected prettify(resource) {
     var started = '<Not yet>';
     var ended = '<Not yet>';
-
     if (resource.status.code > 0) {
       started = ta.ago(resource.status.started);
     }

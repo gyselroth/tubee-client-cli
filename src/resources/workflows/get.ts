@@ -12,7 +12,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('workflows [namespace] [collection] [endpoint] [name]')
+      .subCommand<GetOptions, GetArgs>('workflows [collection] [endpoint] [name]')
       .alias('wf')
       .description('Get workflows')
       .action(async (opts, args, rest) => {
@@ -29,7 +29,7 @@ export default class Get extends AbstractGet {
     if (opts.watch) {
       if (args.name) {
         var request = this.api.watchWorkflows(
-          args.namespace,
+          this.getNamespace(opts),
           args.collection,
           args.endpoint,
           ...this.getQueryOptions(opts, args),
@@ -37,7 +37,7 @@ export default class Get extends AbstractGet {
         this.watchObjects(request, opts);
       } else {
         var request = this.api.watchWorkflows(
-          args.namespace,
+          this.getNamespace(opts),
           args.collection,
           args.endpoint,
           ...this.getQueryOptions(opts, args),
@@ -47,7 +47,7 @@ export default class Get extends AbstractGet {
     } else {
       if (args.name) {
         var response = await this.api.getWorkflow(
-          args.namespace,
+          this.getNamespace(opts),
           args.collection,
           args.endpoint,
           args.name,
@@ -56,7 +56,7 @@ export default class Get extends AbstractGet {
         this.getObjects(response, opts);
       } else {
         var response = await this.api.getWorkflows(
-          args.namespace,
+          this.getNamespace(opts),
           args.collection,
           args.endpoint,
           ...this.getQueryOptions(opts, args),

@@ -32,7 +32,7 @@ export default class Login {
    * Apply cli options
    */
   public static async factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
-    let remote = optparse.subCommand<LoginOptions, LoginArgs>('login').description('Login resources');
+    let remote = optparse.subCommand<LoginOptions, LoginArgs>('login').description('Login and configure tubee server');
     remote
       .option('-u, --username <name>', 'HTTP basic auth username')
       .option('-p, --password <name>', 'HTTP basic auth password')

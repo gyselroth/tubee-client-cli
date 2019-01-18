@@ -23,6 +23,10 @@ export default class TubeeClient {
   public async factory(category: string, options = null) {
     const config: Config = ConfigStore.get(options);
 
+    if(config.debug || options.debug) {
+      v1.localVarRequest.debug = true;
+    }
+
     if (config.allowSelfSigned) {
       process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
     }

@@ -12,7 +12,7 @@ export default class Edit extends AbstractEdit {
    */
   public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<EditOptions, EditArgs>('collections <namespace> [name]')
+      .subCommand<EditOptions, EditArgs>('collections [name]')
       .alias('co')
       .description('Edit collections')
       .action(async (opts, args, rest) => {
@@ -27,13 +27,13 @@ export default class Edit extends AbstractEdit {
    */
   public async execute(opts, args, rest) {
     if (args.name) {
-      var response = await this.api.getCollection(args.namespace, args.name, this.getFields(opts));
+      var response = await this.api.getCollection(this.getNamespace(opts), args.name, this.getFields(opts));
     } else {
-      var response = await this.api.getCollections(args.namespace, ...this.getQueryOptions(opts, args));
+      var response = await this.api.getCollections(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await this.api.updateCollection(args.namespace, name, patch);
+      return await this.api.updateCollection(this.getNamespace(opts), name, patch);
     });
   }
 }

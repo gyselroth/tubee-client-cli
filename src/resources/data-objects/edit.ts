@@ -12,7 +12,7 @@ export default class Edit extends AbstractEdit {
    */
   public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<EditOptions, EditArgs>('data-objects <namespace> <collection> [name]')
+      .subCommand<EditOptions, EditArgs>('data-objects <collection> [name]')
       .alias('do')
       .description('Edit data objects')
       .action(async (opts, args, rest) => {
@@ -27,13 +27,13 @@ export default class Edit extends AbstractEdit {
    */
   public async execute(opts, args, rest) {
     if (args.name) {
-      var response = await this.api.getObject(args.namespace, args.collection, args.name, this.getFields(opts));
+      var response = await this.api.getObject(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
     } else {
-      var response = await this.api.getObjects(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+      var response = await this.api.getObjects(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await this.api.updateObject(args.namespace, args.collection, name, patch);
+      return await this.api.updateObject(this.getNamespace(opts), args.collection, name, patch);
     });
   }
 }

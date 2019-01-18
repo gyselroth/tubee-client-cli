@@ -14,7 +14,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('endpoints <namespace> <collection> [name]')
+      .subCommand<GetOptions, GetArgs>('endpoints <collection> [name]')
       .alias('ep')
       .description('Get endpoints')
       .action(async (opts, args, rest) => {
@@ -30,10 +30,10 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchEndpoints(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = this.api.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchEndpoints(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
         this.watchObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
           return [
             resource.name,
@@ -47,11 +47,11 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await this.api.getEndpoint(args.namespace, args.collection, args.name, this.getFields(opts));
+        var response = await this.api.getEndpoint(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
         //this.getObjects(response, opts);
       } else {
         var response = await this.api.getEndpoints(
-          args.namespace,
+          this.getNamespace(opts),
           args.collection,
           ...this.getQueryOptions(opts, args),
         );

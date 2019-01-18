@@ -28,18 +28,18 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchSecrets(...this.getQueryOptions(opts, args));
+        var request = this.api.watchSecrets(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = this.api.watchSecrets(...this.getQueryOptions(opts, args));
+        var request = this.api.watchSecrets(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
       if (args.name) {
-        var response = await this.api.getSecret(args.name, ...this.getFields(opts));
+        var response = await this.api.getSecret(this.getNamespace(opts), args.name, ...this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await this.api.getSecrets(...this.getQueryOptions(opts, args));
+        var response = await this.api.getSecrets(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }

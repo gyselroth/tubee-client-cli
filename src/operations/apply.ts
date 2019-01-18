@@ -156,6 +156,7 @@ export default class Apply {
         result.apply(resource).then((response) => {
           console.log('[%s] %s <%s> updated', colors.green.bold('OK'), resource.kind, resource.name);
         }).catch((error) => {
+console.log(error);
           console.log('[%s] %s <%s> failed [%s: %s]', colors.red.bold('ERROR'), resource.kind, resource.name, error.response.body.error, error.response.body.message);
         });
       }

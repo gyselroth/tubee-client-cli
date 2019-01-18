@@ -15,7 +15,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('jobs <namespace> [name]')
+      .subCommand<GetOptions, GetArgs>('jobs [name]')
       .description('Get synchronization jobs')
       .action(async (opts, args, rest) => {
         var api = await client.factory('Jobs', optparse.parent.parsedOpts);
@@ -30,10 +30,10 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchJobs(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = this.api.watchJobs(args.namespace, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
         this.watchObjects(
           response,
           opts,
@@ -45,10 +45,10 @@ export default class Get extends AbstractGet {
       }
     } else {
       if (args.name) {
-        var response = await this.api.getJob(args.namespace, args.name, this.getFields(opts));
+        var response = await this.api.getJob(this.getNamespace(opts), args.name, this.getFields(opts));
         this.getObjects(response, opts);
       } else {
-        var response = await this.api.getJobs(args.namespace, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
         this.getObjects(
           response,
           opts,

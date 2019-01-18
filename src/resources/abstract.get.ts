@@ -42,6 +42,10 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    if (!response.response) {
+      return this.streamObjects(response, opts, fields, callback);
+    }
+    
     if (opts.diff[0]) {
       return this.compare(response.response.toJSON().body, opts);
     }
@@ -160,20 +164,25 @@ export default abstract class AbstractGet extends AbstractOperation {
     fs.writeFileSync(path, body);
     return path;
   }
-
+  
   /**
-   * Realtime updates
+   * Display stream
    */
-  public async watchObjects(request, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    var stream = createStream(tableConfig);
-    stream.write(fields.map(x => colors.bold(x)));
+  public async streamObjects(request, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    var config = tableConfig;
+    config.columnCount = fields.length;
 
+    if(!opts.output[0] || opts.output[0] === 'list') {
+      var stream = createStream(config);
+      stream.write(fields.map(x => colors.bold(x)));
+    }
+ 
     if (callback === null) {
       callback = resource => {
         return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
       };
     }
-
+    
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
         switch (opts.output[0]) {
@@ -183,9 +192,46 @@ export default abstract class AbstractGet extends AbstractOperation {
           case 'yaml':
             console.log(yaml.dump(data));
             console.log('---');
+            break;
           case 'list':
           default:
-            stream.write([data[1].name, data[1].version, ta.ago(data[1].changed), ta.ago(data[1].created)]);
+            stream.write(callback(data));
+        }
+      }),
+    );
+  }
+
+  /**
+   * Realtime updates
+   */
+  public async watchObjects(request, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    var config = tableConfig;
+    config.columnCount = fields.length;
+
+    if(!opts.output[0] || opts.output[0] === 'list') {
+      var stream = createStream(config);
+      stream.write(fields.map(x => colors.bold(x)));
+    }
+ 
+    if (callback === null) {
+      callback = resource => {
+        return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
+      };
+    }
+    
+    request.pipe(JSONStream.parse('*')).pipe(
+      es.mapSync(function(data) {
+        switch (opts.output[0]) {
+          case 'json':
+            console.log(JSON.stringify(data, null, 2));
+            break;
+          case 'yaml':
+            console.log(yaml.dump(data));
+            console.log('---');
+            break;
+          case 'list':
+          default:
+            stream.write(callback(data[1]));
         }
       }),
     );

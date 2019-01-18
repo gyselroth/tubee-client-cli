@@ -12,7 +12,7 @@ export default class Create extends AbstractCreate {
    */
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<CreateOptions, CreateArgs>('processes [namespace] [name]')
+      .subCommand<CreateOptions, CreateArgs>('processes [name]')
       .description('Create new synchronization processes')
       .action(async (opts, args, rest) => {
         var api = await client.factory('Jobs', optparse.parent.parsedOpts);

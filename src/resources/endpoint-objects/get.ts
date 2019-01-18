@@ -12,7 +12,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('endpoint-objects <namespace> <collection> <endpoint> [name]')
+      .subCommand<GetOptions, GetArgs>('endpoint-objects <collection> <endpoint> [name]')
       .alias('eo')
       .description('Get objects from endpoint')
       .action(async (opts, args, rest) => {
@@ -28,7 +28,7 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (args.name) {
       var response = await this.api.getEndpointObject(
-        args.namespace,
+        this.getNamespace(opts),
         args.collection,
         args.endpoint,
         args.name,
@@ -37,7 +37,7 @@ export default class Get extends AbstractGet {
       this.getObjects(response, opts);
     } else {
       var response = await this.api.getEndpointObjects(
-        args.namespace,
+        this.getNamespace(opts),
         args.collection,
         args.endpoint,
         ...this.getQueryOptions(opts, args),

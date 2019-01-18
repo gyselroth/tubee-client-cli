@@ -12,7 +12,7 @@ export default class Create extends AbstractCreate {
    */
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<CreateOptions, CreateArgs>('relations <namespace> [name]')
+      .subCommand<CreateOptions, CreateArgs>('relations [name]')
       .alias('re')
       .description('Create new data object relations')
       .action(async (opts, args, rest) => {

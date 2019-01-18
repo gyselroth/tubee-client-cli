@@ -12,6 +12,7 @@ export interface Config {
   password: string;
   allowSelfSigned: boolean;
   defaultNamespace: string;
+  debug: boolean;
 }
 
 /**

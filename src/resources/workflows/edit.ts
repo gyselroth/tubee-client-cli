@@ -12,7 +12,7 @@ export default class Edit extends AbstractEdit {
    */
   public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<EditOptions, EditArgs>('workflows [namespace] [collection] [endpoint] [name]')
+      .subCommand<EditOptions, EditArgs>('workflows [collection] [endpoint] [name]')
       .alias('wf')
       .description('Edit workflows')
       .action(async (opts, args, rest) => {
@@ -28,7 +28,7 @@ export default class Edit extends AbstractEdit {
   public async execute(opts, args, rest) {
     if (args.name) {
       var response = await this.api.getWorkflow(
-        args.namespace,
+        this.getNamespace(opts),
         args.collection,
         args.endpoint,
         args.name,
@@ -36,7 +36,7 @@ export default class Edit extends AbstractEdit {
       );
     } else {
       var response = await this.api.getWorkflows(
-        args.namespace,
+        this.getNamespace(opts),
         args.collection,
         args.endpoint,
         ...this.getQueryOptions(opts, args),
@@ -44,7 +44,7 @@ export default class Edit extends AbstractEdit {
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await this.api.updateWorkflow(args.namespace, args.collection, args.endpoint, name, patch);
+      return await this.api.updateWorkflow(this.getNamespace(opts), args.collection, args.endpoint, name, patch);
     });
   }
 }

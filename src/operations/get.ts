@@ -40,9 +40,14 @@ export interface GetOptions {
   watch: boolean;
   jsonQuery: string;
   fieldSelector: string;
+  fieldFilter: string;
   history: boolean;
   diff: string;
+  stream: boolean;
+  sort: string;
   namespace: string;
+  limit: number;
+  tail: boolean;
 }
 
 export interface GetArgs {
@@ -58,13 +63,15 @@ export default class Get {
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
     let remote = optparse.subCommand<GetOptions, GetArgs>('get').description('Get resources');
-
+    
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
       sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
       sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json,cc=field:my.field). Using cc you may request a customized list with the fields you want.');
-      sub.option('-w, --watch', 'Monitor updates in realtime.');
+      sub.option('-w, --watch', 'Stream updates in realtime (Includes existing resources).');
+      sub.option('--stream', 'Stream resources, useful for big datasets.');
       sub.option('--json-query <name>', 'Specify an advanced json query');
+      sub.option('-l --limit <number>', 'Max number of resources to be returned. May not be higher than 100, otherwise use --stream.');
       sub.option(
         '-q, --field-selector <name>',
         'Specify a comma separated field based query (Example: foo=bar,bar=foo)',

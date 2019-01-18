@@ -7,6 +7,7 @@ import Create from './operations/create';
 import Explain from './operations/explain';
 import Sync from './operations/sync';
 import Apply from './operations/apply';
+import Config from './operations/config';
 import TubeeClient from './tubee.client';
 
 const map = [
@@ -17,18 +18,21 @@ const map = [
   Explain,
   Delete,
   Sync,
-  Apply
+  Apply,
+  Config,
 ];
 
 export interface RootOptions {
   config: string;
+  debug: boolean;
 }
 
 export interface RootArgs {}
 
 let root = commandpost
   .create<RootOptions, RootArgs>('')
-  .option('-c, --config <file>', 'Specify the config for the client (If different than ~/.tubee/config)');
+  .option('-c, --config <file>', 'Specify the config for the client (If different than ~/.tubee/config)')
+  .option('-d, --debug', 'Print request in verbose mode)');
 
 var client = new TubeeClient();
 for(let operation of map) {

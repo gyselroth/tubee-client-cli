@@ -47,7 +47,8 @@ export default class Delete {
     let remote = optparse.subCommand<DeleteOptions, DeleteArgs>('delete').description('Delete resources');
 
     for (let resource of map) {
-      resource.applyOptions(remote, client);
+      let sub = resource.applyOptions(remote, client);
+      sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
     }
   }
 }

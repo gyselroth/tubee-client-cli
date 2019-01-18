@@ -12,7 +12,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('data-objects <namespace> <collection> [name]')
+      .subCommand<GetOptions, GetArgs>('data-objects <collection> [name]')
       .option('-r, --relation [name]', 'Request object relations')
       .alias('do')
       .description('Get data objects')
@@ -29,10 +29,10 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (opts.watch) {
       if (args.name) {
-        var request = this.api.watchObjects(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchObjects(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       } else {
-        var request = this.api.watchObjects(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        var request = this.api.watchObjects(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
         this.watchObjects(request, opts);
       }
     } else {
@@ -40,7 +40,7 @@ export default class Get extends AbstractGet {
         if(opts.relation.length > 0) {
           if(opts.relation[0] === '') {
             var response = await this.api.getObjectRelations(
-              args.namespace,
+              this.getNamespace(opts),
               args.collection,
               args.name,
               this.getFields(opts),
@@ -51,18 +51,18 @@ export default class Get extends AbstractGet {
           }
         } else if (opts.history || opts.diff[0]) {
           var response = await this.api.getObjectHistory(
-            args.namespace,
+            this.getNamespace(opts),
             args.collection,
             args.name,
             this.getFields(opts),
           );
           this.getObjects(response, opts);
         } else {
-          var response = await this.api.getObject(args.namespace, args.collection, args.name, this.getFields(opts));
+          var response = await this.api.getObject(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
           this.getObjects(response, opts);
         }
       } else {
-        var response = await this.api.getObjects(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getObjects(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
         this.getObjects(response, opts);
       }
     }
