@@ -42,7 +42,15 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    if (!response.response) {
+    if(opts.logs.length > 0 && opts.output.length === 0) {
+      opts.output.push('log');
+    }
+
+    if (opts.watch) {
+      return this.watchObjects(response, opts, fields, callback);
+    }
+    
+    if (opts.stream) {
       return this.streamObjects(response, opts, fields, callback);
     }
     
@@ -67,6 +75,16 @@ export default abstract class AbstractGet extends AbstractOperation {
         body = yaml.dump(response.response.toJSON().body);
         console.log(body);
         break;
+      case 'log':
+        for (let resource of response.response.body.data) {
+          console.log(
+            '%s %s %s',
+            resource.data.created,
+            AbstractGet.colorize(resource.data.level_name),
+            resource.data.message,
+          );
+        }
+      break;
       case 'cc': 
         fields = [];
         var values = [];
@@ -122,7 +140,6 @@ export default abstract class AbstractGet extends AbstractOperation {
   /**
    * Start difftool
    */
-
   protected async compare(objects, opts) {
     var result = null;
     for (let resource of objects.data) {
@@ -183,6 +200,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       };
     }
     
+    var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
         switch (opts.output[0]) {
@@ -193,6 +211,9 @@ export default abstract class AbstractGet extends AbstractOperation {
             console.log(yaml.dump(data));
             console.log('---');
             break;
+          case 'log':
+            that.drawLogLine(data, opts);
+          break;
           case 'list':
           default:
             stream.write(callback(data));
@@ -219,6 +240,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       };
     }
     
+    var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
         switch (opts.output[0]) {
@@ -229,11 +251,53 @@ export default abstract class AbstractGet extends AbstractOperation {
             console.log(yaml.dump(data));
             console.log('---');
             break;
+          case 'log':
+            that.drawLogLine(data[1], opts);
+          break;
           case 'list':
           default:
             stream.write(callback(data[1]));
         }
       }),
     );
+  }
+
+  /**
+   * Stream
+   */
+  public async drawLogLine(data, opts) {
+    console.log(
+      '%s %s %s',
+      data.created,
+      AbstractGet.colorize(data.data.level_name),
+      data.data.message,
+    );
+
+console.log(opts);
+    if(data.data.exception && opts.trace) {
+      var e = data.data.exception;
+      var line = e.class+': '+e.message+' in '+e.file+' stacktrace: '+e.trace;
+      console.log(line);
+    }
+  }
+
+  /**
+   * Colorize log level
+   */
+  public static colorize(status): string {
+    switch (status) {
+      case 'DEBUG':
+        return colors.bgBlue(status);
+        break;
+      case 'INFO':
+        return colors.bgCyan(status);
+        break;
+      case 'WARNING':
+        return colors.bgYellow(status);
+        break;
+      case 'ERROR':
+      default:
+        return colors.bgRed(status);
+    }
   }
 }

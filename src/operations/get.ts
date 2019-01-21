@@ -11,11 +11,10 @@ import Endpoints from '../resources/endpoints/get';
 import EndpointObjects from '../resources/endpoint-objects/get';
 import Jobs from '../resources/jobs/get';
 import Processes from '../resources/processes/get';
-import JobLogs from '../resources/job-logs/get';
-import ProcessLogs from '../resources/process-logs/get';
 import Workflows from '../resources/workflows/get';
 import Secrets from '../resources/secrets/get';
 import Users from '../resources/users/get';
+import Config from '../resources/config/get';
 
 const map = [
   AccessRoles,
@@ -26,13 +25,12 @@ const map = [
   Relations,
   Endpoints,
   EndpointObjects,
-  JobLogs,
   Jobs,
-  ProcessLogs,
   Processes,
   Workflows,
   Secrets,
   Users,
+  Config
 ];
 
 export interface GetOptions {
@@ -71,7 +69,7 @@ export default class Get {
       sub.option('-w, --watch', 'Stream updates in realtime (Includes existing resources).');
       sub.option('--stream', 'Stream resources, useful for big datasets.');
       sub.option('--json-query <name>', 'Specify an advanced json query');
-      sub.option('-l --limit <number>', 'Max number of resources to be returned. May not be higher than 100, otherwise use --stream.');
+      sub.option('-L --limit <number>', 'Max number of resources to be returned. May not be higher than 100, otherwise use --stream.');
       sub.option(
         '-q, --field-selector <name>',
         'Specify a comma separated field based query (Example: foo=bar,bar=foo)',

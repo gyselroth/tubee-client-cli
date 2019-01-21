@@ -17,6 +17,8 @@ export default class Get extends AbstractGet {
     return optparse
       .subCommand<GetOptions, GetArgs>('jobs [name]')
       .description('Get synchronization jobs')
+      .option('-l, --logs [name]', 'Request resource logs')
+      .option('-t, --trace', 'Including log stacktraces')
       .action(async (opts, args, rest) => {
         var api = await client.factory('Jobs', optparse.parent.parsedOpts);
         var instance = new Get(api);
@@ -28,36 +30,29 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async execute(opts, args, rest) {
-    if (opts.watch) {
-      if (args.name) {
-        var request = this.api.watchJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
+    if (args.name) {
+      if(opts.logs.length > 0) {
+        if(opts.logs[0] == '') {
+          var response = await this.api.getJobLogs(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
+          this.getObjects(response, opts);
+        } else {
+          var response = await this.api.getJobLog(this.getNamespace(opts), args.name, args.logs[0], this.getFields(opts));
+          this.getObjects(response, opts);
+        }
       } else {
-        var request = this.api.watchJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-        this.watchObjects(
-          response,
-          opts,
-          ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
-          resource => {
-            return this.prettify(resource);
-          },
-        );
-      }
-    } else {
-      if (args.name) {
         var response = await this.api.getJob(this.getNamespace(opts), args.name, this.getFields(opts));
         this.getObjects(response, opts);
-      } else {
-        var response = await this.api.getJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-        this.getObjects(
-          response,
-          opts,
-          ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
-          resource => {
-            return this.prettify(resource);
-          },
-        );
       }
+    } else {
+      var response = await this.api.getJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
+      this.getObjects(
+        response,
+        opts,
+        ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
+        resource => {
+          return this.prettify(resource);
+        },
+      );
     }
   }
 

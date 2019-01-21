@@ -26,43 +26,23 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async execute(opts, args, rest) {
-    if (opts.watch) {
-      if (args.name) {
-        var request = this.api.watchWorkflows(
-          this.getNamespace(opts),
-          args.collection,
-          args.endpoint,
-          ...this.getQueryOptions(opts, args),
-        );
-        this.watchObjects(request, opts);
-      } else {
-        var request = this.api.watchWorkflows(
-          this.getNamespace(opts),
-          args.collection,
-          args.endpoint,
-          ...this.getQueryOptions(opts, args),
-        );
-        this.watchObjects(request, opts);
-      }
+    if (args.name) {
+      var response = await this.api.getWorkflow(
+        this.getNamespace(opts),
+        args.collection,
+        args.endpoint,
+        args.name,
+        this.getFields(opts),
+      );
+      this.getObjects(response, opts);
     } else {
-      if (args.name) {
-        var response = await this.api.getWorkflow(
-          this.getNamespace(opts),
-          args.collection,
-          args.endpoint,
-          args.name,
-          this.getFields(opts),
-        );
-        this.getObjects(response, opts);
-      } else {
-        var response = await this.api.getWorkflows(
-          this.getNamespace(opts),
-          args.collection,
-          args.endpoint,
-          ...this.getQueryOptions(opts, args),
-        );
-        this.getObjects(response, opts);
-      }
+      var response = await this.api.getWorkflows(
+        this.getNamespace(opts),
+        args.collection,
+        args.endpoint,
+        ...this.getQueryOptions(opts, args),
+      );
+      this.getObjects(response, opts);
     }
   }
 }

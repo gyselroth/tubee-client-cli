@@ -10,10 +10,6 @@ export default abstract class AbstractOperation {
   protected createQuery(opts, args) {
     var query = null;
 
-    if (opts.watch && args.name) {
-      return JSON.stringify({ name: args.name });
-    }
-
     if (opts.jsonQuery[0]) {
       return opts.jsonQuery[0];
     }
@@ -58,7 +54,15 @@ export default abstract class AbstractOperation {
       this.getLimit(opts),
       this.getSort(opts),
       this.getStream(opts),
+      this.getWatch(opts),
     ];
+  }
+  
+  /**
+   * Get watch
+   */
+  protected getWatch(opts): boolean {
+    return opts.watch;
   }
 
   /**

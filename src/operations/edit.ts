@@ -12,6 +12,7 @@ import Jobs from '../resources/jobs/edit';
 import Workflows from '../resources/workflows/edit';
 import Secrets from '../resources/secrets/edit';
 import Users from '../resources/users/edit';
+import Config from '../resources/config/edit';
 
 const map = [
   AccessRoles,
@@ -25,6 +26,7 @@ const map = [
   Workflows,
   Secrets,
   Users,
+  Config
 ];
 
 export interface EditOptions {

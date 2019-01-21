@@ -7,7 +7,6 @@ import Create from './operations/create';
 import Explain from './operations/explain';
 import Sync from './operations/sync';
 import Apply from './operations/apply';
-import Config from './operations/config';
 import TubeeClient from './tubee.client';
 
 const map = [
@@ -19,7 +18,6 @@ const map = [
   Delete,
   Sync,
   Apply,
-  Config,
 ];
 
 export interface RootOptions {

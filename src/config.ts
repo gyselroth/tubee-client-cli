@@ -1,4 +1,5 @@
 const yaml = require('js-yaml');
+const path = require('path');
 const fs = require('fs');
 const homedir = require('os').homedir();
 export const tubectlFolder = homedir + '/.tubectl';
@@ -45,6 +46,9 @@ export class ConfigStore {
     return config;
   }
 
+  /**
+   * Retrieve config
+   */
   public static get(options = null): Config {
     if(!ConfigStore.config) {
       ConfigStore.config = ConfigStore.load(options);
@@ -53,17 +57,17 @@ export class ConfigStore {
     return ConfigStore.config;
   }
 
-  public static write(path: string, config: Config) {
-        /*
-        var writePath = optparse.parsedOpts.config[0] || configPath;
-        var configDir = path.dirname(writePath);
-        if (!fs.existsSync(configDir)) {
-          fs.mkdirSync(configDir, {
-            recursive: true,
-          });
-        }
+  /**
+   * Write config
+   */
+  public static write(configPath: string, config: Config) {
+    var configDir = path.dirname(configPath);
+    if (!fs.existsSync(configDir)) {
+      fs.mkdirSync(configDir, {
+        recursive: true,
+      });
+    }
 
-        fs.writeFileSync(writePath, yaml.dump(config));
-        */
+    fs.writeFileSync(configPath, yaml.dump(config));
   }
 }

@@ -3,7 +3,6 @@ import { SyncOptions, SyncArgs } from '../operations/sync';
 import TubeeClient from '../tubee.client';
 const JSONStream = require('JSONStream');
 const es = require('event-stream');
-import ProcessLog from './process-logs/get';
 import AbstractOperation from './abstract.operation';
 
 /**
@@ -40,14 +39,14 @@ export default abstract class AbstractSync extends AbstractOperation {
     if (opts.follow) {
       console.log('\n');
       var request = this.api.watchProcessLogs(result.body.namespace, result.body.id);
-      this.watchObjects(request, opts);
+      //this.watchObjects(request, opts);
     }
   }
 
   /**
    * Realtime updates
    */
-  public async watchObjects(request, opts) {
+  /*public async watchObjects(request, opts) {
     return request.pipe(JSONStream.parse('*')).pipe(es.mapSync(data => {
       var exception = null;
       if(data[1].data.exception) {
@@ -63,5 +62,5 @@ export default abstract class AbstractSync extends AbstractOperation {
         exception
       );
     }));
-  }
+  }*/
 }

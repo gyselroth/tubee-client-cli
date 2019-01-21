@@ -13,6 +13,8 @@ export default class Get extends AbstractGet {
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
       .subCommand<GetOptions, GetArgs>('collections [name]')
+      .option('-l, --logs [name]', 'Request resource logs')
+      .option('-t, --trace [name]', 'Request resource logs including stacktraces')
       .alias('co')
       .description('Get collections')
       .action(async (opts, args, rest) => {
@@ -26,22 +28,22 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async execute(opts, args, rest) {
-    if (opts.watch) {
-      if (args.name) {
-        var request = this.api.watchCollections(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
+    if (args.name) {
+      if(opts.logs.length > 0) {
+        if(opts.logs[0] == '') {
+          var response = await this.api.getCollectionLogs(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
+          this.getObjects(response, opts);
+        } else {
+          var response = await this.api.getCollectionLog(this.getNamespace(opts), args.name, args.logs[0], this.getFields(opts));
+          this.getObjects(response, opts);
+        }
       } else {
-        var request = this.api.watchCollections(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
-      }
-    } else {
-      if (args.name) {
         var response = await this.api.getCollection(this.getNamespace(opts), args.name, this.getFields(opts));
         this.getObjects(response, opts);
-      } else {
-        var response = await this.api.getCollections(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-        this.getObjects(response, opts);
       }
+    } else {
+      var response = await this.api.getCollections(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
+      this.getObjects(response, opts);
     }
   }
 }
