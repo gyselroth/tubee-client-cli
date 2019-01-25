@@ -34,20 +34,17 @@ export default class Get extends AbstractGet {
       if(opts.logs.length > 0) {
         if(opts.logs[0] == '') {
           var response = await this.api.getProcessLogs(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
-          return this.getObjects(response, opts);
         } else {
           var response = await this.api.getProcessLog(this.getNamespace(opts), args.name, args.logs[0], ...this.getQueryOptions(opts, args));
-          return this.getObjects(response, opts);
         }
       } else {
         var response = await this.api.getProcess(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
-        this.getObjects(response, opts);
       }
     } else {
       var response = await this.api.getProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
     }
 
-    this.getObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended'], resource => {
+    this.getObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended', 'Parent'], resource => {
       return this.prettify(resource);
     });
   }
@@ -66,7 +63,7 @@ export default class Get extends AbstractGet {
       ended = ta.ago(resource.status.ended);
     }
 
-    return [resource.name, Get.colorize(resource.status), this.timeDiff(resource) + 's', started, ended];
+    return [resource.name, Get.colorize(resource.status), this.timeDiff(resource) + 's', started, ended, resource.status.parent || '<main>'];
   }
 
   /**

@@ -34,14 +34,11 @@ export default class Get extends AbstractGet {
       if(opts.logs.length > 0) {
         if(opts.logs[0] == '') {
           var response = await this.api.getEndpointLogs(this.getNamespace(opts), args.collection, args.name, ...this.getQueryOptions(opts, args));
-          this.getObjects(response, opts);
         } else {
           var response = await this.api.getEndpointLog(this.getNamespace(opts), args.collection, args.name, args.logs[0], this.getFields(opts));
-          this.getObjects(response, opts);
         }
       } else {
         var response = await this.api.getEndpoint(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
-        this.getObjects(response, opts);
       }
     } else {
       var response = await this.api.getEndpoints(
@@ -50,7 +47,7 @@ export default class Get extends AbstractGet {
         ...this.getQueryOptions(opts, args),
       );
     }
-
+    
     this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
       return [
         resource.name,

@@ -134,7 +134,7 @@ export default class Apply {
           return 0;
         }
       });
-
+      
       this.apply(resources);
     } catch (error) {
       console.log(error);
@@ -146,19 +146,28 @@ export default class Apply {
    */
   protected async apply(resources) {
     if (resources instanceof Array) {
+      var stack = [];
+      var last_kind = null;
+
       for (let resource of resources) {
         let result = this.getKind(resource);
+
+        if(last_kind !== result && last_kind !== null) {
+          await Promise.all(stack);
+          stack = [];
+        }
+        
+        last_kind = result;
 
         if(result === null) {
           continue;
         }
 
-        result.apply(resource).then((response) => {
+        stack.push(result.apply(resource).then((response) => {
           console.log('[%s] %s <%s> updated', colors.green.bold('OK'), resource.kind, resource.name);
         }).catch((error) => {
-console.log(error);
           console.log('[%s] %s <%s> failed [%s: %s]', colors.red.bold('ERROR'), resource.kind, resource.name, error.response.body.error, error.response.body.message);
-        });
+        }));
       }
     } else if (resources instanceof Object) {
       return this.apply([resources]);

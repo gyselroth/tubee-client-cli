@@ -46,6 +46,8 @@ export interface GetOptions {
   namespace: string;
   limit: number;
   tail: boolean;
+  logs: boolean;
+  trace: boolean;
 }
 
 export interface GetArgs {

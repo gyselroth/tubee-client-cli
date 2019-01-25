@@ -42,7 +42,7 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    if(opts.logs.length > 0 && opts.output.length === 0) {
+    if(opts.logs && opts.logs.length > 0 && opts.output.length === 0) {
       opts.output.push('log');
     }
 
@@ -77,12 +77,7 @@ export default abstract class AbstractGet extends AbstractOperation {
         break;
       case 'log':
         for (let resource of response.response.body.data) {
-          console.log(
-            '%s %s %s',
-            resource.data.created,
-            AbstractGet.colorize(resource.data.level_name),
-            resource.data.message,
-          );
+          this.drawLogLine(resource, opts);
         }
       break;
       case 'cc': 
@@ -273,8 +268,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       data.data.message,
     );
 
-console.log(opts);
-    if(data.data.exception && opts.trace) {
+    if(data.data.exception && opts.trace.length > 0) {
       var e = data.data.exception;
       var line = e.class+': '+e.message+' in '+e.file+' stacktrace: '+e.trace;
       console.log(line);
