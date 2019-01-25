@@ -1,43 +1,37 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('namespaces [name]')
       .alias('ns')
-      .description('Get namespaces')
-      .action(this.execute.bind(this));
+      .description('Get new namespaces')
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Namespaces', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Mandators', this.optparse.parent.parsedOpts);
-
-    if (opts.watch) {
-      if (args.name) {
-        var request = category.watchMandators(...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
-      } else {
-        var request = category.watchMandators(...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
-      }
+    if (args.name) {
+      var response = await this.api.getNamespace(args.name, this.getFields(opts));
+      this.getObjects(response, opts);
     } else {
-      if (args.name) {
-        var response = await category.getMandator(args.name, this.getFields(opts));
-        this.getObjects(response, opts);
-      } else {
-        var response = await category.getMandators(...this.getQueryOptions(opts, args));
-        this.getObjects(response, opts);
-      }
+      var response = await this.api.getNamespaces(...this.getQueryOptions(opts, args));
+      this.getObjects(response, opts);
     }
   }
 }

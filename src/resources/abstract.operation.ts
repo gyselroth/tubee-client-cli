@@ -1,3 +1,5 @@
+import {ConfigStore} from '../config';
+
 /**
  * Abstract
  */
@@ -7,10 +9,6 @@ export default abstract class AbstractOperation {
    */
   protected createQuery(opts, args) {
     var query = null;
-
-    if (opts.watch && args.name) {
-      return JSON.stringify({ name: args.name });
-    }
 
     if (opts.jsonQuery[0]) {
       return opts.jsonQuery[0];
@@ -35,6 +33,16 @@ export default abstract class AbstractOperation {
     return query;
   }
 
+  protected getNamespace(opts): string {
+    if(opts.namespace[0]) {
+      return opts.namespace[0];
+    } else if(ConfigStore.get().defaultNamespace) {
+      return ConfigStore.get().defaultNamespace;
+    } else {
+      return 'default';
+    }
+  }
+
   /**
    * Get query options
    */
@@ -45,15 +53,30 @@ export default abstract class AbstractOperation {
       this.getOffset(opts),
       this.getLimit(opts),
       this.getSort(opts),
+      this.getStream(opts),
+      this.getWatch(opts),
     ];
+  }
+  
+  /**
+   * Get watch
+   */
+  protected getWatch(opts): boolean {
+    return opts.watch;
+  }
+
+  /**
+   * Get stream
+   */
+  protected getStream(opts): boolean {
+    return opts.stream;
   }
 
   /**
    * Get offset
    */
-  protected getOffset(opts) {
-    var query = null;
-    if (opts.tail) {
+  protected getOffset(opts): number {
+    if (opts.tail[0]) {
       return opts.tail[0] * -1;
     } else {
       return 0;
@@ -63,7 +86,17 @@ export default abstract class AbstractOperation {
   /**
    * Get limit
    */
-  protected getLimit(opts) {
+  protected getLimit(opts): number {
+    if (opts.limit[0]) {
+      if(opts.limit[0] > 100) {
+        return 100;
+      }
+
+      return opts.limit[0];
+    } else if(opts.stream) {
+      return 0;
+    }
+  
     return 100;
   }
 

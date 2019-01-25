@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 import ProcessGet from '../processes/get';
@@ -11,49 +13,46 @@ export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<GetOptions, GetArgs>('jobs [name]')
       .description('Get synchronization jobs')
-      .action(this.execute.bind(this));
+      .option('-l, --logs [name]', 'Request resource logs')
+      .option('-t, --trace', 'Including log stacktraces')
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Jobs', this.optparse.parent.parsedOpts);
-
-    if (opts.watch) {
-      if (args.name) {
-        var request = category.watchJobs(...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
+    if (args.name) {
+      if(opts.logs.length > 0) {
+        if(opts.logs[0] == '') {
+          var response = await this.api.getJobLogs(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
+          this.getObjects(response, opts);
+        } else {
+          var response = await this.api.getJobLog(this.getNamespace(opts), args.name, args.logs[0], this.getFields(opts));
+          this.getObjects(response, opts);
+        }
       } else {
-        var request = category.watchJobs(...this.getQueryOptions(opts, args));
-        this.watchObjects(
-          response,
-          opts,
-          ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
-          resource => {
-            return this.prettify(resource);
-          },
-        );
+        var response = await this.api.getJob(this.getNamespace(opts), args.name, this.getFields(opts));
+        this.getObjects(response, opts);
       }
     } else {
-      if (args.name) {
-        var response = await category.getJob(args.name, this.getFields(opts));
-        this.getObjects(response, opts);
-      } else {
-        var response = await category.getJobs(...this.getQueryOptions(opts, args));
-        this.getObjects(
-          response,
-          opts,
-          ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
-          resource => {
-            return this.prettify(resource);
-          },
-        );
-      }
+      var response = await this.api.getJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
+      this.getObjects(
+        response,
+        opts,
+        ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
+        resource => {
+          return this.prettify(resource);
+        },
+      );
     }
   }
 
@@ -66,11 +65,11 @@ export default class Get extends AbstractGet {
     var status;
 
     if (resource.status.status === true && resource.status.last_process.code > 0) {
-      started = ta.ago(resource.status.started);
+      started = ta.ago(resource.status.last_process.started);
     }
 
     if (resource.status.status === true && resource.status.last_process.code > 2) {
-      ended = ta.ago(resource.status.ended);
+      ended = ta.ago(resource.status.last_process.ended);
     }
 
     if (resource.status.status === false) {

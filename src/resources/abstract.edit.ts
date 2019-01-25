@@ -5,7 +5,6 @@ const yaml = require('js-yaml');
 const fs = require('fs');
 const editor = process.env.EDITOR || 'vim';
 const child_process = require('child_process');
-const md5File = require('md5-file');
 const jsonpatch = require('fast-json-patch');
 const randomstring = require('randomstring');
 import AbstractOperation from './abstract.operation';
@@ -16,16 +15,14 @@ const fspath = require('path');
  * Edit resources
  */
 export default abstract class AbstractEdit extends AbstractOperation {
-  protected optparse: Command<EditOptions, EditArgs>;
-  protected client: TubeeClient;
+  protected api;
 
   /**
    * Construct
    */
-  constructor(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
+  constructor(api) {
     super();
-    this.optparse = optparse;
-    this.client = client;
+    this.api = api;
   }
 
   /**
@@ -58,7 +55,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
   /**
    * Open editor to edit resources
    */
-  protected async openEditor(callback, objects, path: string, output: string, md5?: string) {
+  protected async openEditor(callback, objects, path: string, output: string, existing?: string) {
     return new Promise(async (resolve, reject) => {
       var child = child_process.spawn(editor, [path], {
         stdio: 'inherit',
@@ -67,6 +64,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
       await child.on('exit', async (e, code) => {
         var body: string = fs.readFileSync(path, 'utf-8');
         var update;
+        var new_hash: string;
 
         try {
           switch (output) {
@@ -79,40 +77,29 @@ export default abstract class AbstractEdit extends AbstractOperation {
               update = yaml.safeLoad(body);
           }
 
+          new_hash = JSON.stringify(update);
           await this.updateObjects(objects, update, callback).catch(response => {
             throw new Error(response.response.body.error + ' - ' + response.response.body.message);
           });
 
           resolve();
         } catch (error) {
-          body = '#' + error + '\n' + body;
-          var result = this.writeError(callback, body, objects, path, output, md5);
-
-          if (!result) {
-            reject();
+          if (new_hash == existing) {
+            console.log('Could not update resource %s', path);
+            return;
           }
+
+          body = '#' + error + '\n' + body;
+          await fs.writeFile(path, body, function(err) {
+            if (err) {
+              return console.log(err);
+            }
+          });
+
+          this.openEditor(callback, objects, path, output, new_hash);
         }
       });
     });
-  }
-
-  /**
-   * Write error to file
-   */
-  protected async writeError(callback, body, objects, path: string, output: string, md5?: string) {
-    await fs.writeFile(path, body, function(err) {
-      if (err) {
-        return console.log(err);
-      }
-    });
-
-    var sum = md5File.sync(path);
-
-    if (sum === md5) {
-      return false;
-    }
-
-    this.openEditor(callback, objects, path, output, sum);
   }
 
   /**
@@ -121,8 +108,8 @@ export default abstract class AbstractEdit extends AbstractOperation {
   protected async updateObjects(update, existing, callback) {
     if (update.kind == 'List') {
       for (let resource of update.data) {
-        let to = this.getData(resource);
-        let from = this.getData(this.findObject(existing, resource.name));
+        let to = resource;
+        let from = this.findObject(existing, resource.name);
         let patch = jsonpatch.compare(to, from);
 
         if (patch.length > 0) {
@@ -146,12 +133,5 @@ export default abstract class AbstractEdit extends AbstractOperation {
         return resource;
       }
     }
-  }
-
-  /**
-   * Get resource data
-   */
-  protected getData(resource) {
-    return resource;
   }
 }

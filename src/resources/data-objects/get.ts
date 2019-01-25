@@ -1,53 +1,70 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<GetOptions, GetArgs>('data-objects <namespace> <collection> [name]')
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<GetOptions, GetArgs>('data-objects <collection> [name]')
+      .option('-l, --logs [name]', 'Request resource logs')
+      .option('-t, --trace [name]', 'Request resource logs including stacktraces')
+      .option('-r, --relations [name]', 'Get object relations')
       .alias('do')
       .description('Get data objects')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('DataObjects', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Data', this.optparse.parent.parsedOpts);
-
-    if (opts.watch) {
-      if (args.name) {
-        var request = category.watchObjects(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
-      } else {
-        var request = category.watchObjects(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
-      }
-    } else {
-      if (args.name) {
-        if (opts.history || opts.diff[0]) {
-          var response = await category.getObjectHistory(
-            args.namespace,
+    if (args.name) {
+      if(opts.relations.length > 0) {
+        if(opts.relations[0] === '') {
+          var response = await this.api.getObjectRelations(
+            this.getNamespace(opts),
             args.collection,
             args.name,
-            this.getFields(opts),
+            ...this.getQueryOptions(opts, args),
           );
           this.getObjects(response, opts);
         } else {
-          var response = await category.getObject(args.namespace, args.collection, args.name, this.getFields(opts));
+
+        }
+      } else if(opts.logs.length > 0) {
+        if(opts.logs[0] == '') {
+          var response = await this.api.getObjectLogs(this.getNamespace(opts), args.collection, args.name, ...this.getQueryOptions(opts, args));
+          this.getObjects(response, opts);
+        } else {
+          var response = await this.api.getObjectLog(this.getNamespace(opts), args.collection, args.name, args.logs[0], this.getFields(opts));
           this.getObjects(response, opts);
         }
+      } else if (opts.history || opts.diff[0]) {
+        var response = await this.api.getObjectHistory(
+          this.getNamespace(opts),
+          args.collection,
+          args.name,
+          ...this.getQueryOptions(opts, args),
+        );
+        this.getObjects(response, opts);
       } else {
-        var response = await category.getObjects(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getObject(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
         this.getObjects(response, opts);
       }
+    } else {
+      var response = await this.api.getObjects(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
+      this.getObjects(response, opts);
     }
   }
 }

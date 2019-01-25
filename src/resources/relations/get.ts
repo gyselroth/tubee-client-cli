@@ -1,65 +1,44 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<GetOptions, GetArgs>('relations <namespace> <collection> <object> [name]')
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<GetOptions, GetArgs>('relations [name]')
       .alias('re')
       .description('Get data object relations')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('DataObjectRelations', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Data', this.optparse.parent.parsedOpts);
-
-    if (opts.watch) {
-      if (args.name) {
-        var request = category.watchObjectRelatives(
-          args.namespace,
-          args.collection,
-          args.object,
-          args.name,
-          ...this.getQueryOptions(opts, args),
-        );
-        this.watchObjects(request, opts);
-      } else {
-        var request = category.watchObjectRelative(
-          args.namespace,
-          args.collection,
-          args.name,
-          ...this.getQueryOptions(opts, args),
-        );
-        this.watchObjects(request, opts);
-      }
+    if (args.name) {
+      var response = await this.api.getRelation(
+        this.getNamespace(opts),
+        args.name,
+        this.getFields(opts),
+      );
+      this.getObjects(response, opts);
     } else {
-      if (args.name) {
-        var response = await category.getObjectRelative(
-          args.namespace,
-          args.collection,
-          args.object,
-          args.name,
-          this.getFields(opts),
-        );
-        this.getObjects(response, opts);
-      } else {
-        var response = await category.getObjectRelatives(
-          args.namespace,
-          args.collection,
-          args.object,
-          ...this.getQueryOptions(opts, args),
-        );
-        this.getObjects(response, opts);
-      }
+      var response = await this.api.getRelations(
+        this.getNamespace(opts),
+        ...this.getQueryOptions(opts, args),
+      );
+      this.getObjects(response, opts);
     }
   }
 }

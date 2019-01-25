@@ -3,6 +3,7 @@ import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 const SwaggerParser = require('swagger-parser');
 const specPath = 'node_modules/@gyselroth/tubee-sdk-node/swagger.yml';
+import { mergeAllOf } from '../swagger';
 
 export interface ExplainOptions {
   output: string;
@@ -46,8 +47,7 @@ export default class Explain {
     console.log(''.padStart(4, ' ') + api.description + '\n');
 
     console.log('FIELDS');
-    this.describeFields(api.allOf[0].properties);
-    this.describeFields(api.allOf[1].properties);
+    this.describeFields(mergeAllOf(api).properties);
   }
 
   /**

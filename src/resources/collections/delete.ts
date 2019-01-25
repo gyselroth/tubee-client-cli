@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { DeleteOptions, DeleteArgs } from '../../operations/delete';
 import AbstractDelete from '../abstract.delete';
 
@@ -8,20 +10,23 @@ export default class Delete extends AbstractDelete {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
+  public static applyOptions(optparse: Command<DeleteOptions, DeleteArgs>, client: TubeeClient) {
+    return optparse
       .subCommand<DeleteOptions, DeleteArgs>('collections <name>')
       .alias('co')
       .description('Delete collection')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Collections', optparse.parent.parsedOpts);
+        var instance = new Delete(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Datatypes', this.optparse.parent.parsedOpts);
-    await api.deleteDatatype(args.namespace, args.name);
+    await this.api.deleteCollection(this.getNamespace(opts), args.name);
     console.log('resource %s has been deleted', args.name);
   }
 }

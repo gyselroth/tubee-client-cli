@@ -1,10 +1,10 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
-import AccessRoles from '../resources/access.roles/delete';
-import Mandators from '../resources/namespaces/delete';
-import AccessRules from '../resources/access.rules/delete';
-import DataTypes from '../resources/collections/delete';
+import AccessRoles from '../resources/access-roles/delete';
+import Namespaces from '../resources/namespaces/delete';
+import AccessRules from '../resources/access-rules/delete';
+import Collections from '../resources/collections/delete';
 import DataObjects from '../resources/data-objects/delete';
 import Relations from '../resources/relations/delete';
 import Endpoints from '../resources/endpoints/delete';
@@ -12,12 +12,13 @@ import Jobs from '../resources/jobs/delete';
 import Workflows from '../resources/workflows/delete';
 import Secrets from '../resources/secrets/delete';
 import Users from '../resources/users/delete';
+import Processes from '../resources/processes/delete';
 
 const map = [
   AccessRoles,
   AccessRules,
-  Mandators,
-  DataTypes,
+  Namespaces,
+  Collections,
   DataObjects,
   Relations,
   Endpoints,
@@ -25,6 +26,7 @@ const map = [
   Workflows,
   Secrets,
   Users,
+  Processes
 ];
 
 export interface DeleteOptions {}
@@ -45,8 +47,8 @@ export default class Delete {
     let remote = optparse.subCommand<DeleteOptions, DeleteArgs>('delete').description('Delete resources');
 
     for (let resource of map) {
-      let instance = new resource(remote, client);
-      let sub = instance.applyOptions();
+      let sub = resource.applyOptions(remote, client);
+      sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
     }
   }
 }

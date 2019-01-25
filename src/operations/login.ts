@@ -3,10 +3,11 @@ import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 const yaml = require('js-yaml');
 const fs = require('fs');
-import { Config, configPath } from '../tubee.client';
+import { Config, ConfigStore, keytarPath, configPath } from '../config';
 const keytar = require('keytar');
+keytar.setPath(keytarPath);
 const path = require('path');
-const api = require('@gyselroth/tubee-sdk-node');
+const { v1, auth } = require('@gyselroth/tubee-sdk-node');
 const prompt = require('password-prompt');
 
 export interface LoginOptions {
@@ -31,7 +32,7 @@ export default class Login {
    * Apply cli options
    */
   public static async factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
-    let remote = optparse.subCommand<LoginOptions, LoginArgs>('login').description('Login resources');
+    let remote = optparse.subCommand<LoginOptions, LoginArgs>('login').description('Login and configure tubee server');
     remote
       .option('-u, --username <name>', 'HTTP basic auth username')
       .option('-p, --password <name>', 'HTTP basic auth password')
@@ -65,13 +66,12 @@ export default class Login {
         }
 
         var server = config.url || 'https://localhost:8090';
-        var client = new api['DefaultApi'](server + '/api/v1');
-        var auth = new api.HttpBasicAuth();
-        auth.username = config.username || 'admin';
-        auth.password = opts.password[0];
-        client.setDefaultAuthentication(auth);
+        var client = new v1['DefaultApi'](server + '/api/v1');
+        var basic = new auth.basic();
+        basic.username = config.username || 'admin';
+        basic.password = opts.password[0];
+        client.setDefaultAuthentication(basic);
         var result = await client.root();
-
         if (result.response.body.name !== 'tubee') {
           throw new Error('server is not a tubee server');
         }
@@ -79,14 +79,7 @@ export default class Login {
         console.log('Successfully connected to server %s', server);
 
         var writePath = optparse.parsedOpts.config[0] || configPath;
-        var configDir = path.dirname(writePath);
-        if (!fs.existsSync(configDir)) {
-          fs.mkdirSync(configDir, {
-            recursive: true,
-          });
-        }
-
-        fs.writeFileSync(writePath, yaml.dump(config));
+        ConfigStore.write(writePath, config);
       });
   }
 }

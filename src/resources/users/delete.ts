@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { DeleteOptions, DeleteArgs } from '../../operations/delete';
 import AbstractDelete from '../abstract.delete';
 
@@ -8,20 +10,23 @@ export default class Delete extends AbstractDelete {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<DeleteOptions, DeleteArgs>('users <namespace> <name>')
+  public static applyOptions(optparse: Command<DeleteOptions, DeleteArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<DeleteOptions, DeleteArgs>('users <name>')
       .alias('ar')
-      .description('Delete access role')
-      .action(this.execute.bind(this));
+      .description('Delete user')
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Users', optparse.parent.parsedOpts);
+        var instance = new Delete(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Users', this.optparse.parent.parsedOpts);
-    await api.deleteUser(args.name);
+    await this.api.deleteUser(args.name);
     console.log('resource %s has been deleted', args.name);
   }
 }

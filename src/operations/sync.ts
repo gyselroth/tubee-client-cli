@@ -1,17 +1,18 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
-import Mandators from '../resources/namespaces/sync';
-import DataTypes from '../resources/collections/sync';
+import Namespaces from '../resources/namespaces/sync';
+import Collections from '../resources/collections/sync';
 import DataObjects from '../resources/data-objects/sync';
 import Endpoints from '../resources/endpoints/sync';
 
-const map = [Mandators, DataTypes, DataObjects, Endpoints];
+const map = [Namespaces, Collections, DataObjects, Endpoints];
 
 export interface SyncOptions {
   follow: boolean;
   abortOnError: boolean;
   level: string;
+  namespace: string;
 }
 
 export interface SyncArgs {
@@ -30,10 +31,11 @@ export default class Sync {
     let remote = optparse.subCommand<SyncOptions, SyncArgs>('sync').description('Sync resources');
 
     for (let resource of map) {
-      let instance = new resource(remote, client);
-      let sub = instance.applyOptions();
+      let sub = resource.applyOptions(remote, client);
+      sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
       sub.option('-t, --follow', 'Follow process and watch in forderground');
       sub.option('-l, --level <name>', 'Specify log level for the process (emerg,error,warning,info,debug)');
+      sub.option('-s, --simulate', 'Simulate sync process (No changes are made)');
       sub.option('--abort-on-error', 'Abort process if an error occurs');
     }
   }

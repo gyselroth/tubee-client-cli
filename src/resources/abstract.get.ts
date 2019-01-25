@@ -14,6 +14,7 @@ const fspath = require('path');
 const difftool = process.env.DIFFTOOL || 'diff';
 const child_process = require('child_process');
 const randomstring = require('randomstring');
+const objectPath = require("object-path");
 
 export const tableConfig = {
   border: getBorderCharacters('ramac'),
@@ -27,28 +28,45 @@ export const tableConfig = {
  * Get resources
  */
 export default abstract class AbstractGet extends AbstractOperation {
-  protected optparse: Command<GetOptions, GetArgs>;
-  protected client: TubeeClient;
+  protected api;
 
   /**
    * Construct
    */
-  constructor(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+  constructor(api) {
     super();
-    this.optparse = optparse;
-    this.client = client;
+    this.api = api;
   }
 
   /**
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    if(opts.logs && opts.logs.length > 0 && opts.output.length === 0) {
+      opts.output.push('log');
+    }
+
+    if (opts.watch) {
+      return this.watchObjects(response, opts, fields, callback);
+    }
+    
+    if (opts.stream) {
+      return this.streamObjects(response, opts, fields, callback);
+    }
+    
     if (opts.diff[0]) {
       return this.compare(response.response.toJSON().body, opts);
     }
+    
+    var output;
+    if(opts.output[0]) {
+      output = opts.output[0].split('=')[0];
+    } else {
+      output = opts.output[0]; 
+    }
 
     var body: string;
-    switch (opts.output[0]) {
+    switch (output) {
       case 'json':
         body = JSON.stringify(response.response.toJSON().body, null, 2);
         console.log(body);
@@ -57,6 +75,35 @@ export default abstract class AbstractGet extends AbstractOperation {
         body = yaml.dump(response.response.toJSON().body);
         console.log(body);
         break;
+      case 'log':
+        for (let resource of response.response.body.data) {
+          this.drawLogLine(resource, opts);
+        }
+      break;
+      case 'cc': 
+        fields = [];
+        var values = [];
+        var cols = opts.output[0].split('=')[1];
+        
+        for(let col of cols.split(',')) {
+          fields.push(col.split(':')[0]);
+          values.push(col.split(':')[1]);
+        }
+    
+        callback = resource => {
+          var result = [];
+          for(let value of values) {
+            value = objectPath.get(resource, value);
+            if(value === undefined) {
+              result.push('<none>');
+            } else {
+              result.push(value);
+            }
+          }
+          
+          return result;      
+        }
+      
       case 'list':
       default:
         if (callback === null) {
@@ -88,7 +135,6 @@ export default abstract class AbstractGet extends AbstractOperation {
   /**
    * Start difftool
    */
-
   protected async compare(objects, opts) {
     var result = null;
     for (let resource of objects.data) {
@@ -130,20 +176,26 @@ export default abstract class AbstractGet extends AbstractOperation {
     fs.writeFileSync(path, body);
     return path;
   }
-
+  
   /**
-   * Realtime updates
+   * Display stream
    */
-  public async watchObjects(request, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    var stream = createStream(tableConfig);
-    stream.write(fields.map(x => colors.bold(x)));
+  public async streamObjects(request, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    var config = tableConfig;
+    config.columnCount = fields.length;
 
+    if(!opts.output[0] || opts.output[0] === 'list') {
+      var stream = createStream(config);
+      stream.write(fields.map(x => colors.bold(x)));
+    }
+ 
     if (callback === null) {
       callback = resource => {
         return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
       };
     }
-
+    
+    var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
         switch (opts.output[0]) {
@@ -153,11 +205,93 @@ export default abstract class AbstractGet extends AbstractOperation {
           case 'yaml':
             console.log(yaml.dump(data));
             console.log('---');
+            break;
+          case 'log':
+            that.drawLogLine(data, opts);
+          break;
           case 'list':
           default:
-            stream.write([data[1].name, data[1].version, ta.ago(data[1].changed), ta.ago(data[1].created)]);
+            stream.write(callback(data));
         }
       }),
     );
+  }
+
+  /**
+   * Realtime updates
+   */
+  public async watchObjects(request, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    var config = tableConfig;
+    config.columnCount = fields.length;
+
+    if(!opts.output[0] || opts.output[0] === 'list') {
+      var stream = createStream(config);
+      stream.write(fields.map(x => colors.bold(x)));
+    }
+ 
+    if (callback === null) {
+      callback = resource => {
+        return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
+      };
+    }
+    
+    var that = this;
+    request.pipe(JSONStream.parse('*')).pipe(
+      es.mapSync(function(data) {
+        switch (opts.output[0]) {
+          case 'json':
+            console.log(JSON.stringify(data, null, 2));
+            break;
+          case 'yaml':
+            console.log(yaml.dump(data));
+            console.log('---');
+            break;
+          case 'log':
+            that.drawLogLine(data[1], opts);
+          break;
+          case 'list':
+          default:
+            stream.write(callback(data[1]));
+        }
+      }),
+    );
+  }
+
+  /**
+   * Stream
+   */
+  public async drawLogLine(data, opts) {
+    console.log(
+      '%s %s %s',
+      data.created,
+      AbstractGet.colorize(data.data.level_name),
+      data.data.message,
+    );
+
+    if(data.data.exception && opts.trace.length > 0) {
+      var e = data.data.exception;
+      var line = e.class+': '+e.message+' in '+e.file+' stacktrace: '+e.trace;
+      console.log(line);
+    }
+  }
+
+  /**
+   * Colorize log level
+   */
+  public static colorize(status): string {
+    switch (status) {
+      case 'DEBUG':
+        return colors.bgBlue(status);
+        break;
+      case 'INFO':
+        return colors.bgCyan(status);
+        break;
+      case 'WARNING':
+        return colors.bgYellow(status);
+        break;
+      case 'ERROR':
+      default:
+        return colors.bgRed(status);
+    }
   }
 }

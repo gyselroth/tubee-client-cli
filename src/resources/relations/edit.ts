@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { EditOptions, EditArgs } from '../../operations/edit';
 import AbstractEdit from '../abstract.edit';
 
@@ -8,39 +10,37 @@ export default class Edit extends AbstractEdit {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<EditOptions, EditArgs>('relations <namespace> <collection> <object> [name]')
+  public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<EditOptions, EditArgs>('relations [name]')
       .alias('re')
       .description('Edit data object relations')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('DataObjectRelations', optparse.parent.parsedOpts);
+        var instance = new Edit(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var api = await this.client.factory('Data', this.optparse.parent.parsedOpts);
-
     if (args.name) {
-      var response = await api.getObjectRelative(
-        args.namespace,
-        args.collection,
-        args.object,
+      var response = await this.api.getRelation(
+        this.getNamespace(opts),
         args.name,
         this.getFields(opts),
       );
     } else {
-      var response = await api.getObjectRelatives(
-        args.namespace,
-        args.collection,
-        args.object,
+      var response = await this.api.getRelation(
+        this.getNamespace(opts),
         this.getQueryOptions(opts, args),
       );
     }
 
     this.editObjects(response, opts, async (name, patch) => {
-      return await api.updateObjectRelative(args.namespace, args.collection, args.object, name, patch);
+      return await this.api.updateRelation(this.getNamespace(opts), name, patch);
     });
   }
 }

@@ -1,68 +1,63 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
 const ta = require('time-ago');
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<GetOptions, GetArgs>('endpoints <namespace> <collection> [name]')
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<GetOptions, GetArgs>('endpoints <collection> [name]')
+      .option('-l, --logs [name]', 'Request resource logs')
+      .option('-t, --trace [name]', 'Request resource logs including stacktraces')
       .alias('ep')
       .description('Get endpoints')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Endpoints', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Endpoints', this.optparse.parent.parsedOpts);
-
-    if (opts.watch) {
-      if (args.name) {
-        var request = category.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
+    if (args.name) {
+      if(opts.logs.length > 0) {
+        if(opts.logs[0] == '') {
+          var response = await this.api.getEndpointLogs(this.getNamespace(opts), args.collection, args.name, ...this.getQueryOptions(opts, args));
+        } else {
+          var response = await this.api.getEndpointLog(this.getNamespace(opts), args.collection, args.name, args.logs[0], this.getFields(opts));
+        }
       } else {
-        var request = category.watchEndpoints(args.namespace, args.collection, ...this.getQueryOptions(opts, args));
-        this.watchObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
-          return [
-            resource.name,
-            resource.data.type,
-            this.colorize(resource.status.available),
-            resource.version,
-            ta.ago(resource.changed),
-            ta.ago(resource.created),
-          ];
-        });
+        var response = await this.api.getEndpoint(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
       }
     } else {
-      if (args.name) {
-        var response = await category.getEndpoint(args.namespace, args.collection, args.name, this.getFields(opts));
-        this.getObjects(response, opts);
-      } else {
-        var response = await category.getEndpoints(
-          args.namespace,
-          args.collection,
-          ...this.getQueryOptions(opts, args),
-        );
-        this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
-          return [
-            resource.name,
-            resource.data.type,
-            this.colorize(resource.status.available),
-            resource.version,
-            ta.ago(resource.changed),
-            ta.ago(resource.created),
-          ];
-        });
-      }
+      var response = await this.api.getEndpoints(
+        this.getNamespace(opts),
+        args.collection,
+        ...this.getQueryOptions(opts, args),
+      );
     }
+    
+    this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
+      return [
+        resource.name,
+        resource.data.type,
+        this.colorize(resource.status.available),
+        resource.version,
+        ta.ago(resource.changed),
+        ta.ago(resource.created),
+      ];
+    });
   }
 
   /**

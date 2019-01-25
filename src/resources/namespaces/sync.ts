@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { SyncOptions, SyncArgs } from '../../operations/sync';
 import AbstractSync from '../abstract.sync';
 
@@ -8,12 +10,16 @@ export default class Sync extends AbstractSync {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<SyncOptions, SyncArgs>('namespaces [name]')
+  public static applyOptions(optparse: Command<SyncOptions, SyncArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<SyncOptions, SyncArgs>('namespaces <name>')
       .alias('ns')
       .description('Sync namespaces')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var instance = new Sync(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
@@ -26,12 +32,11 @@ export default class Sync extends AbstractSync {
 
     var resource = {
       data: {
-        namespaces: rest || ['*'],
         collections: ['*'],
         endpoints: ['*'],
       },
     };
 
-    this.addProcess(resource, opts, args, rest);
+    this.addProcess(args.name, resource, opts, args, rest);
   }
 }

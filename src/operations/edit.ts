@@ -1,10 +1,10 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
-import AccessRoles from '../resources/access.roles/edit';
-import Mandators from '../resources/namespaces/edit';
-import AccessRules from '../resources/access.rules/edit';
-import DataTypes from '../resources/collections/edit';
+import AccessRoles from '../resources/access-roles/edit';
+import Namespaces from '../resources/namespaces/edit';
+import AccessRules from '../resources/access-rules/edit';
+import Collections from '../resources/collections/edit';
 import DataObjects from '../resources/data-objects/edit';
 import Relations from '../resources/relations/edit';
 import Endpoints from '../resources/endpoints/edit';
@@ -12,12 +12,13 @@ import Jobs from '../resources/jobs/edit';
 import Workflows from '../resources/workflows/edit';
 import Secrets from '../resources/secrets/edit';
 import Users from '../resources/users/edit';
+import Config from '../resources/config/edit';
 
 const map = [
   AccessRoles,
   AccessRules,
-  Mandators,
-  DataTypes,
+  Namespaces,
+  Collections,
   DataObjects,
   Relations,
   Endpoints,
@@ -25,13 +26,19 @@ const map = [
   Workflows,
   Secrets,
   Users,
+  Config
 ];
 
 export interface EditOptions {
   output: string;
   file: string;
   jsonQuery: string;
+  fieldFilter: string;
   fieldSelector: string;
+  namespace: string;
+  limit: number;
+  sort: string;
+  tail: boolean;
 }
 
 export interface EditArgs {
@@ -50,12 +57,13 @@ export default class Edit {
     let remote = optparse.subCommand<EditOptions, EditArgs>('edit').description('Edit resources');
 
     for (let resource of map) {
-      let instance = new resource(remote, client);
-      let sub = instance.applyOptions();
+      let sub = resource.applyOptions(remote, client);
       sub
+        .option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".')
         .option('-o, --output <name>', 'Define the output format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')
         .option('--json-query <name>', 'Specify an advanced json query')
+        .option('-l --limit <number>', 'Max number of resources to be returned. May not be higher than 100.')
         .option('-q, --field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)')
         .option(
           '--field-filter <name>',

@@ -1,3 +1,5 @@
+import { Command } from 'commandpost';
+import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
@@ -8,36 +10,40 @@ export default class Get extends AbstractGet {
   /**
    * Apply cli options
    */
-  public applyOptions() {
-    return this.optparse
-      .subCommand<GetOptions, GetArgs>('collections <namespace> [name]')
+  public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
+    return optparse
+      .subCommand<GetOptions, GetArgs>('collections [name]')
+      .option('-l, --logs [name]', 'Request resource logs')
+      .option('-t, --trace [name]', 'Request resource logs including stacktraces')
       .alias('co')
       .description('Get collections')
-      .action(this.execute.bind(this));
+      .action(async (opts, args, rest) => {
+        var api = await client.factory('Collections', optparse.parent.parsedOpts);
+        var instance = new Get(api);
+        instance.execute(opts, args, rest);
+      });
   }
 
   /**
    * Execute
    */
   public async execute(opts, args, rest) {
-    var category = await this.client.factory('Datatypes', this.optparse.parent.parsedOpts);
-
-    if (opts.watch) {
-      if (args.name) {
-        var request = category.watchDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
+    if (args.name) {
+      if(opts.logs.length > 0) {
+        if(opts.logs[0] == '') {
+          var response = await this.api.getCollectionLogs(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
+          this.getObjects(response, opts);
+        } else {
+          var response = await this.api.getCollectionLog(this.getNamespace(opts), args.name, args.logs[0], this.getFields(opts));
+          this.getObjects(response, opts);
+        }
       } else {
-        var request = category.watchDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
-        this.watchObjects(request, opts);
+        var response = await this.api.getCollection(this.getNamespace(opts), args.name, this.getFields(opts));
+        this.getObjects(response, opts);
       }
     } else {
-      if (args.name) {
-        var response = await category.getDatatype(args.namespace, args.name, this.getFields(opts));
-        this.getObjects(response, opts);
-      } else {
-        var response = await category.getDatatypes(args.namespace, ...this.getQueryOptions(opts, args));
-        this.getObjects(response, opts);
-      }
+      var response = await this.api.getCollections(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
+      this.getObjects(response, opts);
     }
   }
 }
