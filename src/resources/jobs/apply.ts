@@ -23,7 +23,7 @@ export default class Apply extends AbstractApply {
       if(update === true) {
         throw error;
       }
-
+      
       return this.api.addJob(namespace, resource);  
     })
   }
