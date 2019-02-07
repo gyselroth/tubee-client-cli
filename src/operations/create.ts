@@ -28,6 +28,7 @@ const map = {
   'DataObject': DataObjects,
   'DataObjectRelation': Relations,
   'Workflow': Workflows,
+  'GarbageWorkflow': Workflows,
   'Job': Jobs,
   'Process': Processes,
 };
@@ -43,6 +44,7 @@ const apiMap = {
   'DataObject': 'DataObjects',
   'DataObjectRelation': 'DataObjectRelations',
   'Workflow': 'Workflows',
+  'GarbageWorkflow': 'Workflows',
   'Job': 'Jobs',
   'Process': 'Jobs',
 };

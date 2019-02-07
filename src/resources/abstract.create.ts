@@ -204,7 +204,14 @@ export default abstract class AbstractCreate extends AbstractOperation {
 
           await this.applyObjects(update).catch(response => {
             if (response.response) {
-              throw new Error(response.response.body.error + ' - ' + response.response.body.message);
+              var msg = '';
+              if(response.response.body.more) {
+                msg += yaml.dump(response.response.body.more).split('\n').map(s => `# ${s}`).join('\n');
+              } else {
+                msg = response.response.body.error + ' - ' + response.response.body.message;
+              }
+
+              throw new Error(msg);
             } else {
               throw response;
             }
