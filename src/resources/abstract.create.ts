@@ -7,7 +7,7 @@ const editor = process.env.EDITOR || 'vim';
 const child_process = require('child_process');
 import AbstractOperation from './abstract.operation';
 const SwaggerParser = require('swagger-parser');
-const specPath = 'node_modules/@gyselroth/tubee-sdk-node/swagger.yml';
+const specPath = 'node_modules/@gyselroth/tubee-sdk-node/openapi.yml';
 const randomstring = require('randomstring');
 const os = require('os');
 const fspath = require('path');
@@ -70,14 +70,14 @@ export default abstract class AbstractCreate extends AbstractOperation {
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);
-        } else if (api.definitions[resourceType]) {
+        } else if (api.components.schemas[resourceType]) {
           for (let field in resources) {
             if (resources[field] != undefined) {
               body += field + ': ' + resources[field] + '\n';
             }
           }
 
-          body += this.createTemplate(mergeAllOf(api.definitions[resourceType]).properties);
+          body += this.createTemplate(mergeAllOf(api.components.schemas[resourceType]).properties);
         }
         
         await fs.writeFile(path, body, function(err) {
@@ -127,7 +127,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           ''.padStart(depth, ' ') +
           attr +
           ': ' +
-          (this.quote(definition[attr])) +
+          (this.quote(definition[attr], depth + 2)) +
           ' #<' +
           definition[attr].type +
           this.parseEnum(definition[attr]) +
@@ -143,7 +143,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
   /**
    * Quote string if required
    */
-  protected quote(property) {
+  protected quote(property, depth) {
     if(property.type === 'object') {
       return '{}';
     }
@@ -161,6 +161,10 @@ export default abstract class AbstractCreate extends AbstractOperation {
 
       return '"'+value+'"';
     }   
+
+    if(typeof(value) == 'object' && value !== null && !(value instanceof Array)) {
+        return "\n"+"".padStart(depth,  ' ')+yaml.dump(value).trim().replace(/\n/, '\n    ');
+    }
 
     return JSON.stringify(value);
   }
