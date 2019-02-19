@@ -16,7 +16,7 @@ export default class Sync extends AbstractSync {
       .alias('ep')
       .description('Sync endpoints')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Sync(api);
         instance.execute(opts, args, rest);
       });

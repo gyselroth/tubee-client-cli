@@ -16,7 +16,7 @@ export default class Get extends AbstractGet {
       .alias('eo')
       .description('Get objects from endpoint')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('EndpointObjects', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
         instance.execute(opts, args, rest);
       });

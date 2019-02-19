@@ -1,4 +1,4 @@
-const { v1, auth } = require('@gyselroth/tubee-sdk-node');
+const { V1Api, HttpBasicAuth, localVarRequest } = require('@gyselroth/tubee-sdk-node');
 const fs = require('fs');
 const keytar = require('keytar');
 import {keytarPath, keytarPathOrig, Config, ConfigStore, configPath, tubectlFolder} from './config';
@@ -24,7 +24,7 @@ export default class TubeeClient {
     const config: Config = ConfigStore.get(options);
 
     if(config.debug || options.debug) {
-      v1.localVarRequest.debug = true;
+      localVarRequest.debug = true;
     }
 
     if (config.allowSelfSigned) {
@@ -33,8 +33,8 @@ export default class TubeeClient {
     
     var server = config.url || 'https://localhost:8090';
     var password = (await keytar.getPassword('tubee', config.username || 'admin'));
-    var client = new v1[category + 'Api'](server + '/api/v1');
-    var basic = new auth.basic();
+    var client = new V1Api(server);
+    var basic = new HttpBasicAuth();
     basic.username = config.username || 'admin';
     basic.password = password;
 

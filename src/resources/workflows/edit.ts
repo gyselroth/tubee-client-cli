@@ -12,11 +12,11 @@ export default class Edit extends AbstractEdit {
    */
   public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<EditOptions, EditArgs>('workflows [collection] [endpoint] [name]')
+      .subCommand<EditOptions, EditArgs>('workflows <collection> <endpoint> [name]')
       .alias('wf')
       .description('Edit workflows')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Workflows', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Edit(api);
         instance.execute(opts, args, rest);
       });

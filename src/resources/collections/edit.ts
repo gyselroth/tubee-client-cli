@@ -16,7 +16,7 @@ export default class Edit extends AbstractEdit {
       .alias('co')
       .description('Edit collections')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Collections', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Edit(api);
         instance.execute(opts, args, rest);
       });

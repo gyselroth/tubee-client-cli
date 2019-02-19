@@ -16,7 +16,7 @@ export default class Delete extends AbstractDelete {
       .alias('re')
       .description('Delete data object relation')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('DataObjectRelations', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Delete(api);
         instance.execute(opts, args, rest);
       });

@@ -16,7 +16,7 @@ export default class Get extends AbstractGet {
       .alias('ar')
       .description('Get users')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Users', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
         instance.execute(opts, args, rest);
       });

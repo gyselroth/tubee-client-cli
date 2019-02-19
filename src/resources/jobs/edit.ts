@@ -15,7 +15,7 @@ export default class Edit extends AbstractEdit {
       .subCommand<EditOptions, EditArgs>('jobs [name]')
       .description('Edit new synchronization jobs')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Edit(api);
         instance.execute(opts, args, rest);
       });

@@ -19,7 +19,7 @@ export default class Get extends AbstractGet {
       .alias('do')
       .description('Get data objects')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('DataObjects', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
         instance.execute(opts, args, rest);
       });
