@@ -16,6 +16,7 @@ import Workflows from '../resources/workflows/create';
 import Secrets from '../resources/secrets/create';
 import Users from '../resources/users/create';
 import {getFile} from '../loader';
+import {validate, identifierMap} from '../validator';
 
 const map = {
   'Namespace': Namespaces,
@@ -126,6 +127,15 @@ export default class Create {
       for (let resource of resources) {
         let result = this.getKind(resource);
         if(result === null) {
+          continue;
+        }
+
+        if(validate(resource) === false) {
+          console.log('resource is not valid, identifiers missing', {
+            resource: resource,
+            required: identifierMap[resource.kind],
+          });
+
           continue;
         }
 

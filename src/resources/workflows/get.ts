@@ -33,7 +33,8 @@ export default class Get extends AbstractGet {
         args.endpoint,
         args.name,
         this.getFields(opts),
-      );
+        );
+
       this.getObjects(response, opts);
     } else {
       var response = await this.api.getWorkflows(

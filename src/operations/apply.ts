@@ -1,7 +1,5 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
-const yaml = require('js-yaml');
-const fs = require('fs');
 import TubeeClient from '../tubee.client';
 import Endpoints from '../resources/endpoints/apply';
 import AccessRoles from '../resources/access-roles/apply';
@@ -15,8 +13,12 @@ import Processes from '../resources/processes/apply';
 import Workflows from '../resources/workflows/apply';
 import Secrets from '../resources/secrets/apply';
 import Users from '../resources/users/apply';
-const colors = require('colors');
 import {getFile} from '../loader';
+import {validate, identifierMap} from '../validator';
+const yaml = require('js-yaml');
+const fs = require('fs');
+const lodash = require('lodash');
+const colors = require('colors');
 
 const map = {
   'Namespace': Namespaces,
@@ -73,7 +75,7 @@ export default class Apply {
    */
   public constructor(instances) {
     this.instances = instances;
-  } 
+  }
 
   /**
    * Apply cli options
@@ -112,7 +114,7 @@ export default class Apply {
     var body: string = await getFile(opts.file[0]);
     var input = 'yaml';
     var resources;
-    
+
     try {
       switch (input) {
         case 'json':
@@ -123,11 +125,15 @@ export default class Apply {
         default:
           resources = yaml.safeLoadAll(body);
       }
-      
+
       resources.sort((a, b) => {
+        if(b === null || a === null) {
+            return 0;
+        }
+
         var a = priorities[this.transformKind(a.kind)];
         var b = priorities[this.transformKind(b.kind)];
-        
+
         if (a > b) {
           return 1;
         } else if (b > a) {
@@ -136,7 +142,7 @@ export default class Apply {
           return 0;
         }
       });
-      
+
       this.apply(resources);
     } catch (error) {
       console.log(error);
@@ -150,15 +156,37 @@ export default class Apply {
     if (resources instanceof Array) {
       var stack = [];
       var last_kind = null;
+      var processed = [];
 
       for (let resource of resources) {
+        if(resource === null) {
+            continue;
+        }
+
+        if(validate(resource) === false) {
+          console.log('[%s] resource is not valid, identifiers missing', colors.red.bold('ERROR'), {
+            resource: resource,
+            required: identifierMap[resource.kind],
+          });
+
+          continue;
+        }
+
         let result = this.getKind(resource);
+        let identifiers = JSON.stringify(lodash.pick(resource, identifierMap[resource.kind]));
+
+        if(processed.indexOf(identifiers) !== -1) {
+          console.log('[%s] %s <%s> ignored, duplicate resource', colors.yellow.bold('WARN'), resource.kind, resource.name);
+          continue;
+        } else {
+          processed.push(identifiers)
+        }
 
         if(last_kind !== result && last_kind !== null) {
           await Promise.all(stack);
           stack = [];
         }
-        
+
         last_kind = result;
 
         if(result === null) {
@@ -168,7 +196,7 @@ export default class Apply {
         stack.push(result.apply(resource).then((response) => {
           console.log('[%s] %s <%s> updated', colors.green.bold('OK'), resource.kind, resource.name);
         }).catch((error) => {
-          console.log('[%s] %s <%s> failed [%s: %s]', colors.red.bold('ERROR'), resource.kind, resource.name, error.response.body.error, error.response.body.message);
+            console.log('[%s] %s <%s> failed [%s: %s]', colors.red.bold('ERROR'), resource.kind, resource.name, error.response.body.error, error.response.body.message);
         }));
       }
     } else if (resources instanceof Object) {
@@ -187,7 +215,7 @@ export default class Apply {
       console.log('Invalid resource definition, invalid kind given');
       return null;
     }
-    
+
     return this.instances[kind];
   }
 }

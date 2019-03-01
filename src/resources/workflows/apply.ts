@@ -22,7 +22,7 @@ export default class Apply extends AbstractApply {
       let to = resource;
       let from = response.response.toJSON().body;
       let patch = jsonpatch.compare(from, to);
-      return await this.api.updateWorkflow(namespace, collection, endpoint, resource.name, patch);  
+      return this.api.updateWorkflow(namespace, collection, endpoint, resource.name, patch);  
     }).catch((error) => {
       if(update === true) {
         throw error;

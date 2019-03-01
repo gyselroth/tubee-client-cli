@@ -5,6 +5,17 @@ import {ConfigStore} from '../config';
  */
 export default abstract class AbstractOperation {
   /**
+   * Execute operation
+   */
+  protected static executeOperation(operation) {
+    operation.catch(e => {
+      if(e.response.statusCode === 404) {
+        console.log("No such resource found.");
+      }
+    });
+  }
+
+  /**
    * Create query
    */
   protected createQuery(opts, args) {
@@ -57,7 +68,7 @@ export default abstract class AbstractOperation {
       this.getWatch(opts),
     ];
   }
-  
+
   /**
    * Get watch
    */
@@ -96,7 +107,7 @@ export default abstract class AbstractOperation {
     } else if(opts.stream) {
       return 0;
     }
-  
+
     return 100;
   }
 

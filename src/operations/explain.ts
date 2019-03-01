@@ -22,7 +22,7 @@ export default class Explain {
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
     let remote = optparse
-      .subCommand<ExplainOptions, ExplainArgs>('explain [resource]')
+      .subCommand<ExplainOptions, ExplainArgs>('explain <resource>')
       .description('Describe a resource')
       .action((opts, args, rest) => {
         SwaggerParser.validate(specPath, (err, api) => {
@@ -59,7 +59,7 @@ export default class Explain {
       if(api instanceof Array) {
         name = '*';
       }
-        
+
       let require_suffix = '';
       if(required.indexOf(key) >= 0) {
         require_suffix = ' [REQUIRED]';

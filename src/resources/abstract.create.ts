@@ -12,6 +12,7 @@ const randomstring = require('randomstring');
 const os = require('os');
 const fspath = require('path');
 import { mergeAllOf } from '../swagger';
+import {validate, identifierMap} from '../validator';
 
 /**
  * Create resources
@@ -33,7 +34,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
   public async createObjects(resourceType, resources, opts, callback) {
     var body: string = '';
     var path: string;
-    
+
     if(opts.file[0]) {
       return this.openEditor(opts.file[0], opts.input[0]);
     } else if (opts.stdin) {
@@ -66,7 +67,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
       if (opts.fromTemplate[0] !== '') {
         resourceType = opts.fromTemplate[0];
       }
-      
+
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);
@@ -79,7 +80,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
 
           body += this.createTemplate(mergeAllOf(api.components.schemas[resourceType]).properties);
         }
-        
+
         await fs.writeFile(path, body, function(err) {
           if (err) {
             return console.log(err);
@@ -160,7 +161,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
       }
 
       return '"'+value+'"';
-    }   
+    }
 
     if(typeof(value) == 'object' && value !== null && !(value instanceof Array)) {
         return "\n"+"".padStart(depth,  ' ')+yaml.dump(value).trim().replace(/\n/, '\n    ');
@@ -252,6 +253,10 @@ export default abstract class AbstractCreate extends AbstractOperation {
   protected async applyObjects(update) {
     if (update instanceof Array) {
       for (let resource of update) {
+        if(validate(resource) === false) {
+          throw new Error('resource is not valid, identifiers missing '+JSON.stringify(identifierMap[resource.kind]));
+        }
+
         let result = await this.create(resource);
         console.log('Created new resource %s', resource.name);
       }
