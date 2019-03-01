@@ -26,7 +26,7 @@ const map = [
   Workflows,
   Secrets,
   Users,
-  Processes
+  Processes,
 ];
 
 export interface DeleteOptions {}
@@ -48,7 +48,10 @@ export default class Delete {
 
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
-      sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
+      sub.option(
+        '-n, --namespace <name>',
+        'Most resources have a namespace, request different namespace. The default namespace is "default".',
+      );
     }
   }
 }

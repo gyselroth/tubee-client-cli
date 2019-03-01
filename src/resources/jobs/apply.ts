@@ -13,18 +13,21 @@ export default class Apply extends AbstractApply {
     delete resource.namespace;
     var update = false;
 
-    return this.api.getJob(namespace, resource.name).then((response) => {
-      update = true;
-      let to = resource;
-      let from = response.response.toJSON().body;
-      let patch = jsonpatch.compare(from, to);
-      return this.api.updateJob(namespace, resource.name, patch);  
-    }).catch((error) => {
-      if(update === true) {
-        throw error;
-      }
-      
-      return this.api.addJob(namespace, resource);  
-    })
+    return this.api
+      .getJob(namespace, resource.name)
+      .then(response => {
+        update = true;
+        let to = resource;
+        let from = response.response.toJSON().body;
+        let patch = jsonpatch.compare(from, to);
+        return this.api.updateJob(namespace, resource.name, patch);
+      })
+      .catch(error => {
+        if (update === true) {
+          throw error;
+        }
+
+        return this.api.addJob(namespace, resource);
+      });
   }
 }

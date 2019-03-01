@@ -21,7 +21,7 @@ export default class Get extends AbstractGet {
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -30,8 +30,8 @@ export default class Get extends AbstractGet {
    */
   public async execute(opts, args, rest) {
     if (args.name) {
-      if(opts.relations.length > 0) {
-        if(opts.relations[0] === '') {
+      if (opts.relations.length > 0) {
+        if (opts.relations[0] === '') {
           var response = await this.api.getObjectRelations(
             this.getNamespace(opts),
             args.collection,
@@ -40,17 +40,27 @@ export default class Get extends AbstractGet {
           );
           this.getObjects(response, opts);
         } else {
-
         }
-      } else if(opts.logs.length > 0) {
-        if(opts.logs[0] == '') {
-          var response = await this.api.getObjectLogs(this.getNamespace(opts), args.collection, args.name, ...this.getQueryOptions(opts, args));
+      } else if (opts.logs.length > 0) {
+        if (opts.logs[0] == '') {
+          var response = await this.api.getObjectLogs(
+            this.getNamespace(opts),
+            args.collection,
+            args.name,
+            ...this.getQueryOptions(opts, args),
+          );
           this.getObjects(response, opts);
         } else {
-          var response = await this.api.getObjectLog(this.getNamespace(opts), args.collection, args.name, args.logs[0], this.getFields(opts));
+          var response = await this.api.getObjectLog(
+            this.getNamespace(opts),
+            args.collection,
+            args.name,
+            args.logs[0],
+            this.getFields(opts),
+          );
           this.getObjects(response, opts);
         }
-      } else if (opts.history || opts.diff[0]) {
+      } else if (opts.history || opts.diff.length > 0) {
         var response = await this.api.getObjectHistory(
           this.getNamespace(opts),
           args.collection,
@@ -59,11 +69,20 @@ export default class Get extends AbstractGet {
         );
         this.getObjects(response, opts);
       } else {
-        var response = await this.api.getObject(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
+        var response = await this.api.getObject(
+          this.getNamespace(opts),
+          args.collection,
+          args.name,
+          this.getFields(opts),
+        );
         this.getObjects(response, opts);
       }
     } else {
-      var response = await this.api.getObjects(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
+      var response = await this.api.getObjects(
+        this.getNamespace(opts),
+        args.collection,
+        ...this.getQueryOptions(opts, args),
+      );
       this.getObjects(response, opts);
     }
   }

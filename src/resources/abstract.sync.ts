@@ -35,7 +35,7 @@ export default abstract class AbstractSync extends AbstractOperation {
    */
   protected async sync(result, opts: SyncOptions) {
     console.log('created new process %s', result.body.id);
-    
+
     if (opts.follow) {
       console.log('\n');
       var request = this.api.watchProcessLogs(result.body.namespace, result.body.id);

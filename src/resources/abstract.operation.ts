@@ -1,4 +1,4 @@
-import {ConfigStore} from '../config';
+import { ConfigStore } from '../config';
 
 /**
  * Abstract
@@ -9,8 +9,10 @@ export default abstract class AbstractOperation {
    */
   protected static executeOperation(operation) {
     operation.catch(e => {
-      if(e.response.statusCode === 404) {
-        console.log("No such resource found.");
+      if (e.response.statusCode === 404) {
+        console.log('No such resource found.');
+      } else {
+        console.log('Invalid resource request.');
       }
     });
   }
@@ -45,9 +47,9 @@ export default abstract class AbstractOperation {
   }
 
   protected getNamespace(opts): string {
-    if(opts.namespace[0]) {
+    if (opts.namespace[0]) {
       return opts.namespace[0];
-    } else if(ConfigStore.get().defaultNamespace) {
+    } else if (ConfigStore.get().defaultNamespace) {
       return ConfigStore.get().defaultNamespace;
     } else {
       return 'default';
@@ -99,12 +101,12 @@ export default abstract class AbstractOperation {
    */
   protected getLimit(opts): number {
     if (opts.limit[0]) {
-      if(opts.limit[0] > 100) {
+      if (opts.limit[0] > 100) {
         return 100;
       }
 
       return opts.limit[0];
-    } else if(opts.stream) {
+    } else if (opts.stream) {
       return 0;
     }
 

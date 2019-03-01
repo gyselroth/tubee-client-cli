@@ -8,6 +8,10 @@
 * CORE: [FIX] Missing workflow arguments (collection/endpoint) now display the help page instead "(node:27089) UnhandledPromiseRejectionWarning: Error: Required parameter endpoint was null or undefined when calling getWorkflows."
 * CORE: [FEATURE] added support for GarbageWorkflow resources
 * CORE: [FIX] ignore empty resources in apply operation
+* CORE: [CHANGE] better error handling for resource which are either invalid or have not been found
+* CORE: [FEATURE] detect duplicate resources in apply operation (prints a warning and ignores duplicates)
+* CORE: [CHANGE] --diff now compares to the last version by default. Optionally one can set a specific version.
+* CORE: [CHANGE] shorthand command name for relations is now or (object relation) insteadof re
 
 
 ## 1.0.0-beta2

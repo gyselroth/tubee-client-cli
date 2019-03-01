@@ -14,7 +14,7 @@ const fspath = require('path');
 const difftool = process.env.DIFFTOOL || 'diff';
 const child_process = require('child_process');
 const randomstring = require('randomstring');
-const objectPath = require("object-path");
+const objectPath = require('object-path');
 
 export const tableConfig = {
   border: getBorderCharacters('ramac'),
@@ -42,27 +42,27 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Execute
    */
   public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    if(opts.logs && opts.logs.length > 0 && opts.output.length === 0) {
+    if (opts.logs && opts.logs.length > 0 && opts.output.length === 0) {
       opts.output.push('log');
     }
 
     if (opts.watch) {
       return this.watchObjects(response, opts, fields, callback);
     }
-    
+
     if (opts.stream) {
       return this.streamObjects(response, opts, fields, callback);
     }
-    
-    if (opts.diff[0]) {
+
+    if (opts.diff.length > 0) {
       return this.compare(response.response.toJSON().body, opts);
     }
-    
+
     var output;
-    if(opts.output[0]) {
+    if (opts.output[0]) {
       output = opts.output[0].split('=')[0];
     } else {
-      output = opts.output[0]; 
+      output = opts.output[0];
     }
 
     var body: string;
@@ -79,31 +79,31 @@ export default abstract class AbstractGet extends AbstractOperation {
         for (let resource of response.response.body.data) {
           this.drawLogLine(resource, opts);
         }
-      break;
-      case 'cc': 
+        break;
+      case 'cc':
         fields = [];
         var values = [];
         var cols = opts.output[0].split('=')[1];
-        
-        for(let col of cols.split(',')) {
+
+        for (let col of cols.split(',')) {
           fields.push(col.split(':')[0]);
           values.push(col.split(':')[1]);
         }
-    
+
         callback = resource => {
           var result = [];
-          for(let value of values) {
+          for (let value of values) {
             value = objectPath.get(resource, value);
-            if(value === undefined) {
+            if (value === undefined) {
               result.push('<none>');
             } else {
               result.push(value);
             }
           }
-          
-          return result;      
-        }
-      
+
+          return result;
+        };
+
       case 'list':
       default:
         if (callback === null) {
@@ -143,14 +143,25 @@ export default abstract class AbstractGet extends AbstractOperation {
       }
     }
 
+    var current = objects.data.shift();
+    var path1: string = this.createDiffFile(current, opts);
+    let last = current.version - 1;
+
+    if(opts.diff[0] !== '') {
+      last = opts.diff[0];
+    }
+
+    for (let resource of objects.data) {
+      if (resource.version == last) {
+        result = resource;
+      }
+    }
+
     if (result === null) {
       console.log('No version %s found in resource history', opts.diff[0]);
     }
 
-    var current = objects.data.shift();
-    var path1: string = this.createDiffFile(current, opts);
     var path2: string = this.createDiffFile(result, opts);
-
     var child = child_process.spawn(difftool, [path1, path2], {
       stdio: 'inherit',
     });
@@ -176,7 +187,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     fs.writeFileSync(path, body);
     return path;
   }
-  
+
   /**
    * Display stream
    */
@@ -184,17 +195,17 @@ export default abstract class AbstractGet extends AbstractOperation {
     var config = tableConfig;
     config.columnCount = fields.length;
 
-    if(!opts.output[0] || opts.output[0] === 'list') {
+    if (!opts.output[0] || opts.output[0] === 'list') {
       var stream = createStream(config);
       stream.write(fields.map(x => colors.bold(x)));
     }
- 
+
     if (callback === null) {
       callback = resource => {
         return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
       };
     }
-    
+
     var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
@@ -208,7 +219,7 @@ export default abstract class AbstractGet extends AbstractOperation {
             break;
           case 'log':
             that.drawLogLine(data, opts);
-          break;
+            break;
           case 'list':
           default:
             stream.write(callback(data));
@@ -224,17 +235,17 @@ export default abstract class AbstractGet extends AbstractOperation {
     var config = tableConfig;
     config.columnCount = fields.length;
 
-    if(!opts.output[0] || opts.output[0] === 'list') {
+    if (!opts.output[0] || opts.output[0] === 'list') {
       var stream = createStream(config);
       stream.write(fields.map(x => colors.bold(x)));
     }
- 
+
     if (callback === null) {
       callback = resource => {
         return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
       };
     }
-    
+
     var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
@@ -248,7 +259,7 @@ export default abstract class AbstractGet extends AbstractOperation {
             break;
           case 'log':
             that.drawLogLine(data[1], opts);
-          break;
+            break;
           case 'list':
           default:
             stream.write(callback(data[1]));
@@ -261,16 +272,11 @@ export default abstract class AbstractGet extends AbstractOperation {
    * Stream
    */
   public async drawLogLine(data, opts) {
-    console.log(
-      '%s %s %s',
-      data.created,
-      AbstractGet.colorize(data.data.level_name),
-      data.data.message,
-    );
+    console.log('%s %s %s', data.created, AbstractGet.colorize(data.data.level_name), data.data.message);
 
-    if(data.data.exception && opts.trace.length > 0) {
+    if (data.data.exception && opts.trace.length > 0) {
       var e = data.data.exception;
-      var line = e.class+': '+e.message+' in '+e.file+' stacktrace: '+e.trace;
+      var line = e.class + ': ' + e.message + ' in ' + e.file + ' stacktrace: ' + e.trace;
       console.log(line);
     }
   }

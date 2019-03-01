@@ -53,27 +53,27 @@ export default class Explain {
   /**
    * Recursively traverse fields
    */
-  protected static describeFields(api, depth = 0, required=[]) {
+  protected static describeFields(api, depth = 0, required = []) {
     for (let key in api) {
       let name = key;
-      if(api instanceof Array) {
+      if (api instanceof Array) {
         name = '*';
       }
 
       let require_suffix = '';
-      if(required.indexOf(key) >= 0) {
+      if (required.indexOf(key) >= 0) {
         require_suffix = ' [REQUIRED]';
       }
 
-      console.log(''.padStart(depth + 4, ' ') + name + ' <' + api[key].type + '>'+require_suffix);
+      console.log(''.padStart(depth + 4, ' ') + name + ' <' + api[key].type + '>' + require_suffix);
 
       if (api[key].enum) {
         console.log(''.padStart(depth + 4, ' ') + 'Allowed Values: %s', api[key].enum.join(','));
       }
 
-      if(api[key].oneOf) {
+      if (api[key].oneOf) {
         console.log(''.padStart(depth + 8, ' ') + 'Must be one of: ');
-        Explain.describeFields(api[key].oneOf, depth+4, api[key].required || []);
+        Explain.describeFields(api[key].oneOf, depth + 4, api[key].required || []);
       } else {
         console.log(''.padStart(depth + 6, ' ') + api[key].description + '\n');
 

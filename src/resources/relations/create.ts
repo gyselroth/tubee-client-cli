@@ -13,12 +13,12 @@ export default class Create extends AbstractCreate {
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
       .subCommand<CreateOptions, CreateArgs>('relations [name]')
-      .alias('re')
+      .alias('or')
       .description('Create new data object relations')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Create(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 

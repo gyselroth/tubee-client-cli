@@ -18,7 +18,7 @@ export default class Get extends AbstractGet {
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -33,7 +33,7 @@ export default class Get extends AbstractGet {
         args.endpoint,
         args.name,
         this.getFields(opts),
-        );
+      );
 
       this.getObjects(response, opts);
     } else {

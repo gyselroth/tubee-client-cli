@@ -12,7 +12,7 @@ const randomstring = require('randomstring');
 const os = require('os');
 const fspath = require('path');
 import { mergeAllOf } from '../swagger';
-import {validate, identifierMap} from '../validator';
+import { validate, identifierMap } from '../validator';
 
 /**
  * Create resources
@@ -35,7 +35,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
     var path: string;
 
-    if(opts.file[0]) {
+    if (opts.file[0]) {
       return this.openEditor(opts.file[0], opts.input[0]);
     } else if (opts.stdin) {
       var content: string = '';
@@ -90,7 +90,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
         return this.openEditor(path, opts.input[0]);
       });
     } else {
-      body += "kind: "+resourceType+'\n';
+      body += 'kind: ' + resourceType + '\n';
 
       for (let field in resources) {
         if (resources[field] != undefined) {
@@ -117,10 +117,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
 
     for (let attr in definition) {
       if (definition[attr].type == 'object' && definition[attr].properties) {
-        body +=
-          ''.padStart(depth, ' ') +
-          attr +
-          ':\n';
+        body += ''.padStart(depth, ' ') + attr + ':\n';
 
         body += this.createTemplate(definition[attr].properties, depth + 2);
       } else {
@@ -128,7 +125,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           ''.padStart(depth, ' ') +
           attr +
           ': ' +
-          (this.quote(definition[attr], depth + 2)) +
+          this.quote(definition[attr], depth + 2) +
           ' #<' +
           definition[attr].type +
           this.parseEnum(definition[attr]) +
@@ -145,26 +142,33 @@ export default abstract class AbstractCreate extends AbstractOperation {
    * Quote string if required
    */
   protected quote(property, depth) {
-    if(property.type === 'object') {
+    if (property.type === 'object') {
       return '{}';
     }
 
-    if(property.default === undefined) {
+    if (property.default === undefined) {
       return null;
     }
 
     var value = property.default;
 
-    if(typeof(value) == 'string') {
-      if(value == '"' || value == '\\') {
-        value = '\\'+value;
+    if (typeof value == 'string') {
+      if (value == '"' || value == '\\') {
+        value = '\\' + value;
       }
 
-      return '"'+value+'"';
+      return '"' + value + '"';
     }
 
-    if(typeof(value) == 'object' && value !== null && !(value instanceof Array)) {
-        return "\n"+"".padStart(depth,  ' ')+yaml.dump(value).trim().replace(/\n/, '\n    ');
+    if (typeof value == 'object' && value !== null && !(value instanceof Array)) {
+      return (
+        '\n' +
+        ''.padStart(depth, ' ') +
+        yaml
+          .dump(value)
+          .trim()
+          .replace(/\n/, '\n    ')
+      );
     }
 
     return JSON.stringify(value);
@@ -174,8 +178,8 @@ export default abstract class AbstractCreate extends AbstractOperation {
    * Parse enum list
    */
   protected parseEnum(definition): string {
-    if(definition.enum) {
-      return ' ['+definition.enum.join(',')+']';
+    if (definition.enum) {
+      return ' [' + definition.enum.join(',') + ']';
     }
 
     return '';
@@ -210,8 +214,12 @@ export default abstract class AbstractCreate extends AbstractOperation {
           await this.applyObjects(update).catch(response => {
             if (response.response) {
               var msg = '';
-              if(response.response.body.more) {
-                msg += yaml.dump(response.response.body.more).split('\n').map(s => `# ${s}`).join('\n');
+              if (response.response.body.more) {
+                msg += yaml
+                  .dump(response.response.body.more)
+                  .split('\n')
+                  .map(s => `# ${s}`)
+                  .join('\n');
               } else {
                 msg = response.response.body.error + ' - ' + response.response.body.message;
               }
@@ -253,8 +261,8 @@ export default abstract class AbstractCreate extends AbstractOperation {
   protected async applyObjects(update) {
     if (update instanceof Array) {
       for (let resource of update) {
-        if(validate(resource) === false) {
-          throw new Error('resource is not valid, identifiers missing '+JSON.stringify(identifierMap[resource.kind]));
+        if (validate(resource) === false) {
+          throw new Error('resource is not valid, identifiers missing ' + JSON.stringify(identifierMap[resource.kind]));
         }
 
         let result = await this.create(resource);

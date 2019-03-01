@@ -11,18 +11,21 @@ export default class Apply extends AbstractApply {
   public async apply(resource) {
     var update = false;
 
-    return this.api.getNamespace(resource.name).then((response) => {
-      update = true;
-      let to = resource;
-      let from = response.response.toJSON().body;
-      let patch = jsonpatch.compare(from, to);
-      return this.api.updateNamespace(resource.name, patch);  
-    }).catch((error) => {
-      if(update === true) {
-        throw error;
-      }
+    return this.api
+      .getNamespace(resource.name)
+      .then(response => {
+        update = true;
+        let to = resource;
+        let from = response.response.toJSON().body;
+        let patch = jsonpatch.compare(from, to);
+        return this.api.updateNamespace(resource.name, patch);
+      })
+      .catch(error => {
+        if (update === true) {
+          throw error;
+        }
 
-      return this.api.addNamespace(resource);  
-    })
+        return this.api.addNamespace(resource);
+      });
   }
 }

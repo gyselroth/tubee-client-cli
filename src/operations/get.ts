@@ -30,7 +30,7 @@ const map = [
   Workflows,
   Secrets,
   Users,
-  Config
+  Config,
 ];
 
 export interface GetOptions {
@@ -63,23 +63,32 @@ export default class Get {
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
     let remote = optparse.subCommand<GetOptions, GetArgs>('get').description('Get resources');
-    
+
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
-      sub.option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".');
-      sub.option('-o, --output <name>', 'Define the output format (One of list,yaml,json,cc=field:my.field). Using cc you may request a customized list with the fields you want.');
+      sub.option(
+        '-n, --namespace <name>',
+        'Most resources have a namespace, request different namespace. The default namespace is "default".',
+      );
+      sub.option(
+        '-o, --output <name>',
+        'Define the output format (One of list,yaml,json,cc=field:my.field). Using cc you may request a customized list with the fields you want.',
+      );
       sub.option('-w, --watch', 'Stream updates in realtime (Includes existing resources).');
       sub.option('--stream', 'Stream resources, useful for big datasets.');
       sub.option('--json-query <name>', 'Specify an advanced json query');
-      sub.option('-L --limit <number>', 'Max number of resources to be returned. May not be higher than 100, otherwise use --stream.');
+      sub.option(
+        '-L --limit <number>',
+        'Max number of resources to be returned. May not be higher than 100, otherwise use --stream.',
+      );
       sub.option(
         '-q, --field-selector <name>',
         'Specify a comma separated field based query (Example: foo=bar,bar=foo)',
       );
       sub.option('-v, --history', 'Fetch the history of the requested resource');
       sub.option(
-        '-d, --diff <name>',
-        'Compare current version to another version (You will need to expose an env variable named DIFFTOOL (Example: DIFFTOOL=vimdiff tubectl))',
+        '-d, --diff [name]',
+        'Compare the current version to the last version (or an earlier version) (By default the diff tool is taken, you may change the diff tool by setting an env variable named DIFFTOOL (Example: DIFFTOOL=vimdiff tubectl))',
       );
       sub.option(
         '--field-filter <name>',

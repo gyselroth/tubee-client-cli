@@ -17,7 +17,7 @@ export default class Edit extends AbstractEdit {
       .description('Edit tubectl client config')
       .action(async (opts, args, rest) => {
         var config = ConfigStore.get(optparse.parent.parsedOpts);
-        config[args.name] = args.value; 
+        config[args.name] = args.value;
         ConfigStore.write(optparse.parent.parsedOpts.config[0] || configPath, config);
       });
   }

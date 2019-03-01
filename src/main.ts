@@ -9,16 +9,7 @@ import Sync from './operations/sync';
 import Apply from './operations/apply';
 import TubeeClient from './tubee.client';
 
-const map = [
-  Login,
-  Get,
-  Create,
-  Edit,
-  Explain,
-  Delete,
-  Sync,
-  Apply,
-];
+const map = [Login, Get, Create, Edit, Explain, Delete, Sync, Apply];
 
 export interface RootOptions {
   config: string;
@@ -33,7 +24,7 @@ let root = commandpost
   .option('-d, --debug', 'Print request in verbose mode)');
 
 var client = new TubeeClient();
-for(let operation of map) {
+for (let operation of map) {
   operation.factory(root, client);
 }
 
@@ -43,15 +34,7 @@ commandpost.exec(root, process.argv).catch(err => {
   }
 
   if (err.message) {
-    console.log(err.message + '\n');
-  }
-
-  if (err.params) {
-    if (err.params.params.option) {
-      console.log(err.params.params.option.command.helpText());
-    } else if (err.params.params.origin) {
-      console.log(err.params.params.origin.command.helpText());
-    }
+    console.log(err.message);
   }
 
   process.exit(1);
