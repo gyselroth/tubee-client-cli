@@ -12,6 +12,9 @@
 * CORE: [FEATURE] detect duplicate resources in apply operation (prints a warning and ignores duplicates)
 * CORE: [CHANGE] --diff now compares to the last version by default. Optionally one can set a specific version.
 * CORE: [CHANGE] shorthand command name for relations is now or (object relation) insteadof re
+* CORE: [FIX] remove watch if set on endpoint-objects
+* CORE: [CHANGE] exclude readOnly attributes from template processor
+* CORE: [CHANGE] added readonly hint in explain if field is readOnly
 
 
 ## 1.0.0-beta2

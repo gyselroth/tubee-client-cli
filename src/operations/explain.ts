@@ -65,6 +65,10 @@ export default class Explain {
         require_suffix = ' [REQUIRED]';
       }
 
+      if(api[key].readOnly === true) {
+        require_suffix += ' (readonly)';
+      }
+
       console.log(''.padStart(depth + 4, ' ') + name + ' <' + api[key].type + '>' + require_suffix);
 
       if (api[key].enum) {

@@ -26,6 +26,9 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async execute(opts, args, rest) {
+    //EndpointObject do not support watch
+    opts.watch = false;
+
     if (args.name) {
       var response = await this.api.getEndpointObject(
         this.getNamespace(opts),
