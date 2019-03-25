@@ -1,7 +1,5 @@
 import { Command } from 'commandpost';
 import { RootOptions, RootArgs } from '../main';
-const yaml = require('js-yaml');
-const fs = require('fs');
 import TubeeClient from '../tubee.client';
 import Endpoints from '../resources/endpoints/apply';
 import AccessRoles from '../resources/access-roles/apply';
@@ -15,44 +13,48 @@ import Processes from '../resources/processes/apply';
 import Workflows from '../resources/workflows/apply';
 import Secrets from '../resources/secrets/apply';
 import Users from '../resources/users/apply';
+import { getFile } from '../loader';
+import { validate, identifierMap } from '../validator';
+const yaml = require('js-yaml');
+const fs = require('fs');
+const lodash = require('lodash');
 const colors = require('colors');
-import {getFile} from '../loader';
 
 const map = {
-  'Namespace': Namespaces,
-  'Secret': Secrets,
-  'User': Users,
-  'AccessRole': AccessRoles,
-  'AccessRule': AccessRules,
-  'Collection': Collections,
-  'Endpoint': Endpoints,
-  'DataObject': DataObjects,
-  'DataObjectRelation': Relations,
-  'Workflow': Workflows,
-  'GarbageWorkflow': Workflows,
-  'Job': Jobs,
-  'Process': Processes,
+  Namespace: Namespaces,
+  Secret: Secrets,
+  User: Users,
+  AccessRole: AccessRoles,
+  AccessRule: AccessRules,
+  Collection: Collections,
+  Endpoint: Endpoints,
+  DataObject: DataObjects,
+  DataObjectRelation: Relations,
+  Workflow: Workflows,
+  GarbageWorkflow: Workflows,
+  Job: Jobs,
+  Process: Processes,
 };
 
 const apiMap = {
-  'Namespace': 'Namespaces',
-  'Secret': 'Secrets',
-  'User': 'Users',
-  'AccessRole': 'AccessRoles',
-  'AccessRule': 'AccessRules',
-  'Collection': 'Collections',
-  'Endpoint': 'Endpoints',
-  'DataObject': 'DataObjects',
-  'DataObjectRelation': 'DataObjectRelations',
-  'Workflow': 'Workflows',
-  'GarbageWorkflow': 'Workflows',
-  'Job': 'Jobs',
-  'Process': 'Jobs',
-}
+  Namespace: 'Namespaces',
+  Secret: 'Secrets',
+  User: 'Users',
+  AccessRole: 'AccessRoles',
+  AccessRule: 'AccessRules',
+  Collection: 'Collections',
+  Endpoint: 'Endpoints',
+  DataObject: 'DataObjects',
+  DataObjectRelation: 'DataObjectRelations',
+  Workflow: 'Workflows',
+  GarbageWorkflow: 'Workflows',
+  Job: 'Jobs',
+  Process: 'Jobs',
+};
 
 var priorities = [];
-var i=0;
-for(let resource in map) {
+var i = 0;
+for (let resource in map) {
   priorities[resource] = i++;
 }
 
@@ -73,32 +75,34 @@ export default class Apply {
    */
   public constructor(instances) {
     this.instances = instances;
-  } 
+  }
 
   /**
    * Apply cli options
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
-    let remote = optparse.subCommand<ApplyOptions, ApplyArgs>('apply').description('Apply resources')
-    .option('-f, --file <name>', 'File to read from')
-    .action(async (opts, args, rest) => {
-      var instances = {};
-      for(let instance in map) {
-        var api = await client.factory(apiMap[instance], optparse.parsedOpts);
-        instances[instance] = new map[instance](api)
-      }
+    let remote = optparse
+      .subCommand<ApplyOptions, ApplyArgs>('apply')
+      .description('Apply resources')
+      .option('-f, --file <name>', 'File to read from')
+      .action(async (opts, args, rest) => {
+        var instances = {};
+        for (let instance in map) {
+          var api = await client.factory(apiMap[instance], optparse.parsedOpts);
+          instances[instance] = new map[instance](api);
+        }
 
-      var op = new Apply(instances);
-      op.execute(opts);
-    });
+        var op = new Apply(instances);
+        op.execute(opts);
+      });
   }
 
   /**
    * Switch to Endpoint if *Endpoint
    */
   public transformKind(kind) {
-    var endpoint = new RegExp("Endpoint$");
-    if(endpoint.test(kind)) {
+    var endpoint = new RegExp('Endpoint$');
+    if (endpoint.test(kind)) {
       kind = 'Endpoint';
     }
 
@@ -112,22 +116,26 @@ export default class Apply {
     var body: string = await getFile(opts.file[0]);
     var input = 'yaml';
     var resources;
-    
+
     try {
       switch (input) {
         case 'json':
-           resources = JSON.parse(body);
+          resources = JSON.parse(body);
           break;
 
         case 'yaml':
         default:
           resources = yaml.safeLoadAll(body);
       }
-      
+
       resources.sort((a, b) => {
+        if (b === null || a === null) {
+          return 0;
+        }
+
         var a = priorities[this.transformKind(a.kind)];
         var b = priorities[this.transformKind(b.kind)];
-        
+
         if (a > b) {
           return 1;
         } else if (b > a) {
@@ -136,7 +144,7 @@ export default class Apply {
           return 0;
         }
       });
-      
+
       this.apply(resources);
     } catch (error) {
       console.log(error);
@@ -150,26 +158,69 @@ export default class Apply {
     if (resources instanceof Array) {
       var stack = [];
       var last_kind = null;
+      var processed = [];
 
       for (let resource of resources) {
-        let result = this.getKind(resource);
-
-        if(last_kind !== result && last_kind !== null) {
-          await Promise.all(stack);
-          stack = [];
-        }
-        
-        last_kind = result;
-
-        if(result === null) {
+        if (resource === null) {
           continue;
         }
 
-        stack.push(result.apply(resource).then((response) => {
-          console.log('[%s] %s <%s> updated', colors.green.bold('OK'), resource.kind, resource.name);
-        }).catch((error) => {
-          console.log('[%s] %s <%s> failed [%s: %s]', colors.red.bold('ERROR'), resource.kind, resource.name, error.response.body.error, error.response.body.message);
-        }));
+        if (validate(resource) === false) {
+          console.log('[%s] resource is not valid, identifiers missing', colors.red.bold('ERROR'), {
+            resource: resource,
+            required: identifierMap[resource.kind],
+          });
+
+          continue;
+        }
+
+        let result = this.getKind(resource);
+        let identifiers = JSON.stringify(lodash.pick(resource, identifierMap[resource.kind]));
+
+        if (processed.indexOf(identifiers) !== -1) {
+          console.log(
+            '[%s] %s <%s> ignored, duplicate resource',
+            colors.yellow.bold('WARN'),
+            resource.kind,
+            resource.name,
+            {
+              resource: resource,
+            },
+          );
+
+          continue;
+        } else {
+          processed.push(identifiers);
+        }
+
+        if (last_kind !== result && last_kind !== null) {
+          await Promise.all(stack);
+          stack = [];
+        }
+
+        last_kind = result;
+
+        if (result === null) {
+          continue;
+        }
+
+        stack.push(
+          result
+            .apply(resource)
+            .then(response => {
+              console.log('[%s] %s <%s> updated', colors.green.bold('OK'), resource.kind, resource.name);
+            })
+            .catch(error => {
+              console.log(
+                '[%s] %s <%s> failed [%s: %s]',
+                colors.red.bold('ERROR'),
+                resource.kind,
+                resource.name,
+                error.response.body.error,
+                error.response.body.message,
+              );
+            }),
+        );
       }
     } else if (resources instanceof Object) {
       return this.apply([resources]);
@@ -183,11 +234,11 @@ export default class Apply {
    */
   protected getKind(resource) {
     var kind = this.transformKind(resource.kind);
-    if(!resource.kind || !this.instances[kind]) {
+    if (!resource.kind || !this.instances[kind]) {
       console.log('Invalid resource definition, invalid kind given');
       return null;
     }
-    
+
     return this.instances[kind];
   }
 }

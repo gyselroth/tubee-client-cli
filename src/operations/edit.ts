@@ -26,7 +26,7 @@ const map = [
   Workflows,
   Secrets,
   Users,
-  Config
+  Config,
 ];
 
 export interface EditOptions {
@@ -54,12 +54,20 @@ export default class Edit {
    * Apply cli options
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
-    let remote = optparse.subCommand<EditOptions, EditArgs>('edit').description('Edit resources');
+    let remote = optparse
+      .subCommand<EditOptions, EditArgs>('edit')
+      .description('Edit resources')
+      .action(() => {
+        console.log('test');
+      });
 
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
       sub
-        .option('-n, --namespace <name>', 'Most resources have a namespace, request different namespace. The default namespace is "default".')
+        .option(
+          '-n, --namespace <name>',
+          'Most resources have a namespace, request different namespace. The default namespace is "default".',
+        )
         .option('-o, --output <name>', 'Define the output format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')
         .option('--json-query <name>', 'Specify an advanced json query')

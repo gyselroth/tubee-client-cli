@@ -11,18 +11,21 @@ export default class Apply extends AbstractApply {
   public async apply(resource) {
     var update = false;
 
-    return this.api.getAccessRole(resource.name).then((response) => {
-      update = true;
-      let to = resource;
-      let from = response.response.toJSON().body;
-      let patch = jsonpatch.compare(from, to);
-      return this.api.updateAccessRole(resource.name, patch);  
-    }).catch((error) => {
-      if(update === true) {
-        throw error;
-      }
+    return this.api
+      .getAccessRole(resource.name)
+      .then(response => {
+        update = true;
+        let to = resource;
+        let from = response.response.toJSON().body;
+        let patch = jsonpatch.compare(from, to);
+        return this.api.updateAccessRole(resource.name, patch);
+      })
+      .catch(error => {
+        if (update === true) {
+          throw error;
+        }
 
-      return this.api.addAccessRole(resource);  
-    })
+        return this.api.addAccessRole(resource);
+      });
   }
 }

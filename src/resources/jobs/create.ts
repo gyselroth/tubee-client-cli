@@ -15,9 +15,9 @@ export default class Create extends AbstractCreate {
       .subCommand<CreateOptions, CreateArgs>('jobs [name]')
       .description('Create new synchronization jobs')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Create(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 

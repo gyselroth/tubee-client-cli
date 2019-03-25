@@ -50,7 +50,7 @@ export class ConfigStore {
    * Retrieve config
    */
   public static get(options = null): Config {
-    if(!ConfigStore.config) {
+    if (!ConfigStore.config) {
       ConfigStore.config = ConfigStore.load(options);
     }
 

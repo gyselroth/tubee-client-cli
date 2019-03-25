@@ -16,9 +16,9 @@ export default class Edit extends AbstractEdit {
       .alias('ep')
       .description('edit endpoints')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Endpoints', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Edit(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -27,9 +27,18 @@ export default class Edit extends AbstractEdit {
    */
   public async execute(opts, args, rest) {
     if (args.name) {
-      var response = await this.api.getEndpoint(this.getNamespace(opts), args.collection, args.name, this.getFields(opts));
+      var response = await this.api.getEndpoint(
+        this.getNamespace(opts),
+        args.collection,
+        args.name,
+        this.getFields(opts),
+      );
     } else {
-      var response = await this.api.getEndpoints(this.getNamespace(opts), args.collection, ...this.getQueryOptions(opts, args));
+      var response = await this.api.getEndpoints(
+        this.getNamespace(opts),
+        args.collection,
+        ...this.getQueryOptions(opts, args),
+      );
     }
 
     this.editObjects(response, opts, async (name, patch) => {

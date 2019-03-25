@@ -20,9 +20,9 @@ export default class Get extends AbstractGet {
       .option('-l, --logs [name]', 'Request resource logs')
       .option('-t, --trace', 'Including log stacktraces')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -31,12 +31,21 @@ export default class Get extends AbstractGet {
    */
   public async execute(opts, args, rest) {
     if (args.name) {
-      if(opts.logs.length > 0) {
-        if(opts.logs[0] == '') {
-          var response = await this.api.getJobLogs(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
+      if (opts.logs.length > 0) {
+        if (opts.logs[0] == '') {
+          var response = await this.api.getJobLogs(
+            this.getNamespace(opts),
+            args.name,
+            ...this.getQueryOptions(opts, args),
+          );
           this.getObjects(response, opts);
         } else {
-          var response = await this.api.getJobLog(this.getNamespace(opts), args.name, args.logs[0], this.getFields(opts));
+          var response = await this.api.getJobLog(
+            this.getNamespace(opts),
+            args.name,
+            args.logs[0],
+            this.getFields(opts),
+          );
           this.getObjects(response, opts);
         }
       } else {

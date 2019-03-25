@@ -12,13 +12,13 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('workflows [collection] [endpoint] [name]')
+      .subCommand<GetOptions, GetArgs>('workflows <collection> <endpoint> [name]')
       .alias('wf')
       .description('Get workflows')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Workflows', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -34,6 +34,7 @@ export default class Get extends AbstractGet {
         args.name,
         this.getFields(opts),
       );
+
       this.getObjects(response, opts);
     } else {
       var response = await this.api.getWorkflows(

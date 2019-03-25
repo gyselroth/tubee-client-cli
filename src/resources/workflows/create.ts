@@ -16,9 +16,9 @@ export default class Create extends AbstractCreate {
       .alias('wf')
       .description('Create workflows')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Workflows', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Create(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -27,7 +27,7 @@ export default class Create extends AbstractCreate {
    */
   public async execute(opts, args, rest) {
     this.createObjects('Workflow', args, opts, async resource => {
-      return this.create(resource)
+      return this.create(resource);
     });
   }
 
@@ -35,12 +35,12 @@ export default class Create extends AbstractCreate {
    * Create
    */
   public create(resource) {
-      let namespace = resource.namespace;
-      delete resource.namespace;
-      let collection = resource.collection;
-      delete resource.collection;
-      let endpoint = resource.endpoint;
-      delete resource.endpoint;
-      return this.api.addWorkflow(namespace, collection, endpoint, resource);
+    let namespace = resource.namespace;
+    delete resource.namespace;
+    let collection = resource.collection;
+    delete resource.collection;
+    let endpoint = resource.endpoint;
+    delete resource.endpoint;
+    return this.api.addWorkflow(namespace, collection, endpoint, resource);
   }
 }

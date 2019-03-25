@@ -16,9 +16,9 @@ export default class Create extends AbstractCreate {
       .alias('ar')
       .description('Create new secrets')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Secrets', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Create(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -27,7 +27,7 @@ export default class Create extends AbstractCreate {
    */
   public async execute(opts, args, rest) {
     this.createObjects('Secret', args, opts, async resource => {
-      return await this.create(resource)
+      return await this.create(resource);
     });
   }
 

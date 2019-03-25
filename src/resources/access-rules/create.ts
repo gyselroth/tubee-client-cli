@@ -16,9 +16,9 @@ export default class Create extends AbstractCreate {
       .alias('au')
       .description('Create new access rules')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('AccessRules', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Create(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -30,7 +30,7 @@ export default class Create extends AbstractCreate {
       return await this.create(resource);
     });
   }
-  
+
   /**
    * Create
    */

@@ -16,9 +16,9 @@ export default class Create extends AbstractCreate {
       .alias('ar')
       .description('Create new users')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Users', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Create(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 

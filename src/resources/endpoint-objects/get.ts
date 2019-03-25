@@ -16,9 +16,9 @@ export default class Get extends AbstractGet {
       .alias('eo')
       .description('Get objects from endpoint')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('EndpointObjects', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -26,6 +26,9 @@ export default class Get extends AbstractGet {
    * Execute
    */
   public async execute(opts, args, rest) {
+    //EndpointObject do not support watch
+    opts.watch = false;
+
     if (args.name) {
       var response = await this.api.getEndpointObject(
         this.getNamespace(opts),

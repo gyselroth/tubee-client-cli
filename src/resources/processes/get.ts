@@ -20,9 +20,9 @@ export default class Get extends AbstractGet {
       .alias('ps')
       .description('Get processes')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Jobs', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
@@ -31,14 +31,27 @@ export default class Get extends AbstractGet {
    */
   public async execute(opts, args, rest) {
     if (args.name) {
-      if(opts.logs.length > 0) {
-        if(opts.logs[0] == '') {
-          var response = await this.api.getProcessLogs(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
+      if (opts.logs.length > 0) {
+        if (opts.logs[0] == '') {
+          var response = await this.api.getProcessLogs(
+            this.getNamespace(opts),
+            args.name,
+            ...this.getQueryOptions(opts, args),
+          );
         } else {
-          var response = await this.api.getProcessLog(this.getNamespace(opts), args.name, args.logs[0], ...this.getQueryOptions(opts, args));
+          var response = await this.api.getProcessLog(
+            this.getNamespace(opts),
+            args.name,
+            args.logs[0],
+            ...this.getQueryOptions(opts, args),
+          );
         }
       } else {
-        var response = await this.api.getProcess(this.getNamespace(opts), args.name, ...this.getQueryOptions(opts, args));
+        var response = await this.api.getProcess(
+          this.getNamespace(opts),
+          args.name,
+          ...this.getQueryOptions(opts, args),
+        );
       }
     } else {
       var response = await this.api.getProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
@@ -63,7 +76,14 @@ export default class Get extends AbstractGet {
       ended = ta.ago(resource.status.ended);
     }
 
-    return [resource.name, Get.colorize(resource.status), this.timeDiff(resource) + 's', started, ended, resource.status.parent || '<main>'];
+    return [
+      resource.name,
+      Get.colorize(resource.status),
+      this.timeDiff(resource) + 's',
+      started,
+      ended,
+      resource.status.parent || '<main>',
+    ];
   }
 
   /**

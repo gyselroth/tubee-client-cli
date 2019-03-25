@@ -16,9 +16,9 @@ export default class Delete extends AbstractDelete {
       .alias('au')
       .description('Delete access rule')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('AccessRules', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Delete(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 

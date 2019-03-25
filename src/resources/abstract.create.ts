@@ -7,11 +7,12 @@ const editor = process.env.EDITOR || 'vim';
 const child_process = require('child_process');
 import AbstractOperation from './abstract.operation';
 const SwaggerParser = require('swagger-parser');
-const specPath = 'node_modules/@gyselroth/tubee-sdk-node/swagger.yml';
+const specPath = 'node_modules/@gyselroth/tubee-sdk-node/openapi.yml';
 const randomstring = require('randomstring');
 const os = require('os');
 const fspath = require('path');
 import { mergeAllOf } from '../swagger';
+import { validate, identifierMap } from '../validator';
 
 /**
  * Create resources
@@ -33,8 +34,8 @@ export default abstract class AbstractCreate extends AbstractOperation {
   public async createObjects(resourceType, resources, opts, callback) {
     var body: string = '';
     var path: string;
-    
-    if(opts.file[0]) {
+
+    if (opts.file[0]) {
       return this.openEditor(opts.file[0], opts.input[0]);
     } else if (opts.stdin) {
       var content: string = '';
@@ -66,20 +67,20 @@ export default abstract class AbstractCreate extends AbstractOperation {
       if (opts.fromTemplate[0] !== '') {
         resourceType = opts.fromTemplate[0];
       }
-      
+
       SwaggerParser.validate(specPath, async (err, api) => {
         if (err) {
           console.error('Failed to retrieve the resource specification', err);
-        } else if (api.definitions[resourceType]) {
+        } else if (api.components.schemas[resourceType]) {
           for (let field in resources) {
             if (resources[field] != undefined) {
               body += field + ': ' + resources[field] + '\n';
             }
           }
 
-          body += this.createTemplate(mergeAllOf(api.definitions[resourceType]).properties);
+          body += this.createTemplate(mergeAllOf(api.components.schemas[resourceType]).properties);
         }
-        
+
         await fs.writeFile(path, body, function(err) {
           if (err) {
             return console.log(err);
@@ -89,7 +90,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
         return this.openEditor(path, opts.input[0]);
       });
     } else {
-      body += "kind: "+resourceType+'\n';
+      body += 'kind: ' + resourceType + '\n';
 
       for (let field in resources) {
         if (resources[field] != undefined) {
@@ -115,11 +116,10 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
 
     for (let attr in definition) {
-      if (definition[attr].type == 'object' && definition[attr].properties) {
-        body +=
-          ''.padStart(depth, ' ') +
-          attr +
-          ':\n';
+      if(definition[attr].readOnly === true || attr === '_links') {
+        continue;
+      } else if (definition[attr].type == 'object' && definition[attr].properties) {
+        body += ''.padStart(depth, ' ') + attr + ':\n';
 
         body += this.createTemplate(definition[attr].properties, depth + 2);
       } else {
@@ -127,7 +127,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           ''.padStart(depth, ' ') +
           attr +
           ': ' +
-          (this.quote(definition[attr])) +
+          this.quote(definition[attr], depth + 2) +
           ' #<' +
           definition[attr].type +
           this.parseEnum(definition[attr]) +
@@ -143,24 +143,35 @@ export default abstract class AbstractCreate extends AbstractOperation {
   /**
    * Quote string if required
    */
-  protected quote(property) {
-    if(property.type === 'object') {
+  protected quote(property, depth) {
+    if (property.type === 'object') {
       return '{}';
     }
 
-    if(property.default === undefined) {
+    if (property.default === undefined) {
       return null;
     }
 
     var value = property.default;
 
-    if(typeof(value) == 'string') {
-      if(value == '"' || value == '\\') {
-        value = '\\'+value;
+    if (typeof value == 'string') {
+      if (value == '"' || value == '\\') {
+        value = '\\' + value;
       }
 
-      return '"'+value+'"';
-    }   
+      return '"' + value + '"';
+    }
+
+    if (typeof value == 'object' && value !== null && !(value instanceof Array)) {
+      return (
+        '\n' +
+        ''.padStart(depth, ' ') +
+        yaml
+          .dump(value)
+          .trim()
+          .replace(/\n/, '\n    ')
+      );
+    }
 
     return JSON.stringify(value);
   }
@@ -169,8 +180,8 @@ export default abstract class AbstractCreate extends AbstractOperation {
    * Parse enum list
    */
   protected parseEnum(definition): string {
-    if(definition.enum) {
-      return ' ['+definition.enum.join(',')+']';
+    if (definition.enum) {
+      return ' [' + definition.enum.join(',') + ']';
     }
 
     return '';
@@ -205,8 +216,12 @@ export default abstract class AbstractCreate extends AbstractOperation {
           await this.applyObjects(update).catch(response => {
             if (response.response) {
               var msg = '';
-              if(response.response.body.more) {
-                msg += yaml.dump(response.response.body.more).split('\n').map(s => `# ${s}`).join('\n');
+              if (response.response.body.more) {
+                msg += yaml
+                  .dump(response.response.body.more)
+                  .split('\n')
+                  .map(s => `# ${s}`)
+                  .join('\n');
               } else {
                 msg = response.response.body.error + ' - ' + response.response.body.message;
               }
@@ -248,6 +263,10 @@ export default abstract class AbstractCreate extends AbstractOperation {
   protected async applyObjects(update) {
     if (update instanceof Array) {
       for (let resource of update) {
+        if (validate(resource) === false) {
+          throw new Error('resource is not valid, identifiers missing ' + JSON.stringify(identifierMap[resource.kind]));
+        }
+
         let result = await this.create(resource);
         console.log('Created new resource %s', resource.name);
       }

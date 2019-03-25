@@ -16,9 +16,9 @@ export default class Edit extends AbstractEdit {
       .alias('ns')
       .description('Edit namespaces')
       .action(async (opts, args, rest) => {
-        var api = await client.factory('Namespaces', optparse.parent.parsedOpts);
+        var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Edit(api);
-        instance.execute(opts, args, rest);
+        this.executeOperation(instance.execute(opts, args, rest));
       });
   }
 
