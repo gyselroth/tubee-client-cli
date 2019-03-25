@@ -1,6 +1,6 @@
 ## 1.0.0-beta3
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
-**Date**: Thu Feb 07 16:59:12 CET 2019
+**Date**: Fri Mar 15 15:18:12 CET 2019
 
 * CORE: [CHANGE] explain now uses the OpenAPIv3 spec provided from tubee-sdk-node
 * CORE: [CHANGE] explain includes oneOf and required 
@@ -15,6 +15,7 @@
 * CORE: [FIX] remove watch if set on endpoint-objects
 * CORE: [CHANGE] exclude readOnly attributes from template processor
 * CORE: [CHANGE] added readonly hint in explain if field is readOnly
+* CORE: [FIX] Fixed --follow after exec a sync operation
 
 
 ## 1.0.0-beta2

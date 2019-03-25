@@ -10,8 +10,10 @@ const map = [Namespaces, Collections, DataObjects, Endpoints];
 
 export interface SyncOptions {
   follow: boolean;
+  trace: boolean;
   abortOnError: boolean;
   level: string;
+  output: string;
   namespace: string;
 }
 
@@ -36,10 +38,13 @@ export default class Sync {
         '-n, --namespace <name>',
         'Most resources have a namespace, request different namespace. The default namespace is "default".',
       );
-      sub.option('-t, --follow', 'Follow process and watch in forderground');
+      sub.option('-f, --follow', 'Follow process and watch in forderground');
+      sub.option('-t, --trace', 'Request resource logs including stacktraces')
       sub.option('-l, --level <name>', 'Specify log level for the process (emerg,error,warning,info,debug)');
       sub.option('-s, --simulate', 'Simulate sync process (No changes are made)');
       sub.option('--abort-on-error', 'Abort process if an error occurs');
+      sub.option('-o, --output <name>',
+        'Define the output format (One of list,yaml,json,cc=field:my.field). Using cc you may request a customized list with the fields you want.');
     }
   }
 }

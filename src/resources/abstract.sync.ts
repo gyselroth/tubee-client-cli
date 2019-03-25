@@ -4,21 +4,12 @@ import TubeeClient from '../tubee.client';
 const JSONStream = require('JSONStream');
 const es = require('event-stream');
 import AbstractOperation from './abstract.operation';
+import AbstractGet from './abstract.get';
 
 /**
  * Sync resources
  */
-export default abstract class AbstractSync extends AbstractOperation {
-  protected api;
-
-  /**
-   * Construct
-   */
-  constructor(api) {
-    super();
-    this.api = api;
-  }
-
+export default abstract class AbstractSync extends AbstractGet {
   /**
    * Add process
    */
@@ -26,41 +17,25 @@ export default abstract class AbstractSync extends AbstractOperation {
     resource.data.ignore = !opts.abortOnError;
     resource.data.log_level = opts.level[0];
     resource.data.simulate = opts.simulate;
-    var result = await this.api.addProcess(namespace, resource);
-    this.sync(result, opts);
+    return this.api.addProcess(namespace, resource).then((result) => {
+      this.sync(result, opts);
+    });
   }
 
   /**
    * Follow log stream if requested
    */
-  protected async sync(result, opts: SyncOptions) {
+  protected async sync(result, opts) {
     console.log('created new process %s', result.body.id);
 
     if (opts.follow) {
       console.log('\n');
-      var request = this.api.watchProcessLogs(result.body.namespace, result.body.id);
-      //this.watchObjects(request, opts);
-    }
-  }
-
-  /**
-   * Realtime updates
-   */
-  /*public async watchObjects(request, opts) {
-    return request.pipe(JSONStream.parse('*')).pipe(es.mapSync(data => {
-      var exception = null;
-      if(data[1].data.exception) {
-        exception = data[1].data.exception;
+      if (opts.output.length === 0) {
+        opts.output.push('log');
       }
 
-      console.log(
-        '%s %s %s',
-        data[1].created,
-        ProcessLog.colorize(data[1].data.level_name),
-        data[1].data.category,
-        data[1].data.message,
-        exception
-      );
-    }));
-  }*/
+      var request = this.api.getProcessLogs(result.body.namespace, result.body.id, undefined, undefined, undefined, undefined, undefined, true, true);
+      this.watchObjects(request, opts);
+    }
+  }
 }

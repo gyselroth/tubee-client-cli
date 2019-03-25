@@ -37,6 +37,6 @@ export default class Sync extends AbstractSync {
       },
     };
 
-    this.addProcess(this.getNamespace(opts), resource, opts, args, rest);
+    return this.addProcess(this.getNamespace(opts), resource, opts, args, rest);
   }
 }
