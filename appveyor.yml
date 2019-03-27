@@ -15,7 +15,7 @@ install:
   - npm run dist-windows
   - ps: $version = $env:APPVEYOR_REPO_TAG_NAME.substring(1)
   - ps: choco pack tubectl.nuspec --version=$version
-  - ps: mv tubectl*.nupkg dist\tubectl.nupkg
+  - ps: mv tubectl*.nupkg dist
 test_script:
   - node --version
   - npm --version
@@ -23,7 +23,7 @@ test_script:
 artifacts:
   - path: dist\tubectl-win-x64.exe
     name: tubectl
-  - path: dist\tubectl.nupkg
+  - path: dist\tubectl.$version.nupkg
     name: tubectl-choco
 deploy:
   provider: GitHub
