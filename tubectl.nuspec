@@ -41,14 +41,14 @@ This is a nuspec. It mostly adheres to https://docs.nuget.org/create/Nuspec-Refe
     <!--<iconUrl>http://cdn.rawgit.com/__REPLACE_YOUR_REPO__/master/icons/tubectl.png</iconUrl>-->
     <!-- <copyright>Year Software Vendor</copyright> -->
     <licenseUrl>https://raw.githubusercontent.com/gyselroth/tubee-client-cli/master/LICENSE</licenseUrl>
-    <requireLicenseAcceptance>true</requireLicenseAcceptance>-->
+    <!--<requireLicenseAcceptance>true</requireLicenseAcceptance>-->
     <!--<projectSourceUrl>Software Source Location - is the software FOSS somewhere? Link to it with this</projectSourceUrl>-->
     <docsUrl>https://tubee.readthedocs.io/en/latest/</docsUrl>
     <!--<mailingListUrl></mailingListUrl>-->
     <bugTrackerUrl>https://github.com/gyselroth/tubee-client-cli</bugTrackerUrl>
     <tags>tubee tubectl</tags>
     <summary>The tubee client for windows</summary>
-    <description></description>
+    <description>The tubee client for windows</description>
     <!-- <releaseNotes>__REPLACE_OR_REMOVE__MarkDown_Okay</releaseNotes> -->
     <!-- =============================== -->
 
