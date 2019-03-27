@@ -1,3 +1,13 @@
+## 1.0.0-beta4
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Wed Mar 27 09:13:14 CET 2019
+
+* PACKAGING: [FEATURE] Added chocolately package
+* CORE: [CHANGE] https:// may now be left out during login operation
+* CORE: [FIX] --debug prints now requests during login operation
+* CORE: [FIX] fixed Cannot read property 'DefaultApi' of undefined during login
+
+
 ## 1.0.0-beta3
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Fri Mar 15 15:18:12 CET 2019
