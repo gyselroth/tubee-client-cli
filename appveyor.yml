@@ -13,7 +13,7 @@ install:
   - npm install
   - npm run build
   - npm run dist-windows
-  - choco pack tubectl.nuspec --version=$APPVEYOR_REPO_TAG_NAME
+  - choco pack tubectl.nuspec --version=$env:APPVEYOR_REPO_TAG_NAME
   - mv tubectl.*.nupkg dist/tubectl.nupkg
 test_script:
   - node --version

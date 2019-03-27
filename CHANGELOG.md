@@ -7,6 +7,7 @@
 * CORE: [CHANGE] https:// may now be left out during login operation
 * CORE: [FIX] --debug prints now requests during login operation
 * CORE: [FIX] fixed Cannot read property 'DefaultApi' of undefined during login
+* CORE: [FIX] Packaged with openapi v3 instead swagger v2
 
 
 ## 1.0.0-beta3
