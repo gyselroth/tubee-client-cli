@@ -3,6 +3,7 @@
 **Date**: Wed Mar 27 09:13:14 CET 2019
 
 * PACKAGING: [FEATURE] Added chocolately package
+* PACKAGING: [CHANGE] Automatically update homebrew formula after release
 * CORE: [CHANGE] https:// may now be left out during login operation
 * CORE: [FIX] --debug prints now requests during login operation
 * CORE: [FIX] fixed Cannot read property 'DefaultApi' of undefined during login
