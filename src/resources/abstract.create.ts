@@ -116,7 +116,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
 
     for (let attr in definition) {
-      if(definition[attr].readOnly === true || attr === '_links') {
+      if (definition[attr].readOnly === true || attr === '_links') {
         continue;
       } else if (definition[attr].type == 'object' && definition[attr].properties) {
         body += ''.padStart(depth, ' ') + attr + ':\n';

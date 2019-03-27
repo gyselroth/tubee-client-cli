@@ -17,7 +17,7 @@ export default abstract class AbstractSync extends AbstractGet {
     resource.data.ignore = !opts.abortOnError;
     resource.data.log_level = opts.level[0];
     resource.data.simulate = opts.simulate;
-    return this.api.addProcess(namespace, resource).then((result) => {
+    return this.api.addProcess(namespace, resource).then(result => {
       this.sync(result, opts);
     });
   }
@@ -34,7 +34,17 @@ export default abstract class AbstractSync extends AbstractGet {
         opts.output.push('log');
       }
 
-      var request = this.api.getProcessLogs(result.body.namespace, result.body.id, undefined, undefined, undefined, undefined, undefined, true, true);
+      var request = this.api.getProcessLogs(
+        result.body.namespace,
+        result.body.id,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        undefined,
+        true,
+        true,
+      );
       this.watchObjects(request, opts);
     }
   }

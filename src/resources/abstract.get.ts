@@ -147,7 +147,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     var path1: string = this.createDiffFile(current, opts);
     let last = current.version - 1;
 
-    if(opts.diff[0] !== '') {
+    if (opts.diff[0] !== '') {
       last = opts.diff[0];
     }
 

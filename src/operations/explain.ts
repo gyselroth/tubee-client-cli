@@ -65,7 +65,7 @@ export default class Explain {
         require_suffix = ' [REQUIRED]';
       }
 
-      if(api[key].readOnly === true) {
+      if (api[key].readOnly === true) {
         require_suffix += ' (readonly)';
       }
 

@@ -7,7 +7,7 @@ import { Config, ConfigStore, keytarPath, configPath } from '../config';
 const keytar = require('keytar');
 keytar.setPath(keytarPath);
 const path = require('path');
-const { v1, auth } = require('@gyselroth/tubee-sdk-node');
+const { V1Api, HttpBasicAuth, localVarRequest } = require('@gyselroth/tubee-sdk-node');
 const prompt = require('password-prompt');
 
 export interface LoginOptions {
@@ -45,6 +45,10 @@ export default class Login {
           config.username = opts.username[0];
         }
 
+        if (optparse.parsedOpts.debug === true) {
+          localVarRequest.debug = true;
+        }
+
         if (opts.password[0]) {
           keytar.setPassword('tubee', config.username || 'admin', opts.password[0]);
         }
@@ -66,20 +70,29 @@ export default class Login {
         }
 
         var server = config.url || 'https://localhost:8090';
-        var client = new v1['DefaultApi'](server + '/api/v1');
-        var basic = new auth.basic();
+
+        if (!/^https?:\/\//i.test(server)) {
+          config.url = server = 'https://' + server;
+        }
+
+        var client = new V1Api(server);
+        var basic = new HttpBasicAuth();
+
         basic.username = config.username || 'admin';
         basic.password = opts.password[0];
         client.setDefaultAuthentication(basic);
-        var result = await client.root();
-        if (result.response.body.name !== 'tubee') {
-          throw new Error('server is not a tubee server');
-        }
 
-        console.log('Successfully connected to server %s', server);
+        client.getV1().then((result) => {
+          if (result.response.body.name !== 'tubee') {
+            console.error('server is not a tubee server');
+          }
 
-        var writePath = optparse.parsedOpts.config[0] || configPath;
-        ConfigStore.write(writePath, config);
+          console.log('Successfully connected to server %s', server);
+          var writePath = optparse.parsedOpts.config[0] || configPath;
+          ConfigStore.write(writePath, config);
+        }).catch((err) => {
+          console.error('Connection error encountered (use --debug to display more)');
+        });
       });
   }
 }
