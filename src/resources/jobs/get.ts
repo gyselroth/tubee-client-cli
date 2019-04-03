@@ -38,7 +38,7 @@ export default class Get extends AbstractGet {
             args.name,
             ...this.getQueryOptions(opts, args),
           );
-          this.getObjects(response, opts);
+          this.getObjects(response, args, opts);
         } else {
           var response = await this.api.getJobLog(
             this.getNamespace(opts),
@@ -46,16 +46,17 @@ export default class Get extends AbstractGet {
             args.logs[0],
             this.getFields(opts),
           );
-          this.getObjects(response, opts);
+          this.getObjects(response, args, opts);
         }
       } else {
         var response = await this.api.getJob(this.getNamespace(opts), args.name, this.getFields(opts));
-        this.getObjects(response, opts);
+        this.getObjects(response, args, opts);
       }
     } else {
       var response = await this.api.getJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
       this.getObjects(
         response,
+        args,
         opts,
         ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
         resource => {

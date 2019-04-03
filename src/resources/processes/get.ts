@@ -57,7 +57,7 @@ export default class Get extends AbstractGet {
       var response = await this.api.getProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
     }
 
-    this.getObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended', 'Parent'], resource => {
+    this.getObjects(response, args, opts, ['Name', 'Status', 'Took', 'Started', 'Ended', 'Parent'], resource => {
       return this.prettify(resource);
     });
   }

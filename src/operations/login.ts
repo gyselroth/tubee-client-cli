@@ -49,12 +49,14 @@ export default class Login {
           localVarRequest.debug = true;
         }
 
+        var password;
         if (opts.password[0]) {
+          password = opts.password[0];
           keytar.setPassword('tubee', config.username || 'admin', opts.password[0]);
         }
 
         if (opts.prompt) {
-          let password = await prompt('Enter password: ');
+          password = await prompt('Enter password: ', {method: 'hide'});
           keytar.setPassword('tubee', config.username || 'admin', password);
         }
 
@@ -79,7 +81,7 @@ export default class Login {
         var basic = new HttpBasicAuth();
 
         basic.username = config.username || 'admin';
-        basic.password = opts.password[0];
+        basic.password = password;
         client.setDefaultAuthentication(basic);
 
         client.getV1().then((result) => {

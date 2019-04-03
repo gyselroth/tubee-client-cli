@@ -64,7 +64,7 @@ export default class Get extends AbstractGet {
       );
     }
 
-    this.getObjects(response, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
+    this.getObjects(response, args, opts, ['Name', 'Type', 'Status', 'Version', 'Created', 'Changed'], resource => {
       return [
         resource.name,
         resource.data.type,

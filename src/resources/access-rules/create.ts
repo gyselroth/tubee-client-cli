@@ -35,6 +35,6 @@ export default class Create extends AbstractCreate {
    * Create
    */
   public create(resource) {
-    return this.api.createAccessRule(resource);
+    return this.api.addAccessRule(resource);
   }
 }

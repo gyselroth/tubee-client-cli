@@ -41,8 +41,8 @@ export default abstract class AbstractGet extends AbstractOperation {
   /**
    * Execute
    */
-  public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    if (opts.logs && opts.logs.length > 0 && opts.output.length === 0) {
+  public async getObjects(response, args, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    if (opts.logs && opts.logs.length > 0 && opts.output.length === 0 && args.name !== undefined) {
       opts.output.push('log');
     }
 

@@ -1,3 +1,15 @@
+## 1.0.0-beta5
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Wed Apr 03 16:02:01 CEST 2019
+
+* CORE: [FIX] secret resource alias is now correctly `se` instead duplicate of ar.
+* CORE: [FIX] added missing command alias for edit access-rules
+* CORE: [FIX] #TypeError: this.api.createAccessRule is not a function
+* CORE: [FIX] fixed double name attribute if name has been specified in command line and -t has been used
+* CORE: [FIX] login password prompt now hides password correctly and login works
+* CORE: [FIX] log output gets ignored if --logs is specified without a propper resource name
+
+
 ## 1.0.0-beta4
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Wed Mar 27 09:13:14 CET 2019

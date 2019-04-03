@@ -38,7 +38,7 @@ export default class Get extends AbstractGet {
             args.name,
             ...this.getQueryOptions(opts, args),
           );
-          this.getObjects(response, opts);
+          this.getObjects(response, args, opts);
         } else {
         }
       } else if (opts.logs.length > 0) {
@@ -49,7 +49,7 @@ export default class Get extends AbstractGet {
             args.name,
             ...this.getQueryOptions(opts, args),
           );
-          this.getObjects(response, opts);
+          this.getObjects(response, args, opts);
         } else {
           var response = await this.api.getObjectLog(
             this.getNamespace(opts),
@@ -58,7 +58,7 @@ export default class Get extends AbstractGet {
             args.logs[0],
             this.getFields(opts),
           );
-          this.getObjects(response, opts);
+          this.getObjects(response, args, opts);
         }
       } else if (opts.history || opts.diff.length > 0) {
         var response = await this.api.getObjectHistory(
@@ -67,7 +67,7 @@ export default class Get extends AbstractGet {
           args.name,
           ...this.getQueryOptions(opts, args),
         );
-        this.getObjects(response, opts);
+        this.getObjects(response, args, opts);
       } else {
         var response = await this.api.getObject(
           this.getNamespace(opts),
@@ -75,7 +75,7 @@ export default class Get extends AbstractGet {
           args.name,
           this.getFields(opts),
         );
-        this.getObjects(response, opts);
+        this.getObjects(response, args, opts);
       }
     } else {
       var response = await this.api.getObjects(
@@ -83,7 +83,7 @@ export default class Get extends AbstractGet {
         args.collection,
         ...this.getQueryOptions(opts, args),
       );
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     }
   }
 }

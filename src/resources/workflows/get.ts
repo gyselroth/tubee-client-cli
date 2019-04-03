@@ -35,7 +35,7 @@ export default class Get extends AbstractGet {
         this.getFields(opts),
       );
 
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     } else {
       var response = await this.api.getWorkflows(
         this.getNamespace(opts),
@@ -43,7 +43,7 @@ export default class Get extends AbstractGet {
         args.endpoint,
         ...this.getQueryOptions(opts, args),
       );
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     }
   }
 }

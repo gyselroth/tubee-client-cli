@@ -78,7 +78,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
             }
           }
 
-          body += this.createTemplate(mergeAllOf(api.components.schemas[resourceType]).properties);
+          body += this.createTemplate(resources, mergeAllOf(api.components.schemas[resourceType]).properties);
         }
 
         await fs.writeFile(path, body, function(err) {
@@ -112,16 +112,18 @@ export default abstract class AbstractCreate extends AbstractOperation {
   /**
    * Create resource template from openapi specs
    */
-  protected createTemplate(definition, depth = 0) {
+  protected createTemplate(resources, definition, depth = 0) {
     var body: string = '';
 
     for (let attr in definition) {
-      if (definition[attr].readOnly === true || attr === '_links') {
+      if(resources[attr] !== undefined) {
+        continue;
+      } else if (definition[attr].readOnly === true || attr === '_links') {
         continue;
       } else if (definition[attr].type == 'object' && definition[attr].properties) {
         body += ''.padStart(depth, ' ') + attr + ':\n';
 
-        body += this.createTemplate(definition[attr].properties, depth + 2);
+        body += this.createTemplate(resources, definition[attr].properties, depth + 2);
       } else {
         body +=
           ''.padStart(depth, ' ') +

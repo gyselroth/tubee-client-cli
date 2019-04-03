@@ -28,10 +28,10 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (args.name) {
       var response = await this.api.getRelation(this.getNamespace(opts), args.name, this.getFields(opts));
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     } else {
       var response = await this.api.getRelations(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     }
   }
 }
