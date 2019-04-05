@@ -13,7 +13,6 @@ export default class Delete extends AbstractDelete {
   public static applyOptions(optparse: Command<DeleteOptions, DeleteArgs>, client: TubeeClient) {
     return optparse
       .subCommand<DeleteOptions, DeleteArgs>('users <name>')
-      .alias('ar')
       .description('Delete user')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);

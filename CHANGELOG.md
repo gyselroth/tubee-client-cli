@@ -1,3 +1,17 @@
+## 1.0.0-beta6
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Fri Apr 05 16:51:01 CEST 2019
+
+* CORE: [CHANGE] removed users command alias
+* CORE: [CHANGE] command alias for access-roles is now aro
+* CORE: [CHANGE] command alias for access-rules is now aru
+* CORE: [CHANGE] command alias for relations is now dor
+* CORE: [FEATURE] added sync job command
+* CORE: [CHANGE] The default of 100 objects was set down to 20 if --limit was not specified
+* CORE: [CHANGE] if --trace is applied for the sync command, --follow is not required anymore
+* CORE: [FIX] --trace for sync follow
+
+
 ## 1.0.0-beta5
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Wed Apr 03 16:02:01 CEST 2019

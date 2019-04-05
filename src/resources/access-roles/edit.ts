@@ -13,7 +13,7 @@ export default class Edit extends AbstractEdit {
   public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
     return optparse
       .subCommand<EditOptions, EditArgs>('access-roles [name]')
-      .alias('ar')
+      .alias('aro')
       .description('Edit access roles')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);

@@ -9,6 +9,8 @@ export default abstract class AbstractOperation {
    */
   protected static executeOperation(operation) {
     operation.catch(e => {
+      console.log(e);
+
       if (e.response.statusCode === 404) {
         console.log('No such resource found.');
       } else {
@@ -110,7 +112,7 @@ export default abstract class AbstractOperation {
       return 0;
     }
 
-    return 100;
+    return 20;
   }
 
   /**

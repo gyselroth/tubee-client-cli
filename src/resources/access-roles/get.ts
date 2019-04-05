@@ -13,7 +13,7 @@ export default class Get extends AbstractGet {
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
       .subCommand<GetOptions, GetArgs>('access-roles [name]')
-      .alias('ar')
+      .alias('aro')
       .description('Get access roles')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);

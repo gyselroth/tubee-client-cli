@@ -13,7 +13,7 @@ export default class Create extends AbstractCreate {
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
       .subCommand<CreateOptions, CreateArgs>('access-rules [name]')
-      .alias('au')
+      .alias('aru')
       .description('Create new access rules')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);

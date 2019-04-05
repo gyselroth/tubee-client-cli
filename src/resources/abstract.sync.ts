@@ -14,9 +14,19 @@ export default abstract class AbstractSync extends AbstractGet {
    * Add process
    */
   protected async addProcess(namespace, resource, opts, args, rest) {
-    resource.data.ignore = !opts.abortOnError;
-    resource.data.log_level = opts.level[0];
-    resource.data.simulate = opts.simulate;
+
+    if(resource.data.ignore === undefined) {
+      resource.data.ignore = !opts.abortOnError;
+    }
+
+    if(resource.data.log_level === undefined) {
+      resource.data.log_level = opts.level[0];
+    }
+
+    if(resource.data.simulate === undefined) {
+      resource.data.simulate = opts.simulate;
+    }
+
     return this.api.addProcess(namespace, resource).then(result => {
       this.sync(result, opts);
     });
@@ -28,7 +38,7 @@ export default abstract class AbstractSync extends AbstractGet {
   protected async sync(result, opts) {
     console.log('created new process %s', result.body.id);
 
-    if (opts.follow) {
+    if (opts.follow || opts.trace) {
       console.log('\n');
       if (opts.output.length === 0) {
         opts.output.push('log');

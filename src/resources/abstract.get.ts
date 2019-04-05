@@ -274,7 +274,7 @@ export default abstract class AbstractGet extends AbstractOperation {
   public async drawLogLine(data, opts) {
     console.log('%s %s %s', data.created, AbstractGet.colorize(data.data.level_name), data.data.message);
 
-    if (data.data.exception && opts.trace.length > 0) {
+    if (data.data.exception && (opts.trace.length > 0 || opts.trace === true)) {
       var e = data.data.exception;
       var line = e.class + ': ' + e.message + ' in ' + e.file + ' stacktrace: ' + e.trace;
       console.log(line);

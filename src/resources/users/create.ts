@@ -13,7 +13,6 @@ export default class Create extends AbstractCreate {
   public static applyOptions(optparse: Command<CreateOptions, CreateArgs>, client: TubeeClient) {
     return optparse
       .subCommand<CreateOptions, CreateArgs>('users [name]')
-      .alias('ar')
       .description('Create new users')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);
