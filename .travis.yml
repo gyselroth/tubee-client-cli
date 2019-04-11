@@ -56,7 +56,7 @@ after_deploy:
 - test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && git clone https://github.com/gyselroth/homebrew-core
 - test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sed -i '' 's/sha256.*$/sha256 "'$sha256'"/g' homebrew-core/Formula/tubectl.rb
 - test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sed -i '' 's/version.*$/version "'$version'"/g' homebrew-core/Formula/tubectl.rb
-- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sed -i '' 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$version'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl.rb
+- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sed -i '' 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/v'$version'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl.rb
 - test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && cd homebrew-core
 - test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && git commit --message "tubectl release $version" Formula/tubectl.rb
 - test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && git remote set-url --push origin https://raffis:${GITHUB_TOKEN}@github.com/gyselroth/homebrew-core.git > /dev/null 2>&1
