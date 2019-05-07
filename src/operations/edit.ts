@@ -56,10 +56,7 @@ export default class Edit {
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
     let remote = optparse
       .subCommand<EditOptions, EditArgs>('edit')
-      .description('Edit resources')
-      .action(() => {
-        console.log('test');
-      });
+      .description('Edit resources');
 
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);

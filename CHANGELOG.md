@@ -1,3 +1,11 @@
+## 1.0.0-beta7
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Fri Apr 05 16:51:01 CEST 2019
+
+* CORE: [FIX] removed debug output if request ended in error (use --debug)
+* CORE: [CHANGE] process time is now in a humanreadable format instead seconds
+
+
 ## 1.0.0-beta6
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Fri Apr 05 16:51:01 CEST 2019

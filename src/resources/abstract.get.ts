@@ -75,7 +75,7 @@ export default abstract class AbstractGet extends AbstractOperation {
         body = yaml.dump(response.response.toJSON().body);
         console.log(body);
         break;
-      case 'log':
+        case 'log':
         for (let resource of response.response.body.data) {
           this.drawLogLine(resource, opts);
         }

@@ -101,7 +101,7 @@ export default class Get {
       sub.option('--json-sort <name>', 'Specify an advanced json sort');
       sub.option(
         '-t, --tail <number>',
-        'If tail is specified, the last n objects are retrieved, if numer is not set the last 10 objects get retrieved.',
+        'If tail is specified, the last n objects are retrieved, if no number is set the last 20 objects get retrieved.',
       );
     }
   }

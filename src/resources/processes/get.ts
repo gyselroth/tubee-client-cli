@@ -4,6 +4,7 @@ import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
 const ta = require('time-ago');
+const prettyMilliseconds = require('pretty-ms');
 
 /**
  * Get resources
@@ -79,7 +80,7 @@ export default class Get extends AbstractGet {
     return [
       resource.name,
       Get.colorize(resource.status),
-      this.timeDiff(resource) + 's',
+      this.timeDiff(resource),
       started,
       ended,
       resource.status.parent || '<main>',
@@ -96,7 +97,7 @@ export default class Get extends AbstractGet {
 
     var startDate = new Date(process.status.started);
     var endDate = new Date(process.status.ended);
-    return (endDate.getTime() - startDate.getTime()) / 1000;
+    return prettyMilliseconds(endDate.getTime() - startDate.getTime(), {compact: true});
   }
 
   /**
