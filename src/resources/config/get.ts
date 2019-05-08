@@ -17,7 +17,7 @@ export default class Get extends AbstractGet {
       .subCommand<GetOptions, GetArgs>('config [name]')
       .description('Get tubectl client config entry')
       .action(async (opts, args, rest) => {
-        var config = ConfigStore.get(optparse.parent.parsedOpts);
+        var config = ConfigStore.getAll(optparse.parent.parsedOpts);
         console.log(yaml.dump(config));
       });
   }

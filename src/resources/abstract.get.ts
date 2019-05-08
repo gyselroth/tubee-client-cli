@@ -65,20 +65,26 @@ export default abstract class AbstractGet extends AbstractOperation {
       output = opts.output[0];
     }
 
+    var resource = response.response.toJSON().body;
     var body: string;
     switch (output) {
       case 'json':
-        body = JSON.stringify(response.response.toJSON().body, null, 2);
+        body = JSON.stringify(resource, null, 2);
         console.log(body);
         break;
       case 'yaml':
-        body = yaml.dump(response.response.toJSON().body);
+        body = yaml.dump(resource);
         console.log(body);
         break;
         case 'log':
         for (let resource of response.response.body.data) {
           this.drawLogLine(resource, opts);
         }
+
+        if(resource.count < resource.total) {
+          console.log('# %s of %s total resources. Specify a query or use --stream to display more resources.', resource.count, resource.total);
+        }
+
         break;
       case 'cc':
         fields = [];
@@ -128,6 +134,10 @@ export default abstract class AbstractGet extends AbstractOperation {
           console.log('It is empty here. Either create new resources or change your query.');
         } else {
           console.log(table(data, tableConfig));
+
+          if(resource.count < resource.total) {
+            console.log('# %s of %s total resources. Specify a query or use --stream to display more resources.', resource.count, resource.total);
+          }
         }
     }
   }
@@ -247,7 +257,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     }
 
     var that = this;
-    request.pipe(JSONStream.parse('*')).pipe(
+    request.pipe(process.stdout).pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
         switch (opts.output[0]) {
           case 'json':

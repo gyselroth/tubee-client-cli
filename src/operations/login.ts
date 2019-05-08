@@ -3,7 +3,7 @@ import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 const yaml = require('js-yaml');
 const fs = require('fs');
-import { Config, ConfigStore, keytarPath, configPath } from '../config';
+import { Config, Context, ConfigStore, keytarPath, configPath } from '../config';
 const keytar = require('keytar');
 keytar.setPath(keytarPath);
 const path = require('path');
@@ -40,47 +40,49 @@ export default class Login {
       .option('-s, --server <name>', 'URL to tubee server (For example https://example.org)')
       .option('-a, --allow-self-signed', 'Allow self signed server certificate')
       .action(async (opts, args, rest) => {
-        var config = {} as Config;
+        var context = {} as Context;
         if (opts.username[0]) {
-          config.username = opts.username[0];
+          context.username = opts.username[0];
         }
 
         if (optparse.parsedOpts.debug === true) {
           localVarRequest.debug = true;
         }
 
+        var contextName = optparse.parsedOpts.context[0] || 'default';
         var password;
+
         if (opts.password[0]) {
           password = opts.password[0];
-          keytar.setPassword('tubee', config.username || 'admin', opts.password[0]);
+          keytar.setPassword('tubee', contextName, opts.password[0]);
         }
 
         if (opts.prompt) {
           password = await prompt('Enter password: ', {method: 'hide'});
-          keytar.setPassword('tubee', config.username || 'admin', password);
+          keytar.setPassword('tubee', context.username || 'admin', password);
         }
 
         if (opts.server[0]) {
-          config.url = opts.server[0];
+          context.url = opts.server[0];
         }
 
         if (opts.allowSelfSigned) {
           process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-          config.allowSelfSigned = true;
+          context.allowSelfSigned = true;
         } else {
-          config.allowSelfSigned = false;
+          context.allowSelfSigned = false;
         }
 
-        var server = config.url || 'https://localhost:8090';
+        var server = context.url || 'https://localhost:8090';
 
         if (!/^https?:\/\//i.test(server)) {
-          config.url = server = 'https://' + server;
+          context.url = server = 'https://' + server;
         }
 
         var client = new V1Api(server);
         var basic = new HttpBasicAuth();
 
-        basic.username = config.username || 'admin';
+        basic.username = context.username || 'admin';
         basic.password = password;
         client.setDefaultAuthentication(basic);
 
@@ -91,9 +93,10 @@ export default class Login {
 
           console.log('Successfully connected to server %s', server);
           var writePath = optparse.parsedOpts.config[0] || configPath;
-          ConfigStore.write(writePath, config);
-        }).catch((err) => {
-          console.error('Connection error encountered (use --debug to display more)');
+          ConfigStore.writeContext(writePath, contextName, context);
+          }).catch((err) => {
+            console.log(err);
+            console.error('Connection error encountered (use --debug to display more)');
         });
       });
   }

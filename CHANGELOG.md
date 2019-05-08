@@ -7,6 +7,8 @@
 * CORE: [FIX] --tail/-t works now correctly 
 * CORE: [CHANGE] shortcut for --trace is now -T instead -t
 * CORE: [CHANGE] --logs now includes the option -t (tail)
+* CORE: [FEATURE] Added count/total resources after list and log output
+* CORE: [FEATURE] Support for multiple context (use --context to specify a different one)
 
 
 ## 1.0.0-beta6

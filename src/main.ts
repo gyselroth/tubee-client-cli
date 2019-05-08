@@ -13,6 +13,7 @@ const map = [Login, Get, Create, Edit, Explain, Delete, Sync, Apply];
 
 export interface RootOptions {
   config: string;
+  context: string;
   debug: boolean;
 }
 
@@ -20,7 +21,8 @@ export interface RootArgs {}
 
 let root = commandpost
   .create<RootOptions, RootArgs>('')
-  .option('-c, --config <file>', 'Specify the config for the client (If different than ~/.tubee/config)')
+  .option('-f, --config <file>', 'Specify the config for the client (If different than ~/.tubee/config)')
+  .option('-c, --context <name>', 'Specify a tubee context (Using a different tubee environement)')
   .option('-d, --debug', 'Print request in verbose mode)');
 
 var client = new TubeeClient();

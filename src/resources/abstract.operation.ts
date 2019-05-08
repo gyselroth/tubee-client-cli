@@ -9,11 +9,15 @@ export default abstract class AbstractOperation {
    */
   protected static executeOperation(operation) {
     operation.catch(e => {
-      if (e.response.statusCode === 404) {
+      if (e.response && e.response.statusCode === 404) {
         console.log('No such resource found.');
-      } else {
+      } else if(e.response) {
         console.log('Invalid resource request.');
+      } else {
+        console.log('Error: %s', e.message);
       }
+
+      console.log(e);
     });
   }
 
@@ -47,6 +51,7 @@ export default abstract class AbstractOperation {
   }
 
   protected getNamespace(opts): string {
+console.log(ConfigStore.get());
     if (opts.namespace[0]) {
       return opts.namespace[0];
     } else if (ConfigStore.get().defaultNamespace) {
@@ -128,7 +133,7 @@ export default abstract class AbstractOperation {
       return opts.jsonSort[0];
     }
 
-    if (opts.tail.length > 0 || opts.logs) {
+    if (opts.tail.length > 0 || opts.logs[0]) {
       return JSON.stringify({
         $natural: 1,
       });
