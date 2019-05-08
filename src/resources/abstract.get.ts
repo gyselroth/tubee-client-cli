@@ -257,7 +257,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     }
 
     var that = this;
-    request.pipe(process.stdout).pipe(JSONStream.parse('*')).pipe(
+    request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
         switch (opts.output[0]) {
           case 'json':

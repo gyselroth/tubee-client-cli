@@ -16,8 +16,6 @@ export default abstract class AbstractOperation {
       } else {
         console.log('Error: %s', e.message);
       }
-
-      console.log(e);
     });
   }
 
@@ -51,7 +49,6 @@ export default abstract class AbstractOperation {
   }
 
   protected getNamespace(opts): string {
-console.log(ConfigStore.get());
     if (opts.namespace[0]) {
       return opts.namespace[0];
     } else if (ConfigStore.get().defaultNamespace) {
