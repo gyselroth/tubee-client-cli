@@ -16,7 +16,7 @@ export default class Get extends AbstractGet {
     return optparse
       .subCommand<GetOptions, GetArgs>('endpoints <collection> [name]')
       .option('-l, --logs [name]', 'Request resource logs')
-      .option('-t, --trace [name]', 'Request resource logs including stacktraces')
+      .option('-T, --trace [name]', 'Request resource logs including stacktraces')
       .alias('ep')
       .description('Get endpoints')
       .action(async (opts, args, rest) => {

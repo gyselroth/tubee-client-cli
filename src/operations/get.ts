@@ -45,7 +45,7 @@ export interface GetOptions {
   sort: string;
   namespace: string;
   limit: number;
-  tail: boolean;
+  tail: number;
   logs: boolean;
   trace: boolean;
 }
@@ -100,8 +100,8 @@ export default class Get {
       );
       sub.option('--json-sort <name>', 'Specify an advanced json sort');
       sub.option(
-        '-t, --tail <number>',
-        'If tail is specified, the last n objects are retrieved, if no number is set the last 20 objects get retrieved.',
+        '-t, --tail [number]',
+        'If tail is specified, the output gets reversed. Meaning older resources are retrieved first.',
       );
     }
   }

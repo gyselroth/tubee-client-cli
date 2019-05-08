@@ -89,18 +89,16 @@ export default abstract class AbstractOperation {
    * Get offset
    */
   protected getOffset(opts): number {
-    if (opts.tail[0]) {
-      return opts.tail[0] * -1;
-    } else {
-      return 0;
-    }
+    return 0;
   }
 
   /**
    * Get limit
    */
   protected getLimit(opts): number {
-    if (opts.limit[0]) {
+    if (opts.tail[0]) {
+      return opts.tail[0];
+    } else if (opts.limit[0]) {
       if (opts.limit[0] > 100) {
         return 100;
       }
@@ -130,7 +128,7 @@ export default abstract class AbstractOperation {
       return opts.jsonSort[0];
     }
 
-    if (opts.tail[0]) {
+    if (opts.tail.length > 0 || opts.logs) {
       return JSON.stringify({
         $natural: 1,
       });

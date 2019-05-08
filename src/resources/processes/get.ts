@@ -17,7 +17,7 @@ export default class Get extends AbstractGet {
     return optparse
       .subCommand<GetOptions, GetArgs>('processes [name]')
       .option('-l, --logs [name]', 'Request resource logs')
-      .option('-t, --trace [name]', 'Request resource logs including stacktraces')
+      .option('-T, --trace [name]', 'Request resource logs including stacktraces')
       .alias('ps')
       .description('Get processes')
       .action(async (opts, args, rest) => {

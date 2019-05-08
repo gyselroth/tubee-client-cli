@@ -19,7 +19,7 @@ export default class Get extends AbstractGet {
       .subCommand<GetOptions, GetArgs>('jobs [name]')
       .description('Get synchronization jobs')
       .option('-l, --logs [name]', 'Request resource logs')
-      .option('-t, --trace', 'Including log stacktraces')
+      .option('-T, --trace', 'Including log stacktraces')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);

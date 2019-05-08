@@ -4,6 +4,9 @@
 
 * CORE: [FIX] removed debug output if request ended in error (use --debug)
 * CORE: [CHANGE] process time is now in a humanreadable format instead seconds
+* CORE: [FIX] --tail/-t works now correctly 
+* CORE: [CHANGE] shortcut for --trace is now -T instead -t
+* CORE: [CHANGE] --logs now includes the option -t (tail)
 
 
 ## 1.0.0-beta6
