@@ -1,6 +1,6 @@
 ## 1.0.0-beta7
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
-**Date**: Fri Apr 05 16:51:01 CEST 2019
+**Date**: Fri May 10 09:52:03 CEST 2019
 
 * CORE: [FIX] removed debug output if request ended in error (use --debug)
 * CORE: [CHANGE] process time is now in a humanreadable format instead seconds
@@ -9,6 +9,8 @@
 * CORE: [CHANGE] --logs now includes the option -t (tail)
 * CORE: [FEATURE] Added count/total resources after list and log output
 * CORE: [FEATURE] Support for multiple context (use --context to specify a different one)
+* CORE: [CHANGE] config can now be edited using `tubectl edit config`
+* CORE: [FEATURE] Added --query/-q and --json-query to the sync command (Only sync specific objects)
 
 
 ## 1.0.0-beta6

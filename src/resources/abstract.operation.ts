@@ -130,7 +130,7 @@ export default abstract class AbstractOperation {
       return opts.jsonSort[0];
     }
 
-    if (opts.tail.length > 0 || opts.logs[0]) {
+    if (opts.tail.length > 0 || opts.logs && opts.logs.length > 0) {
       return JSON.stringify({
         $natural: 1,
       });
