@@ -95,8 +95,11 @@ export default class Login {
           var writePath = optparse.parsedOpts.config[0] || configPath;
           ConfigStore.writeContext(writePath, contextName, context);
           }).catch((err) => {
-            console.log(err);
             console.error('Connection error encountered (use --debug to display more)');
+
+            if(optparse.parsedOpts.debug === true) {
+              console.log(err);
+            }
         });
       });
   }
