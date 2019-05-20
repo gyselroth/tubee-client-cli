@@ -35,9 +35,17 @@ export default abstract class AbstractOperation {
         for (let field of selector.split(',')) {
           var result;
           if ((result = field.match('^([^!=]+)=([^!=]+)'))) {
-            query[result[1]] = result[2];
+            query[result[1]] = this.parseValue(result[2]);
           } else if ((result = field.match('^([^!=]+)!=([^!=]+)'))) {
-            query[result[1]] = result[2];
+            query[result[1]] = this.parseValue(result[2]);
+          } else if ((result = field.match('^([^!=]+)<([^!=]+)'))) {
+            query[result[1]] = {$lt: this.parseValue(result[2])};
+          } else if ((result = field.match('^([^!=]+)<=([^!=]+)'))) {
+            query[result[1]] = {$lte: this.parseValue(result[2])};
+          } else if ((result = field.match('^([^!=]+)>([^!=]+)'))) {
+            query[result[1]] = {$gt: this.parseValue(result[2])};
+          } else if ((result = field.match('^([^!=]+)>=([^!=]+)'))) {
+            query[result[1]] = {$gte: this.parseValue(result[2])};
           }
         }
       }
@@ -48,6 +56,20 @@ export default abstract class AbstractOperation {
     return query;
   }
 
+  /**
+   * parse string value to something more meaningful
+   */
+  protected parseValue(value) {
+    if(value.match('^[0-9]+$')) {
+      return parseInt(value);
+    }
+
+    return value;
+  }
+
+  /**
+   * Get namespace
+   */
   protected getNamespace(opts): string {
     if (opts.namespace[0]) {
       return opts.namespace[0];

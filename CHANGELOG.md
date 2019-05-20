@@ -3,6 +3,7 @@
 **Date**: Fri May 10 09:52:03 CEST 2019
 
 * CORE: [CHANGE] If --debug was applied and an exception occured during login operation the exception gets dumped to stdout
+* CORE: [FEATURE] Added possibility to use < > <= >= in a query operation
 
 
 ## 1.0.0-beta7
