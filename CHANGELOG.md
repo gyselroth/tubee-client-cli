@@ -4,6 +4,7 @@
 
 * CORE: [CHANGE] If --debug was applied and an exception occured during login operation the exception gets dumped to stdout
 * CORE: [FEATURE] Added possibility to use < > <= >= in a query operation
+* CORE: [FIX] sync operation with query
 
 
 ## 1.0.0-beta7
