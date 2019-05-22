@@ -1,3 +1,10 @@
+## 1.0.0-beta9
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Wed May 22 14:09:03 CEST 2019
+
+* CORE: [CHANGE] nexe downgrade due fs.readFileSync error (openapi.yml not found)
+
+
 ## 1.0.0-beta8
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Fri May 10 09:52:03 CEST 2019

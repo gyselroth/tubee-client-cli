@@ -59,7 +59,7 @@
     "@types/node": "^10.14.7",
     "coveralls": "^3.0.3",
     "jest": "^23.6.0",
-    "nexe": "^3.0.0",
+    "nexe": "3.0.0-beta.15",
     "prettier": "^1.17.1",
     "source-map-support": "^0.5.12",
     "ts-jest": "^22.4.6",
