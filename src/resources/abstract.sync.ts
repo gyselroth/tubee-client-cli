@@ -14,8 +14,6 @@ export default abstract class AbstractSync extends AbstractGet {
    * Add process
    */
   protected async addProcess(namespace, resource, opts, args, rest) {
-
-  console.log(resource);
     if(resource.data.ignore === undefined) {
       resource.data.ignore = !opts.abortOnError;
     }
@@ -29,8 +27,6 @@ export default abstract class AbstractSync extends AbstractGet {
     }
 
     resource.data.filter = this.createQuery(opts, args);
-
-    console.log(resource);
 
     return this.api.addProcess(namespace, resource).then(result => {
       this.sync(result, opts);
