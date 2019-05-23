@@ -3,6 +3,7 @@
 **Date**: Thu May 23 09:39:03 CEST 2019
 
 * CORE: [FIX] sync --simulate works now correctly 
+* CORE: [FIX] apply new AccessRule now correcly adds the new resource without error
 
 
 ## 1.0.0-beta9
