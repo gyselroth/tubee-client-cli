@@ -4,9 +4,14 @@ import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
+  /**
+   * Names
+   */
+  protected names = ['access-rules', 'aru'];
+
   /**
    * Apply cli options
    */

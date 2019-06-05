@@ -4,17 +4,32 @@ import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
 const ta = require('time-ago');
+import EndpointObjects from '../endpoint-objects/get';
+import Workflows from '../workflows/get';
 
 /**
  * Get resources
  */
 export default class Get extends AbstractGet {
   /**
+   * Names
+   */
+  protected names = ['endpoints', 'eo'];
+
+  /**
+   * Children
+   */
+  protected children = [
+    {resource: EndpointObjects, names: ['endpoint-objects', 'eo']},
+    {resource: Workflows, names: ['workflows', 'wf']},
+  ];
+
+  /**
    * Apply cli options
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('endpoints <collection> [name]')
+      .subCommand<GetOptions, GetArgs>('endpoints [collection] [name]')
       .option('-l, --logs [name]', 'Request resource logs')
       .option('-T, --trace [name]', 'Request resource logs including stacktraces')
       .alias('ep')
@@ -74,6 +89,17 @@ export default class Get extends AbstractGet {
         ta.ago(resource.created),
       ];
     });
+  }
+
+  /**
+   * Get recursive resources
+   */
+  public async recursive(resource, opts, args) {
+    for(let child of this.children) {
+      args.endpoint = resource.name;
+      var instance = new child.resource(this.api);
+      instance.execute(opts, args, {});
+    }
   }
 
   /**

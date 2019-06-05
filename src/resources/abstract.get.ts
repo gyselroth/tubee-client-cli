@@ -29,6 +29,8 @@ export const tableConfig = {
  */
 export default abstract class AbstractGet extends AbstractOperation {
   protected api;
+  protected children = [];
+  protected names = [];
 
   /**
    * Construct
@@ -54,7 +56,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       return this.streamObjects(response, opts, fields, callback);
     }
 
-    if (opts.diff.length > 0) {
+    if (opts.diff && opts.diff.length > 0) {
       return this.compare(response.response.toJSON().body, opts);
     }
 
@@ -66,6 +68,19 @@ export default abstract class AbstractGet extends AbstractOperation {
     }
 
     var resource = response.response.toJSON().body;
+
+    if(opts.recursive === true) {
+      for(let sub of resource.data) {
+        this.recursive(sub, opts, args);
+      }
+
+      this.names.push('all');
+      var result = this.names.filter(value => -1 !== opts.whitelist.indexOf(value));
+      if(result.length === 0) {
+        return;
+      }
+    }
+
     var body: string;
     switch (output) {
       case 'json':
@@ -75,6 +90,11 @@ export default abstract class AbstractGet extends AbstractOperation {
       case 'yaml':
         body = yaml.dump(resource);
         console.log(body);
+
+        if(opts.recursive === true) {
+          console.log('---');
+        }
+
         break;
         case 'log':
         for (let resource of response.response.body.data) {
@@ -140,6 +160,12 @@ export default abstract class AbstractGet extends AbstractOperation {
           }
         }
     }
+  }
+
+  /**
+   * Get recursive resources
+   */
+  public async recursive(resource, opts, args) {
   }
 
   /**
@@ -257,7 +283,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     }
 
     var that = this;
-    request.pipe(JSONStream.parse('*')).pipe(
+    request.pipe(process.stdout).pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
         switch (opts.output[0]) {
           case 'json':

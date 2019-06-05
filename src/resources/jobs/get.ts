@@ -12,6 +12,11 @@ const prettyMilliseconds = require('pretty-ms');
  */
 export default class Get extends AbstractGet {
   /**
+   * Names
+   */
+  protected names = ['jobs'];
+
+  /**
    * Apply cli options
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {

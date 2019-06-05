@@ -2,11 +2,26 @@ import { Command } from 'commandpost';
 import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
+import DataObjects from '../data-objects/get';
+import Endpoints from '../endpoints/get';
 
 /**
- *  * Edit resources
- *   */
+ * Get resources
+ */
 export default class Get extends AbstractGet {
+  /**
+   * Names
+   */
+  protected names = ['collections', 'co'];
+
+  /**
+   * Children
+   */
+  protected children = [
+    {resource: DataObjects, names: ['data-objects', 'do']},
+    {resource: Endpoints, names: ['endpoints', 'eo']},
+  ];
+
   /**
    * Apply cli options
    */
@@ -53,6 +68,17 @@ export default class Get extends AbstractGet {
     } else {
       var response = await this.api.getCollections(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
       this.getObjects(response, args, opts);
+    }
+  }
+
+  /**
+   * Get recursive resources
+   */
+  public async recursive(resource, opts, args) {
+    for(let child of this.children) {
+      args.collection = resource.name;
+      var instance = new child.resource(this.api);
+      instance.execute(opts, args, {});
     }
   }
 }
