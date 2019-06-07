@@ -26,11 +26,13 @@ export default class Explain {
       .description('Describe a resource')
       .action((opts, args, rest) => {
         SwaggerParser.validate(specPath, (err, api) => {
+          var key = 'core.v1.'+args.resource;
+
           if (err) {
             console.error('Failed to retrieve the resource specification', err);
           } else {
-            if (api.components.schemas[args.resource]) {
-              Explain.describe(api.components.schemas[args.resource]);
+            if (api.components.schemas[key]) {
+              Explain.describe(api.components.schemas[key]);
             } else {
               console.log('The resource %s does not exists', args.resource);
             }

@@ -70,13 +70,16 @@ export default abstract class AbstractGet extends AbstractOperation {
     var resource = response.response.toJSON().body;
 
     if(opts.recursive === true) {
-      for(let sub of resource.data) {
-        this.recursive(sub, opts, args);
+      if(resource.kind === 'List') {
+        for(let sub of resource.data) {
+          this.recursive(sub, opts, args);
+        }
       }
 
       this.names.push('all');
-      var result = this.names.filter(value => -1 !== opts.whitelist.indexOf(value));
-      if(result.length === 0) {
+      var requested = this.names.filter(value => -1 !== opts.whitelist.indexOf(value));
+
+      if(requested.length === 0) {
         return;
       }
     }
@@ -160,6 +163,13 @@ export default abstract class AbstractGet extends AbstractOperation {
           }
         }
     }
+  }
+
+  /**
+   * Get children
+   */
+  public getChildren() {
+    return this.children;
   }
 
   /**

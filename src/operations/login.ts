@@ -7,7 +7,7 @@ import { Config, Context, ConfigStore, keytarPath, configPath } from '../config'
 const keytar = require('keytar');
 keytar.setPath(keytarPath);
 const path = require('path');
-const { V1Api, HttpBasicAuth, localVarRequest } = require('@gyselroth/tubee-sdk-node');
+const { CoreV1Api, HttpBasicAuth, localVarRequest } = require('@gyselroth/tubee-sdk-node');
 const prompt = require('password-prompt');
 
 export interface LoginOptions {
@@ -79,7 +79,7 @@ export default class Login {
           context.url = server = 'https://' + server;
         }
 
-        var client = new V1Api(server);
+        var client = new CoreV1Api(server);
         var basic = new HttpBasicAuth();
 
         basic.username = context.username || 'admin';

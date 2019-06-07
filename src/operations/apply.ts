@@ -130,10 +130,12 @@ export default class Apply {
 
       var inbound = [];
       for(let sub of resources) {
-        if(sub.kind === 'List') {
-          inbound.concat(sub.data)
+        if(sub === null) {
+          continue;
+        } else if(sub.kind === 'List') {
+          inbound = inbound.concat(sub.data)
         } else {
-          inbound.concat(sub);
+          inbound.push(sub);
         }
       }
 

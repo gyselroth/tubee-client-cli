@@ -1,3 +1,11 @@
+## 1.0.0-beta11
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Fri June 07 12:03:03 CEST 2019
+
+* CORE: [CHANGE] apply can now handle List resources
+* CORE: [FEATURE] Export and import multiple resources #7
+
+
 ## 1.0.0-beta10
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Thu May 23 09:39:03 CEST 2019

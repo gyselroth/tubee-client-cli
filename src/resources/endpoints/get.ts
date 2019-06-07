@@ -14,7 +14,7 @@ export default class Get extends AbstractGet {
   /**
    * Names
    */
-  protected names = ['endpoints', 'eo'];
+  protected names = ['endpoints', 'ep'];
 
   /**
    * Children
@@ -96,9 +96,17 @@ export default class Get extends AbstractGet {
    */
   public async recursive(resource, opts, args) {
     for(let child of this.children) {
-      args.endpoint = resource.name;
+      let requested = child.names.filter(value => -1 !== opts.whitelist.indexOf(value));
+      let newArgs = Object.assign({}, args);
+
+      newArgs.endpoint = resource.name;
       var instance = new child.resource(this.api);
-      instance.execute(opts, args, {});
+
+      if(requested.length === 0 && instance.getChildren().length === 0) {
+        continue;
+      }
+
+      instance.execute(opts, newArgs, {});
     }
   }
 

@@ -70,7 +70,7 @@ export default abstract class AbstractOperation {
   /**
    * Get namespace
    */
-  protected getNamespace(opts): string {
+  public getNamespace(opts): string {
     if (opts.namespace[0]) {
       return opts.namespace[0];
     } else if (ConfigStore.get().defaultNamespace) {

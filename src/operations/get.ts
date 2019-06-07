@@ -55,11 +55,12 @@ export interface GetArgs {
 }
 
 const children = [
+  {resource: Namespaces, names: ['namespaces', 'ns']},
   {resource: Collections, names: ['collections', 'co']},
   {resource: Relations, names: ['relations', 're']},
   {resource: Jobs, names: ['jobs']},
   {resource: Processes, names: ['processes', 'ps']},
-  {resource: Secrets, names: ['secrets']},
+  {resource: Secrets, names: ['secrets', 'se']},
 ];
 
 /**
@@ -137,6 +138,13 @@ export default class Get {
     var api = await client.factory('v1', optparse.parsedOpts);
     for(let child of children) {
       var instance = new child.resource(api);
+
+      if(child.resource === Namespaces) {
+        args.name = instance.getNamespace(opts);
+      } else {
+        delete args.name;
+      }
+
       instance.execute(opts, args, rest);
     }
   }
