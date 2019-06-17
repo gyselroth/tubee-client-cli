@@ -1,3 +1,11 @@
+## 1.0.0-beta12
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Fri June 07 12:03:03 CEST 2019
+
+* CORE: [FIX] removed watch debug to stdout
+* CORE: [FIX] multi resource alias dor instead re
+
+
 ## 1.0.0-beta11
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Fri June 07 12:03:03 CEST 2019

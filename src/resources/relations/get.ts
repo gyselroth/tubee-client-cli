@@ -10,7 +10,7 @@ export default class Get extends AbstractGet {
   /**
    * Names
    */
-  protected names = ['relations', 're'];
+  protected names = ['relations', 'dor'];
 
   /**
    * Apply cli options

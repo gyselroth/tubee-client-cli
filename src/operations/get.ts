@@ -57,7 +57,7 @@ export interface GetArgs {
 const children = [
   {resource: Namespaces, names: ['namespaces', 'ns']},
   {resource: Collections, names: ['collections', 'co']},
-  {resource: Relations, names: ['relations', 're']},
+  {resource: Relations, names: ['relations', 'dor']},
   {resource: Jobs, names: ['jobs']},
   {resource: Processes, names: ['processes', 'ps']},
   {resource: Secrets, names: ['secrets', 'se']},
