@@ -1,3 +1,10 @@
+## 1.0.0-beta13
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Thu June 20 15:46:03 CEST 2019
+
+* PACKAGING: [CHANGE] Moved windows build from appveyor to travis
+
+
 ## 1.0.0-beta12
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Fri June 07 12:03:03 CEST 2019
