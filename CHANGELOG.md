@@ -1,3 +1,10 @@
+## 1.0.0-beta14
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Tue Jul 09 11:28:03 CEST 2019
+
+* CORE: [FEATURE] Support for MicrosoftGraph endpoint
+
+
 ## 1.0.0-beta13
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Thu June 20 15:46:03 CEST 2019

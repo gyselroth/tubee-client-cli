@@ -19,7 +19,7 @@ export default class Get extends AbstractGet {
     return optparse
       .subCommand<GetOptions, GetArgs>('data-objects <collection> [name]')
       .option('-l, --logs [name]', 'Request resource logs')
-      .option('-T, --trace [name]', 'Request resource logs including stacktraces')
+      .option('-T, --trace [name]', 'Including stacktraces (Log and DataObject endpoint exceptions)')
       .option('-r, --relations [name]', 'Get object relations')
       .alias('do')
       .description('Get data objects')
