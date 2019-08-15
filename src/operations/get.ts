@@ -15,6 +15,7 @@ import Workflows from '../resources/workflows/get';
 import Secrets from '../resources/secrets/get';
 import Users from '../resources/users/get';
 import Config from '../resources/config/get';
+import array from 'lodash/array';
 
 var map = [
   AccessRoles,
@@ -55,12 +56,12 @@ export interface GetArgs {
 }
 
 const children = [
-  {resource: Namespaces, names: ['namespaces', 'ns']},
-  {resource: Collections, names: ['collections', 'co']},
-  {resource: Relations, names: ['relations', 'dor']},
-  {resource: Jobs, names: ['jobs']},
-  {resource: Processes, names: ['processes', 'ps']},
-  {resource: Secrets, names: ['secrets', 'se']},
+  { resource: Namespaces, names: ['namespaces', 'ns'] },
+  { resource: Collections, names: ['collections', 'co'] },
+  { resource: Relations, names: ['relations', 'dor'] },
+  { resource: Jobs, names: ['jobs'] },
+  { resource: Processes, names: ['processes', 'ps'] },
+  { resource: Secrets, names: ['secrets', 'se'] },
 ];
 
 /**
@@ -71,7 +72,8 @@ export default class Get {
    * Apply cli options
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
-    let remote = optparse.subCommand<GetOptions, GetArgs>('get')
+    let remote = optparse
+      .subCommand<GetOptions, GetArgs>('get')
       .description('Get resources')
       .action((opts, args, rest) => {
         Get.execute(opts, args, rest, client, optparse, remote);
@@ -109,10 +111,7 @@ export default class Get {
       '-L --limit <number>',
       'Max number of resources to be returned. May not be higher than 100, otherwise use --stream.',
     );
-    sub.option(
-      '-q, --field-selector <name>',
-      'Specify a comma separated field based query (Example: foo=bar,bar=foo)',
-    );
+    sub.option('-q, --field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)');
     sub.option(
       '--field-filter <name>',
       'Specify a comma separated list what attributes should be requested, by default all attributes gets returned. (Example: kind,name)',
@@ -132,7 +131,7 @@ export default class Get {
    * Execute
    */
   public static async execute(opts, args, rest, client, optparse, getCommand) {
-    if(rest.length === 0) {
+    if (rest.length === 0) {
       process.stdout.write(getCommand.helpText());
 
       return;
@@ -142,10 +141,10 @@ export default class Get {
     opts.whitelist = rest[0].split(',');
 
     var api = await client.factory('v1', optparse.parsedOpts);
-    for(let child of children) {
+    for (let child of children) {
       var instance = new child.resource(api);
 
-      if(child.resource === Namespaces) {
+      if (child.resource === Namespaces) {
         args.name = instance.getNamespace(opts);
       } else {
         delete args.name;

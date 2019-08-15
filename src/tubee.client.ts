@@ -25,7 +25,7 @@ export default class TubeeClient {
 
     try {
       config = ConfigStore.get(options);
-    } catch(Err) {
+    } catch (Err) {
       console.error('you need to login first (tubectl login)');
       process.exit();
     }

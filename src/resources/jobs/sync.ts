@@ -27,7 +27,7 @@ export default class Sync extends AbstractSync {
   public async execute(opts, args, rest) {
     var response = await this.api.getJob(this.getNamespace(opts), args.name);
     var resource = {
-      data: response.body.data
+      data: response.body.data,
     };
 
     return this.addProcess(this.getNamespace(opts), resource, opts, args, rest);

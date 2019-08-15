@@ -11,7 +11,7 @@ export default abstract class AbstractOperation {
     operation.catch(e => {
       if (e.response && e.response.statusCode === 404) {
         console.log('No such resource found.');
-      } else if(e.response) {
+      } else if (e.response) {
         console.log('Invalid resource request.');
       } else {
         console.log('Error: %s', e.message);
@@ -39,13 +39,13 @@ export default abstract class AbstractOperation {
           } else if ((result = field.match('^([^!=]+)!=([^!=]+)'))) {
             query[result[1]] = this.parseValue(result[2]);
           } else if ((result = field.match('^([^!=]+)<([^!=]+)'))) {
-            query[result[1]] = {$lt: this.parseValue(result[2])};
+            query[result[1]] = { $lt: this.parseValue(result[2]) };
           } else if ((result = field.match('^([^!=]+)<=([^!=]+)'))) {
-            query[result[1]] = {$lte: this.parseValue(result[2])};
+            query[result[1]] = { $lte: this.parseValue(result[2]) };
           } else if ((result = field.match('^([^!=]+)>([^!=]+)'))) {
-            query[result[1]] = {$gt: this.parseValue(result[2])};
+            query[result[1]] = { $gt: this.parseValue(result[2]) };
           } else if ((result = field.match('^([^!=]+)>=([^!=]+)'))) {
-            query[result[1]] = {$gte: this.parseValue(result[2])};
+            query[result[1]] = { $gte: this.parseValue(result[2]) };
           }
         }
       }
@@ -60,7 +60,7 @@ export default abstract class AbstractOperation {
    * parse string value to something more meaningful
    */
   protected parseValue(value) {
-    if(value.match('^[0-9]+$')) {
+    if (value.match('^[0-9]+$')) {
       return parseInt(value);
     }
 
@@ -152,10 +152,8 @@ export default abstract class AbstractOperation {
       return opts.jsonSort[0];
     }
 
-    if (opts.tail.length > 0 || opts.logs && opts.logs.length > 0) {
-      return JSON.stringify({
-        $natural: 1,
-      });
+    if (opts.tail.length === 1) {
+      return JSON.stringify({ changed: -1 });
     }
 
     if (opts.sort) {

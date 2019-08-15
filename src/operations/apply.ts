@@ -129,11 +129,11 @@ export default class Apply {
       }
 
       var inbound = [];
-      for(let sub of resources) {
-        if(sub === null) {
+      for (let sub of resources) {
+        if (sub === null) {
           continue;
-        } else if(sub.kind === 'List') {
-          inbound = inbound.concat(sub.data)
+        } else if (sub.kind === 'List') {
+          inbound = inbound.concat(sub.data);
         } else {
           inbound.push(sub);
         }

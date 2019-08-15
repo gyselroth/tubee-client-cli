@@ -23,7 +23,9 @@ export default class Edit extends AbstractEdit {
       .action(async (opts, args, rest) => {
         var config = ConfigStore.getAll(optparse.parent.parsedOpts);
         var instance = new Edit(null);
-        this.executeOperation(instance.execute(config, optparse.parent.parsedOpts.config[0] || configPath, opts, args, rest));
+        this.executeOperation(
+          instance.execute(config, optparse.parent.parsedOpts.config[0] || configPath, opts, args, rest),
+        );
       });
   }
 

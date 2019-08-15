@@ -1,3 +1,16 @@
+## 1.0.0-beta15
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Thu Aug 15 10:59:03 CEST 2019
+
+* CORE: [CHANGE] Removed rmac borders, the list output is now a borderless table which is more compact 
+* CORE: [FIX] Fixed log exception output due a beta api change in the tubee api
+* CORE: [CHANGE] CHanged reverse sorting if using -t to use an indexed query instead $natural sorting.
+* CORE: [FIX] TypeError: Cannot read property 'split' of undefined with get and no resource type #13
+* CORE: [FIX] Do not print out resources if the list is empty while multiple resource types are fetched
+* CORE: [FIX] Error: Required parameter collection was null or undefined when calling getEndpoints #12
+* CORE: [FEATURE] Print process status during process following and exit after process is finished
+ 
+
 ## 1.0.0-beta14
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Tue Jul 09 11:28:03 CEST 2019

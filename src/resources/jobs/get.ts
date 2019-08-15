@@ -111,6 +111,6 @@ export default class Get extends AbstractGet {
 
     var startDate = new Date(resource.status.last_process.started);
     var endDate = new Date(resource.status.last_process.ended);
-    return prettyMilliseconds(endDate.getTime() - startDate.getTime(), {compact: true});
+    return prettyMilliseconds(endDate.getTime() - startDate.getTime(), { compact: true });
   }
 }

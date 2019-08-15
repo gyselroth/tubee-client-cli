@@ -18,8 +18,8 @@ export default class Get extends AbstractGet {
    * Children
    */
   protected children = [
-    {resource: DataObjects, names: ['data-objects', 'do']},
-    {resource: Endpoints, names: ['endpoints', 'eo']},
+    { resource: DataObjects, names: ['data-objects', 'do'] },
+    { resource: Endpoints, names: ['endpoints', 'eo'] },
   ];
 
   /**
@@ -75,14 +75,14 @@ export default class Get extends AbstractGet {
    * Get recursive resources
    */
   public async recursive(resource, opts, args) {
-    for(let child of this.children) {
+    for (let child of this.children) {
       let requested = child.names.filter(value => -1 !== opts.whitelist.indexOf(value));
-      let newArgs =  Object.assign({}, args);
+      let newArgs = Object.assign({}, args);
 
       newArgs.collection = resource.name;
       var instance = new child.resource(this.api);
 
-      if(requested.length === 0 && instance.getChildren().length === 0) {
+      if (requested.length === 0 && instance.getChildren().length === 0) {
         continue;
       }
 

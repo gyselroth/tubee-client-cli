@@ -116,7 +116,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     var body: string = '';
 
     for (let attr in definition) {
-      if(resources[attr] !== undefined) {
+      if (resources[attr] !== undefined) {
         continue;
       } else if (definition[attr].readOnly === true || attr === '_links') {
         continue;

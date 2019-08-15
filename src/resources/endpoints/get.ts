@@ -20,8 +20,8 @@ export default class Get extends AbstractGet {
    * Children
    */
   protected children = [
-    {resource: EndpointObjects, names: ['endpoint-objects', 'eo']},
-    {resource: Workflows, names: ['workflows', 'wf']},
+    { resource: EndpointObjects, names: ['endpoint-objects', 'eo'] },
+    { resource: Workflows, names: ['workflows', 'wf'] },
   ];
 
   /**
@@ -29,7 +29,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-    .subCommand<GetOptions, GetArgs>('endpoints <collection> [name]')
+      .subCommand<GetOptions, GetArgs>('endpoints <collection> [name]')
       .option('-l, --logs [name]', 'Request resource logs')
       .option('-T, --trace [name]', 'Request resource logs including stacktraces')
       .alias('ep')
@@ -95,14 +95,14 @@ export default class Get extends AbstractGet {
    * Get recursive resources
    */
   public async recursive(resource, opts, args) {
-    for(let child of this.children) {
+    for (let child of this.children) {
       let requested = child.names.filter(value => -1 !== opts.whitelist.indexOf(value));
       let newArgs = Object.assign({}, args);
 
       newArgs.endpoint = resource.name;
       var instance = new child.resource(this.api);
 
-      if(requested.length === 0 && instance.getChildren().length === 0) {
+      if (requested.length === 0 && instance.getChildren().length === 0) {
         continue;
       }
 

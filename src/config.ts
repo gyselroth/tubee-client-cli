@@ -57,7 +57,7 @@ export class ConfigStore {
    * Retrieve config
    */
   public static getAll(options = null): Config {
-    return ConfigStore.config = ConfigStore.load(options);
+    return (ConfigStore.config = ConfigStore.load(options));
   }
 
   /**
@@ -67,23 +67,23 @@ export class ConfigStore {
     var config = ConfigStore.getAll(options);
     var context;
 
-    if(ConfigStore.context) {
+    if (ConfigStore.context) {
       return ConfigStore.context;
-    } else if(options !== null && options.context[0]) {
+    } else if (options !== null && options.context[0]) {
       context = ConfigStore.getContextByName(options.context[0]);
     } else {
       context = ConfigStore.getContextByName(config.defaultContext || 'default');
     }
 
-    return ConfigStore.context = context;
+    return (ConfigStore.context = context);
   }
 
   /**
    * Get context by name
    */
   protected static getContextByName(name: string): Context {
-    for(let context of ConfigStore.config.context) {
-      if(context.name === name) {
+    for (let context of ConfigStore.config.context) {
+      if (context.name === name) {
         return context;
       }
     }
@@ -95,21 +95,21 @@ export class ConfigStore {
    * Set context
    */
   public static writeContext(configPath: string, name: string, context: Context) {
-    var config = ConfigStore.getAll({config: [configPath]});
-    if(!ConfigStore.config.context) {
+    var config = ConfigStore.getAll({ config: [configPath] });
+    if (!ConfigStore.config.context) {
       ConfigStore.config.context = [];
     }
 
-    if(ConfigStore.config.kind !== 'Config') {
+    if (ConfigStore.config.kind !== 'Config') {
       ConfigStore.config.kind = 'Config';
     }
 
-    if(!ConfigStore.config.defaultContext) {
+    if (!ConfigStore.config.defaultContext) {
       ConfigStore.config.defaultContext = name;
     }
 
-    for(let context of ConfigStore.config.context) {
-      if(context.name === name) {
+    for (let context of ConfigStore.config.context) {
+      if (context.name === name) {
         var index = ConfigStore.config.context.indexOf(context);
         if (index > -1) {
           ConfigStore.config.context.splice(index, 1);

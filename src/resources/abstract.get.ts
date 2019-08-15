@@ -17,10 +17,20 @@ const randomstring = require('randomstring');
 const objectPath = require('object-path');
 
 export const tableConfig = {
-  border: getBorderCharacters('ramac'),
+  border: getBorderCharacters(`void`),
   columnCount: 4,
   columnDefault: {
-    width: 25,
+    width: 15,
+    paddingLeft: 0,
+    paddingRight: 1,
+  },
+  columns: {
+    0: {
+      width: 25,
+    },
+  },
+  drawHorizontalLine: () => {
+    return false;
   },
 };
 
@@ -30,7 +40,7 @@ export const tableConfig = {
 export default abstract class AbstractGet extends AbstractOperation {
   protected api;
   protected children = [];
-  protected names = [];
+  protected names: string[] = [];
 
   /**
    * Construct
@@ -69,9 +79,9 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     var resource = response.response.toJSON().body;
 
-    if(opts.recursive === true) {
-      if(resource.kind === 'List') {
-        for(let sub of resource.data) {
+    if (opts.recursive === true) {
+      if (resource.kind === 'List') {
+        for (let sub of resource.data) {
           this.recursive(sub, opts, args);
         }
       }
@@ -79,9 +89,13 @@ export default abstract class AbstractGet extends AbstractOperation {
       this.names.push('all');
       var requested = this.names.filter(value => -1 !== opts.whitelist.indexOf(value));
 
-      if(requested.length === 0) {
+      if (requested.length === 0) {
         return;
       }
+    }
+
+    if (resource.kind === 'List' && resource.count === 0 && opts.whitelist) {
+      return;
     }
 
     var body: string;
@@ -94,18 +108,22 @@ export default abstract class AbstractGet extends AbstractOperation {
         body = yaml.dump(resource);
         console.log(body);
 
-        if(opts.recursive === true) {
+        if (opts.recursive === true) {
           console.log('---');
         }
 
         break;
-        case 'log':
+      case 'log':
         for (let resource of response.response.body.data) {
           this.drawLogLine(resource, opts);
         }
 
-        if(resource.count < resource.total) {
-          console.log('# %s of %s total resources. Specify a query or use --stream to display more resources.', resource.count, resource.total);
+        if (resource.count < resource.total) {
+          console.log(
+            '# %s of %s total resources. Specify a query or use --stream to display more resources.',
+            resource.count,
+            resource.total,
+          );
         }
 
         break;
@@ -158,11 +176,22 @@ export default abstract class AbstractGet extends AbstractOperation {
         } else {
           console.log(table(data, tableConfig));
 
-          if(resource.count < resource.total) {
-            console.log('# %s of %s total resources. Specify a query or use --stream to display more resources.', resource.count, resource.total);
+          if (resource.count < resource.total) {
+            console.log(
+              '# %s of %s total resources. Specify a query or use --stream to display more resources.',
+              resource.count,
+              resource.total,
+            );
           }
         }
     }
+  }
+
+  /**
+   * Get names
+   */
+  public getNames(): string[] {
+    return this.names;
   }
 
   /**
@@ -175,8 +204,7 @@ export default abstract class AbstractGet extends AbstractOperation {
   /**
    * Get recursive resources
    */
-  public async recursive(resource, opts, args) {
-  }
+  public async recursive(resource, opts, args) {}
 
   /**
    * Start difftool
@@ -269,6 +297,7 @@ export default abstract class AbstractGet extends AbstractOperation {
           case 'list':
           default:
             stream.write(callback(data));
+          //            process.stdout.write("\n");
         }
       }),
     );
@@ -320,8 +349,8 @@ export default abstract class AbstractGet extends AbstractOperation {
   public async drawLogLine(data, opts) {
     console.log('%s %s %s', data.created, AbstractGet.colorize(data.data.level_name), data.data.message);
 
-    if (data.data.exception && (opts.trace.length > 0 || opts.trace === true)) {
-      var e = data.data.exception;
+    if (data.data.context.exception && (opts.trace.length > 0 || opts.trace === true)) {
+      var e = data.data.context.exception;
       var line = e.class + ': ' + e.message + ' in ' + e.file + ' stacktrace: ' + e.trace;
       console.log(line);
     }
