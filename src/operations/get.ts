@@ -74,7 +74,7 @@ export default class Get {
     let remote = optparse.subCommand<GetOptions, GetArgs>('get')
       .description('Get resources')
       .action((opts, args, rest) => {
-        Get.execute(opts, args, rest, client, optparse);
+        Get.execute(opts, args, rest, client, optparse, remote);
       });
 
     Get.applyOptions(remote);
@@ -131,7 +131,13 @@ export default class Get {
   /**
    * Execute
    */
-  public static async execute(opts, args, rest, client, optparse) {
+  public static async execute(opts, args, rest, client, optparse, getCommand) {
+    if(rest.length === 0) {
+      process.stdout.write(getCommand.helpText());
+
+      return;
+    }
+
     opts.recursive = true;
     opts.whitelist = rest[0].split(',');
 
