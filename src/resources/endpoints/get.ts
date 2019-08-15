@@ -29,7 +29,7 @@ export default class Get extends AbstractGet {
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
-      .subCommand<GetOptions, GetArgs>('endpoints [collection] [name]')
+    .subCommand<GetOptions, GetArgs>('endpoints <collection> [name]')
       .option('-l, --logs [name]', 'Request resource logs')
       .option('-T, --trace [name]', 'Request resource logs including stacktraces')
       .alias('ep')
