@@ -7,9 +7,10 @@ import Create from './operations/create';
 import Explain from './operations/explain';
 import Sync from './operations/sync';
 import Apply from './operations/apply';
+import Rollback from './operations/rollback';
 import TubeeClient from './tubee.client';
 
-const map = [Login, Get, Create, Edit, Explain, Delete, Sync, Apply];
+const map = [Login, Get, Create, Edit, Explain, Delete, Sync, Apply, Rollback];
 
 export interface RootOptions {
   config: string;

@@ -297,7 +297,6 @@ export default abstract class AbstractGet extends AbstractOperation {
           case 'list':
           default:
             stream.write(callback(data));
-          //            process.stdout.write("\n");
         }
       }),
     );

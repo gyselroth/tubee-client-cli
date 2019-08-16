@@ -25,7 +25,7 @@ export default abstract class AbstractOperation {
   protected createQuery(opts, args) {
     var query = null;
 
-    if (opts.jsonQuery[0]) {
+    if (opts.jsonQuery && opts.jsonQuery[0]) {
       return opts.jsonQuery[0];
     }
 
@@ -120,9 +120,9 @@ export default abstract class AbstractOperation {
    * Get limit
    */
   protected getLimit(opts): number {
-    if (opts.tail[0]) {
+    if (opts.tail && opts.tail[0]) {
       return opts.tail[0];
-    } else if (opts.limit[0]) {
+    } else if (opts.limit && opts.limit[0]) {
       if (opts.limit[0] > 100) {
         return 100;
       }
@@ -148,11 +148,11 @@ export default abstract class AbstractOperation {
   protected getSort(opts) {
     var sort = null;
 
-    if (opts.jsonSort[0]) {
+    if (opts.jsonSort && opts.jsonSort[0]) {
       return opts.jsonSort[0];
     }
 
-    if (opts.tail.length === 1) {
+    if (opts.tail && opts.tail.length === 1) {
       return JSON.stringify({ changed: -1 });
     }
 

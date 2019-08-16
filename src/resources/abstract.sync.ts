@@ -39,7 +39,7 @@ export default abstract class AbstractSync extends AbstractGet {
    * Follow log stream if requested
    */
   protected async sync(result, opts, namespace) {
-    console.log('created new process %s', result.body.id);
+    process.stdout.write(util.format('%s process %s is now %s\n', new Date().toISOString(), result.body.id, ProcessGet.colorize({code: 0, result: 'waiting'})));
 
     var processUpdates = this.api.getProcesses(namespace, JSON.stringify({_id: {$oid: result.body.id}}), [], 0, 0, '{}', false, true);
     processUpdates.pipe(JSONStream.parse('*')).pipe(
@@ -53,7 +53,6 @@ export default abstract class AbstractSync extends AbstractGet {
     );
 
     if (opts.follow || opts.trace) {
-      console.log('\n');
       if (opts.output.length === 0) {
         opts.output.push('log');
       }
