@@ -1,8 +1,8 @@
 ## 1.0.0-beta15
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
-**Date**: Thu Aug 15 10:59:03 CEST 2019
+**Date**: Thu Aug 16 10:59:03 CEST 2019
 
-* CORE: [CHANGE] Removed rmac borders, the list output is now a borderless table which is more compact 
+* CORE: [CHANGE] Removed ramac borders, the list output is now a borderless table which is more compact
 * CORE: [FIX] Fixed log exception output due a beta api change in the tubee api
 * CORE: [CHANGE] CHanged reverse sorting if using -t to use an indexed query instead $natural sorting.
 * CORE: [FIX] TypeError: Cannot read property 'split' of undefined with get and no resource type #13
