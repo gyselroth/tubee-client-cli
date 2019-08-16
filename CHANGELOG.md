@@ -9,7 +9,7 @@
 * CORE: [FIX] Do not print out resources if the list is empty while multiple resource types are fetched
 * CORE: [FIX] Error: Required parameter collection was null or undefined when calling getEndpoints #12
 * CORE: [FEATURE] Print process status during process following and exit after process is finished
-* CORE: [FEATURE] Added new command rollback
+* CORE: [FEATURE] Implement rollback command #14
  
 
 ## 1.0.0-beta14
