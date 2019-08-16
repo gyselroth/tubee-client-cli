@@ -17,10 +17,20 @@ const randomstring = require('randomstring');
 const objectPath = require('object-path');
 
 export const tableConfig = {
-  border: getBorderCharacters('ramac'),
+  border: getBorderCharacters(`void`),
   columnCount: 4,
   columnDefault: {
-    width: 25,
+    width: 15,
+    paddingLeft: 0,
+    paddingRight: 1,
+  },
+  columns: {
+    0: {
+      width: 25,
+    },
+  },
+  drawHorizontalLine: () => {
+    return false;
   },
 };
 
@@ -29,6 +39,8 @@ export const tableConfig = {
  */
 export default abstract class AbstractGet extends AbstractOperation {
   protected api;
+  protected children = [];
+  protected names: string[] = [];
 
   /**
    * Construct
@@ -41,8 +53,8 @@ export default abstract class AbstractGet extends AbstractOperation {
   /**
    * Execute
    */
-  public async getObjects(response, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
-    if (opts.logs && opts.logs.length > 0 && opts.output.length === 0) {
+  public async getObjects(response, args, opts, fields = ['Name', 'Version', 'Changed', 'Created'], callback = null) {
+    if (opts.logs && opts.logs.length > 0 && opts.output.length === 0 && args.name !== undefined) {
       opts.output.push('log');
     }
 
@@ -54,7 +66,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       return this.streamObjects(response, opts, fields, callback);
     }
 
-    if (opts.diff.length > 0) {
+    if (opts.diff && opts.diff.length > 0) {
       return this.compare(response.response.toJSON().body, opts);
     }
 
@@ -65,20 +77,55 @@ export default abstract class AbstractGet extends AbstractOperation {
       output = opts.output[0];
     }
 
+    var resource = response.response.toJSON().body;
+
+    if (opts.recursive === true) {
+      if (resource.kind === 'List') {
+        for (let sub of resource.data) {
+          this.recursive(sub, opts, args);
+        }
+      }
+
+      this.names.push('all');
+      var requested = this.names.filter(value => -1 !== opts.whitelist.indexOf(value));
+
+      if (requested.length === 0) {
+        return;
+      }
+    }
+
+    if (resource.kind === 'List' && resource.count === 0 && opts.whitelist) {
+      return;
+    }
+
     var body: string;
     switch (output) {
       case 'json':
-        body = JSON.stringify(response.response.toJSON().body, null, 2);
+        body = JSON.stringify(resource, null, 2);
         console.log(body);
         break;
       case 'yaml':
-        body = yaml.dump(response.response.toJSON().body);
+        body = yaml.dump(resource);
         console.log(body);
+
+        if (opts.recursive === true) {
+          console.log('---');
+        }
+
         break;
       case 'log':
         for (let resource of response.response.body.data) {
           this.drawLogLine(resource, opts);
         }
+
+        if (resource.count < resource.total) {
+          console.log(
+            '# %s of %s total resources. Specify a query or use --stream to display more resources.',
+            resource.count,
+            resource.total,
+          );
+        }
+
         break;
       case 'cc':
         fields = [];
@@ -128,9 +175,36 @@ export default abstract class AbstractGet extends AbstractOperation {
           console.log('It is empty here. Either create new resources or change your query.');
         } else {
           console.log(table(data, tableConfig));
+
+          if (resource.count < resource.total) {
+            console.log(
+              '# %s of %s total resources. Specify a query or use --stream to display more resources.',
+              resource.count,
+              resource.total,
+            );
+          }
         }
     }
   }
+
+  /**
+   * Get names
+   */
+  public getNames(): string[] {
+    return this.names;
+  }
+
+  /**
+   * Get children
+   */
+  public getChildren() {
+    return this.children;
+  }
+
+  /**
+   * Get recursive resources
+   */
+  public async recursive(resource, opts, args) {}
 
   /**
    * Start difftool
@@ -147,7 +221,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     var path1: string = this.createDiffFile(current, opts);
     let last = current.version - 1;
 
-    if(opts.diff[0] !== '') {
+    if (opts.diff[0] !== '') {
       last = opts.diff[0];
     }
 
@@ -274,8 +348,8 @@ export default abstract class AbstractGet extends AbstractOperation {
   public async drawLogLine(data, opts) {
     console.log('%s %s %s', data.created, AbstractGet.colorize(data.data.level_name), data.data.message);
 
-    if (data.data.exception && opts.trace.length > 0) {
-      var e = data.data.exception;
+    if (data.data.context.exception && (opts.trace.length > 0 || opts.trace === true)) {
+      var e = data.data.context.exception;
       var line = e.class + ': ' + e.message + ' in ' + e.file + ' stacktrace: ' + e.trace;
       console.log(line);
     }

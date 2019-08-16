@@ -113,7 +113,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
         let patch = jsonpatch.compare(to, from);
 
         if (patch.length > 0) {
-          var result = await callback(resource.name, patch);
+          var result = await callback(resource.name, patch, from);
           console.log('Updated resource %s', resource.name);
         } else {
           console.log('No changes have been made for %s', resource.name);

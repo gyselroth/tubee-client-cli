@@ -8,12 +8,17 @@ import AbstractGet from '../abstract.get';
  */
 export default class Get extends AbstractGet {
   /**
+   * Names
+   */
+  protected names = ['relations', 'dor'];
+
+  /**
    * Apply cli options
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
     return optparse
       .subCommand<GetOptions, GetArgs>('relations [name]')
-      .alias('or')
+      .alias('dor')
       .description('Get data object relations')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);
@@ -28,10 +33,10 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (args.name) {
       var response = await this.api.getRelation(this.getNamespace(opts), args.name, this.getFields(opts));
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     } else {
       var response = await this.api.getRelations(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     }
   }
 }

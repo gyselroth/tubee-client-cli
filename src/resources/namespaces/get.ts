@@ -8,6 +8,11 @@ import AbstractGet from '../abstract.get';
  */
 export default class Get extends AbstractGet {
   /**
+   * Names
+   */
+  protected names = ['namespaces', 'ns'];
+
+  /**
    * Apply cli options
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
@@ -28,10 +33,10 @@ export default class Get extends AbstractGet {
   public async execute(opts, args, rest) {
     if (args.name) {
       var response = await this.api.getNamespace(args.name, this.getFields(opts));
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     } else {
       var response = await this.api.getNamespaces(...this.getQueryOptions(opts, args));
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     }
   }
 }

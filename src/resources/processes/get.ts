@@ -4,11 +4,17 @@ import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
 const ta = require('time-ago');
+const prettyMilliseconds = require('pretty-ms');
 
 /**
  * Get resources
  */
 export default class Get extends AbstractGet {
+  /**
+   * Names
+   */
+  protected names = ['processes', 'ps'];
+
   /**
    * Apply cli options
    */
@@ -16,7 +22,7 @@ export default class Get extends AbstractGet {
     return optparse
       .subCommand<GetOptions, GetArgs>('processes [name]')
       .option('-l, --logs [name]', 'Request resource logs')
-      .option('-t, --trace [name]', 'Request resource logs including stacktraces')
+      .option('-T, --trace [name]', 'Request resource logs including stacktraces')
       .alias('ps')
       .description('Get processes')
       .action(async (opts, args, rest) => {
@@ -57,7 +63,7 @@ export default class Get extends AbstractGet {
       var response = await this.api.getProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
     }
 
-    this.getObjects(response, opts, ['Name', 'Status', 'Took', 'Started', 'Ended', 'Parent'], resource => {
+    this.getObjects(response, args, opts, ['Name', 'Status', 'Took', 'Started', 'Ended', 'Parent'], resource => {
       return this.prettify(resource);
     });
   }
@@ -79,7 +85,7 @@ export default class Get extends AbstractGet {
     return [
       resource.name,
       Get.colorize(resource.status),
-      this.timeDiff(resource) + 's',
+      this.timeDiff(resource),
       started,
       ended,
       resource.status.parent || '<main>',
@@ -96,7 +102,7 @@ export default class Get extends AbstractGet {
 
     var startDate = new Date(process.status.started);
     var endDate = new Date(process.status.ended);
-    return (endDate.getTime() - startDate.getTime()) / 1000;
+    return prettyMilliseconds(endDate.getTime() - startDate.getTime(), { compact: true });
   }
 
   /**

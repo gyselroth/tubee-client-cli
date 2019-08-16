@@ -3,11 +3,11 @@ import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 const yaml = require('js-yaml');
 const fs = require('fs');
-import { Config, ConfigStore, keytarPath, configPath } from '../config';
+import { Config, Context, ConfigStore, keytarPath, configPath } from '../config';
 const keytar = require('keytar');
 keytar.setPath(keytarPath);
 const path = require('path');
-const { v1, auth } = require('@gyselroth/tubee-sdk-node');
+const { CoreV1Api, HttpBasicAuth, localVarRequest } = require('@gyselroth/tubee-sdk-node');
 const prompt = require('password-prompt');
 
 export interface LoginOptions {
@@ -40,46 +40,70 @@ export default class Login {
       .option('-s, --server <name>', 'URL to tubee server (For example https://example.org)')
       .option('-a, --allow-self-signed', 'Allow self signed server certificate')
       .action(async (opts, args, rest) => {
-        var config = {} as Config;
+        var context = {} as Context;
         if (opts.username[0]) {
-          config.username = opts.username[0];
+          context.username = opts.username[0];
         }
 
+        if (optparse.parsedOpts.debug === true) {
+          localVarRequest.debug = true;
+        }
+
+        var contextName = optparse.parsedOpts.context[0] || 'default';
+        var password;
+
         if (opts.password[0]) {
-          keytar.setPassword('tubee', config.username || 'admin', opts.password[0]);
+          password = opts.password[0];
+          keytar.setPassword('tubee', contextName, opts.password[0]);
         }
 
         if (opts.prompt) {
-          let password = await prompt('Enter password: ');
-          keytar.setPassword('tubee', config.username || 'admin', password);
+          password = await prompt('Enter password: ', { method: 'hide' });
+          keytar.setPassword('tubee', context.username || 'admin', password);
         }
 
         if (opts.server[0]) {
-          config.url = opts.server[0];
+          context.url = opts.server[0];
         }
 
         if (opts.allowSelfSigned) {
           process.env.NODE_TLS_REJECT_UNAUTHORIZED = '0';
-          config.allowSelfSigned = true;
+          context.allowSelfSigned = true;
         } else {
-          config.allowSelfSigned = false;
+          context.allowSelfSigned = false;
         }
 
-        var server = config.url || 'https://localhost:8090';
-        var client = new v1['DefaultApi'](server + '/api/v1');
-        var basic = new auth.basic();
-        basic.username = config.username || 'admin';
-        basic.password = opts.password[0];
+        var server = context.url || 'https://localhost:8090';
+
+        if (!/^https?:\/\//i.test(server)) {
+          context.url = server = 'https://' + server;
+        }
+
+        var client = new CoreV1Api(server);
+        var basic = new HttpBasicAuth();
+
+        basic.username = context.username || 'admin';
+        basic.password = password;
         client.setDefaultAuthentication(basic);
-        var result = await client.root();
-        if (result.response.body.name !== 'tubee') {
-          throw new Error('server is not a tubee server');
-        }
 
-        console.log('Successfully connected to server %s', server);
+        client
+          .getV1()
+          .then(result => {
+            if (result.response.body.name !== 'tubee') {
+              console.error('server is not a tubee server');
+            }
 
-        var writePath = optparse.parsedOpts.config[0] || configPath;
-        ConfigStore.write(writePath, config);
+            console.log('Successfully connected to server %s', server);
+            var writePath = optparse.parsedOpts.config[0] || configPath;
+            ConfigStore.writeContext(writePath, contextName, context);
+          })
+          .catch(err => {
+            console.error('Connection error encountered (use --debug to display more)');
+
+            if (optparse.parsedOpts.debug === true) {
+              console.log(err);
+            }
+          });
       });
   }
 }

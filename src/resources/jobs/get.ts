@@ -5,11 +5,17 @@ import AbstractGet from '../abstract.get';
 import ProcessGet from '../processes/get';
 const colors = require('colors');
 const ta = require('time-ago');
+const prettyMilliseconds = require('pretty-ms');
 
 /**
  * Get resources
  */
 export default class Get extends AbstractGet {
+  /**
+   * Names
+   */
+  protected names = ['jobs'];
+
   /**
    * Apply cli options
    */
@@ -18,7 +24,7 @@ export default class Get extends AbstractGet {
       .subCommand<GetOptions, GetArgs>('jobs [name]')
       .description('Get synchronization jobs')
       .option('-l, --logs [name]', 'Request resource logs')
-      .option('-t, --trace', 'Including log stacktraces')
+      .option('-T, --trace', 'Including log stacktraces')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);
         var instance = new Get(api);
@@ -38,7 +44,7 @@ export default class Get extends AbstractGet {
             args.name,
             ...this.getQueryOptions(opts, args),
           );
-          this.getObjects(response, opts);
+          this.getObjects(response, args, opts);
         } else {
           var response = await this.api.getJobLog(
             this.getNamespace(opts),
@@ -46,16 +52,17 @@ export default class Get extends AbstractGet {
             args.logs[0],
             this.getFields(opts),
           );
-          this.getObjects(response, opts);
+          this.getObjects(response, args, opts);
         }
       } else {
         var response = await this.api.getJob(this.getNamespace(opts), args.name, this.getFields(opts));
-        this.getObjects(response, opts);
+        this.getObjects(response, args, opts);
       }
     } else {
       var response = await this.api.getJobs(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
       this.getObjects(
         response,
+        args,
         opts,
         ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
         resource => {
@@ -87,7 +94,7 @@ export default class Get extends AbstractGet {
       status = ProcessGet.colorize(resource.status.last_process);
     }
 
-    return [resource.name, status, this.timeDiff(resource) + 's', started, ended];
+    return [resource.name, status, this.timeDiff(resource), started, ended];
   }
 
   /**
@@ -104,6 +111,6 @@ export default class Get extends AbstractGet {
 
     var startDate = new Date(resource.status.last_process.started);
     var endDate = new Date(resource.status.last_process.ended);
-    return (endDate.getTime() - startDate.getTime()) / 1000;
+    return prettyMilliseconds(endDate.getTime() - startDate.getTime(), { compact: true });
   }
 }

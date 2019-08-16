@@ -13,7 +13,7 @@ export default class Edit extends AbstractEdit {
   public static applyOptions(optparse: Command<EditOptions, EditArgs>, client: TubeeClient) {
     return optparse
       .subCommand<EditOptions, EditArgs>('secrets [name]')
-      .alias('ar')
+      .alias('se')
       .description('Edit secrets')
       .action(async (opts, args, rest) => {
         var api = await client.factory('v1', optparse.parent.parsedOpts);

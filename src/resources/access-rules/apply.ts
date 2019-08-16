@@ -9,12 +9,12 @@ export default class Apply extends AbstractApply {
    * Apply
    */
   public async apply(resource) {
-    var update = true;
+    var update = false;
 
     return this.api
       .getAccessRule(resource.name)
       .then(response => {
-        update = false;
+        update = true;
         let to = resource;
         let from = response.response.toJSON().body;
         let patch = jsonpatch.compare(from, to);

@@ -128,7 +128,18 @@ export default class Apply {
           resources = yaml.safeLoadAll(body);
       }
 
-      resources.sort((a, b) => {
+      var inbound = [];
+      for (let sub of resources) {
+        if (sub === null) {
+          continue;
+        } else if (sub.kind === 'List') {
+          inbound = inbound.concat(sub.data);
+        } else {
+          inbound.push(sub);
+        }
+      }
+
+      inbound.sort((a, b) => {
         if (b === null || a === null) {
           return 0;
         }
@@ -145,7 +156,7 @@ export default class Apply {
         }
       });
 
-      this.apply(resources);
+      this.apply(inbound);
     } catch (error) {
       console.log(error);
     }

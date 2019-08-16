@@ -8,6 +8,11 @@ import AbstractGet from '../abstract.get';
  */
 export default class Get extends AbstractGet {
   /**
+   * Names
+   */
+  protected names = ['workflows', 'wf'];
+
+  /**
    * Apply cli options
    */
   public static applyOptions(optparse: Command<GetOptions, GetArgs>, client: TubeeClient) {
@@ -35,7 +40,7 @@ export default class Get extends AbstractGet {
         this.getFields(opts),
       );
 
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     } else {
       var response = await this.api.getWorkflows(
         this.getNamespace(opts),
@@ -43,7 +48,7 @@ export default class Get extends AbstractGet {
         args.endpoint,
         ...this.getQueryOptions(opts, args),
       );
-      this.getObjects(response, opts);
+      this.getObjects(response, args, opts);
     }
   }
 }

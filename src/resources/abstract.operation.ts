@@ -9,11 +9,12 @@ export default abstract class AbstractOperation {
    */
   protected static executeOperation(operation) {
     operation.catch(e => {
-console.log(e);
-    if (e.response.statusCode === 404) {
+      if (e.response && e.response.statusCode === 404) {
         console.log('No such resource found.');
-      } else {
+      } else if (e.response) {
         console.log('Invalid resource request.');
+      } else {
+        console.log('Error: %s', e.message);
       }
     });
   }
@@ -24,7 +25,7 @@ console.log(e);
   protected createQuery(opts, args) {
     var query = null;
 
-    if (opts.jsonQuery[0]) {
+    if (opts.jsonQuery && opts.jsonQuery[0]) {
       return opts.jsonQuery[0];
     }
 
@@ -34,9 +35,17 @@ console.log(e);
         for (let field of selector.split(',')) {
           var result;
           if ((result = field.match('^([^!=]+)=([^!=]+)'))) {
-            query[result[1]] = result[2];
+            query[result[1]] = this.parseValue(result[2]);
           } else if ((result = field.match('^([^!=]+)!=([^!=]+)'))) {
-            query[result[1]] = result[2];
+            query[result[1]] = this.parseValue(result[2]);
+          } else if ((result = field.match('^([^!=]+)<([^!=]+)'))) {
+            query[result[1]] = { $lt: this.parseValue(result[2]) };
+          } else if ((result = field.match('^([^!=]+)<=([^!=]+)'))) {
+            query[result[1]] = { $lte: this.parseValue(result[2]) };
+          } else if ((result = field.match('^([^!=]+)>([^!=]+)'))) {
+            query[result[1]] = { $gt: this.parseValue(result[2]) };
+          } else if ((result = field.match('^([^!=]+)>=([^!=]+)'))) {
+            query[result[1]] = { $gte: this.parseValue(result[2]) };
           }
         }
       }
@@ -47,7 +56,21 @@ console.log(e);
     return query;
   }
 
-  protected getNamespace(opts): string {
+  /**
+   * parse string value to something more meaningful
+   */
+  protected parseValue(value) {
+    if (value.match('^[0-9]+$')) {
+      return parseInt(value);
+    }
+
+    return value;
+  }
+
+  /**
+   * Get namespace
+   */
+  public getNamespace(opts): string {
     if (opts.namespace[0]) {
       return opts.namespace[0];
     } else if (ConfigStore.get().defaultNamespace) {
@@ -90,18 +113,16 @@ console.log(e);
    * Get offset
    */
   protected getOffset(opts): number {
-    if (opts.tail[0]) {
-      return opts.tail[0] * -1;
-    } else {
-      return 0;
-    }
+    return 0;
   }
 
   /**
    * Get limit
    */
   protected getLimit(opts): number {
-    if (opts.limit[0]) {
+    if (opts.tail && opts.tail[0]) {
+      return opts.tail[0];
+    } else if (opts.limit && opts.limit[0]) {
       if (opts.limit[0] > 100) {
         return 100;
       }
@@ -111,7 +132,7 @@ console.log(e);
       return 0;
     }
 
-    return 100;
+    return 20;
   }
 
   /**
@@ -127,14 +148,12 @@ console.log(e);
   protected getSort(opts) {
     var sort = null;
 
-    if (opts.jsonSort[0]) {
+    if (opts.jsonSort && opts.jsonSort[0]) {
       return opts.jsonSort[0];
     }
 
-    if (opts.tail[0]) {
-      return JSON.stringify({
-        $natural: 1,
-      });
+    if (opts.tail && opts.tail.length === 1) {
+      return JSON.stringify({ changed: -1 });
     }
 
     if (opts.sort) {

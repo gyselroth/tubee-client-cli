@@ -54,12 +54,7 @@ export default class Edit {
    * Apply cli options
    */
   public static factory(optparse: Command<RootOptions, RootArgs>, client: TubeeClient) {
-    let remote = optparse
-      .subCommand<EditOptions, EditArgs>('edit')
-      .description('Edit resources')
-      .action(() => {
-        console.log('test');
-      });
+    let remote = optparse.subCommand<EditOptions, EditArgs>('edit').description('Edit resources');
 
     for (let resource of map) {
       let sub = resource.applyOptions(remote, client);
@@ -71,7 +66,7 @@ export default class Edit {
         .option('-o, --output <name>', 'Define the output format (One of yaml,json)')
         .option('-f, -file <name>', 'File to read from')
         .option('--json-query <name>', 'Specify an advanced json query')
-        .option('-l --limit <number>', 'Max number of resources to be returned. May not be higher than 100.')
+        .option('-L --limit <number>', 'Max number of resources to be returned. May not be higher than 100.')
         .option('-q, --field-selector <name>', 'Specify a comma separated field based query (Example: foo=bar,bar=foo)')
         .option(
           '--field-filter <name>',
