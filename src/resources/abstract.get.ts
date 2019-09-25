@@ -283,7 +283,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
-        if(data.kind === 'StreamError') {
+        if (data.kind === 'StreamError') {
           console.log(data);
           process.exit();
         }
@@ -328,7 +328,7 @@ export default abstract class AbstractGet extends AbstractOperation {
     var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
-        if(data[1].kind === 'StreamError') {
+        if (data[1].kind === 'StreamError') {
           console.log(data);
           process.exit();
         }

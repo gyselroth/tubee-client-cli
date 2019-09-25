@@ -39,17 +39,40 @@ export default abstract class AbstractSync extends AbstractGet {
    * Follow log stream if requested
    */
   protected async sync(result, opts, namespace) {
-    process.stdout.write(util.format('%s process %s is now %s\n', new Date().toISOString(), result.body.id, ProcessGet.colorize({code: 0, result: 'waiting'})));
+    process.stdout.write(
+      util.format(
+        '%s process %s is now %s\n',
+        new Date().toISOString(),
+        result.body.id,
+        ProcessGet.colorize({ code: 0, result: 'waiting' }),
+      ),
+    );
 
-    var processUpdates = this.api.getProcesses(namespace, JSON.stringify({_id: {$oid: result.body.id}}), [], 0, 0, '{}', false, true);
+    var processUpdates = this.api.getProcesses(
+      namespace,
+      JSON.stringify({ _id: { $oid: result.body.id } }),
+      [],
+      0,
+      0,
+      '{}',
+      false,
+      true,
+    );
     processUpdates.pipe(JSONStream.parse('*')).pipe(
       es.mapSync(function(data) {
-        process.stdout.write(util.format('%s process %s is now %s\n', new Date().toISOString(), result.body.id, ProcessGet.colorize(data[1].status)))
+        process.stdout.write(
+          util.format(
+            '%s process %s is now %s\n',
+            new Date().toISOString(),
+            result.body.id,
+            ProcessGet.colorize(data[1].status),
+          ),
+        );
 
-        if(data[1].status.code > 2) {
+        if (data[1].status.code > 2) {
           process.exit();
         }
-      })
+      }),
     );
 
     if (opts.follow || opts.trace) {
