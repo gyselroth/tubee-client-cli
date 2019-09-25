@@ -3,9 +3,7 @@ import { RootOptions, RootArgs } from '../main';
 import TubeeClient from '../tubee.client';
 import DataObjects from '../resources/data-objects/rollback';
 
-const map = [
-  DataObjects,
-];
+const map = [DataObjects];
 
 export interface RollbackOptions {
   revision: number;
@@ -33,7 +31,10 @@ export default class Rollback {
           '-n, --namespace <name>',
           'Most resources have a namespace, request different namespace. The default namespace is "default".',
         )
-        .option('-r, --revision <name>', 'Specify a resource version. If no resource version was given the resource will be reverted to the previous version.')
+        .option(
+          '-r, --revision <name>',
+          'Specify a resource version. If no resource version was given the resource will be reverted to the previous version.',
+        );
     }
   }
 }
