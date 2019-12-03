@@ -65,7 +65,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
       var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
 
       if (opts.fromTemplate[0] !== '') {
-        resourceType = opts.fromTemplate[0];
+        resourceType = 'core.v1.'+opts.fromTemplate[0];
       }
 
       SwaggerParser.validate(specPath, async (err, api) => {

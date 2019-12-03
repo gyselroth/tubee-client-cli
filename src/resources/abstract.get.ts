@@ -28,6 +28,15 @@ export const tableConfig = {
     0: {
       width: 25,
     },
+    4: {
+      width: 25,
+    },
+    5: {
+      width: 10,
+    },
+    6: {
+      width: 25,
+    }
   },
   drawHorizontalLine: () => {
     return false;

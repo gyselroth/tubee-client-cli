@@ -1,3 +1,15 @@
+## 1.0.0-beta17
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Tue Dec 03 17:02:02 CET 2019
+
+### Bugfixes
+* create --from-template=xy does only work with core.v1 prefix
+
+### Features
+* Processes include estimated time of how long a process might take
+* Processes include progress information
+
+
 ## 1.0.0-beta16
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Wed Sep 25 12:04:02 CEST 2019
