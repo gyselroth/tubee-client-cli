@@ -4,7 +4,7 @@ import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 import ProcessGet from '../processes/get';
 const colors = require('colors');
-const ta = require('time-ago');
+const moment = require('moment');
 const prettyMilliseconds = require('pretty-ms');
 
 /**
@@ -81,11 +81,11 @@ export default class Get extends AbstractGet {
     var status;
 
     if (resource.status.status === true && resource.status.last_process.code > 0) {
-      started = ta.ago(resource.status.last_process.started);
+      started = moment(resource.status.last_process.started).fromNow();
     }
 
     if (resource.status.status === true && resource.status.last_process.code > 2) {
-      ended = ta.ago(resource.status.last_process.ended);
+      ended = moment(resource.status.last_process.ended).fromNow();
     }
 
     if (resource.status.status === false) {

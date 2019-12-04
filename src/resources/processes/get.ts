@@ -3,7 +3,6 @@ import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
-const ta = require('time-ago');
 const prettyMilliseconds = require('pretty-ms');
 const moment = require('moment');
 
@@ -77,7 +76,7 @@ export default class Get extends AbstractGet {
     var estimated = '<finished>';
 
       if (resource.status.code > 0) {
-      started = ta.ago(resource.status.started);
+      started = moment(resource.status.started).fromNow();
     }
 
     switch(resource.status.code) {

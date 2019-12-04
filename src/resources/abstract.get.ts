@@ -6,7 +6,7 @@ import { table, getBorderCharacters, createStream } from 'table';
 const JSONStream = require('JSONStream');
 const es = require('event-stream');
 import AbstractOperation from './abstract.operation';
-const ta = require('time-ago');
+const moment = require('moment');
 const colors = require('colors');
 const fs = require('fs');
 const os = require('os');
@@ -26,6 +26,12 @@ export const tableConfig = {
   },
   columns: {
     0: {
+      width: 25,
+    },
+    2: {
+      width: 25,
+    },
+    3: {
       width: 25,
     },
     4: {
@@ -164,7 +170,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       default:
         if (callback === null) {
           callback = resource => {
-            return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
+            return [resource.name, resource.version, moment(resource.changed).fromNow(), moment(resource.created).fromNow()];
           };
         }
 
@@ -285,7 +291,7 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     if (callback === null) {
       callback = resource => {
-        return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
+        return [resource.name, resource.version, moment(resource.changed).fromNow(), moment(resource.created).fromNow()];
       };
     }
 
@@ -330,7 +336,7 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     if (callback === null) {
       callback = resource => {
-        return [resource.name, resource.version, ta.ago(resource.changed), ta.ago(resource.created)];
+        return [resource.name, resource.version, moment(resource.changed).fromNow(), moment(resource.created).fromNow()];
       };
     }
 
