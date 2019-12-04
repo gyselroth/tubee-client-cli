@@ -3,8 +3,8 @@ import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
-const ta = require('time-ago');
 const prettyMilliseconds = require('pretty-ms');
+const moment = require('moment');
 
 /**
  * Get resources
@@ -63,7 +63,7 @@ export default class Get extends AbstractGet {
       var response = await this.api.getProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
     }
 
-    this.getObjects(response, args, opts, ['Name', 'Status', 'Took', 'Started', 'Ended', 'Parent'], resource => {
+    this.getObjects(response, args, opts, ['Name', 'Status', 'Progress', 'Started', 'Estimated', 'Took', 'Parent'], resource => {
       return this.prettify(resource);
     });
   }
@@ -73,21 +73,37 @@ export default class Get extends AbstractGet {
    */
   protected prettify(resource) {
     var started = '<Not yet>';
-    var ended = '<Not yet>';
-    if (resource.status.code > 0) {
-      started = ta.ago(resource.status.started);
+    var estimated = '<finished>';
+
+      if (resource.status.code > 0) {
+      started = moment(resource.status.started).fromNow();
     }
 
-    if (resource.status.code > 2) {
-      ended = ta.ago(resource.status.ended);
+    switch(resource.status.code) {
+      case 0:
+      case 1:
+        estimated = '<Not yet>';
+      break;
+
+      case 2:
+        if(resource.status.estimated === null) {
+          estimated = '<Not data>';
+        } else {
+          estimated = moment(resource.status.estimated).fromNow();
+        }
+      break;
+
+      default:
+        estimated = moment(resource.status.ended).fromNow();
     }
 
     return [
       resource.name,
       Get.colorize(resource.status),
-      this.timeDiff(resource),
+      resource.status.progress+'%',
       started,
-      ended,
+      estimated,
+      this.timeDiff(resource),
       resource.status.parent || '<main>',
     ];
   }

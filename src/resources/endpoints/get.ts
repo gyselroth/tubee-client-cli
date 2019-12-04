@@ -3,7 +3,7 @@ import TubeeClient from '../../tubee.client';
 import { GetOptions, GetArgs } from '../../operations/get';
 import AbstractGet from '../abstract.get';
 const colors = require('colors');
-const ta = require('time-ago');
+const moment = require('moment');
 import EndpointObjects from '../endpoint-objects/get';
 import Workflows from '../workflows/get';
 
@@ -85,8 +85,8 @@ export default class Get extends AbstractGet {
         resource.data.type,
         this.colorize(resource.status.available),
         resource.version,
-        ta.ago(resource.changed),
-        ta.ago(resource.created),
+        moment(resource.changed).fromNow(),
+        moment(resource.created).fromNow(),
       ];
     });
   }
