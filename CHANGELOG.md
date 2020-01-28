@@ -1,3 +1,11 @@
+## 1.0.0-beta18
+**Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
+**Date**: Tue Jan 28 14:34:02 CET 2019
+
+### Bugfixes
+* Error: this.api.deleteRelation is not a function 
+
+
 ## 1.0.0-beta17
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Tue Dec 03 17:02:02 CET 2019
