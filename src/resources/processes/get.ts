@@ -63,9 +63,15 @@ export default class Get extends AbstractGet {
       var response = await this.api.getProcesses(this.getNamespace(opts), ...this.getQueryOptions(opts, args));
     }
 
-    this.getObjects(response, args, opts, ['Name', 'Status', 'Progress', 'Started', 'Estimated', 'Took', 'Parent'], resource => {
-      return this.prettify(resource);
-    });
+    this.getObjects(
+      response,
+      args,
+      opts,
+      ['Name', 'Status', 'Progress', 'Started', 'Estimated', 'Took', 'Parent'],
+      resource => {
+        return this.prettify(resource);
+      },
+    );
   }
 
   /**
@@ -75,23 +81,23 @@ export default class Get extends AbstractGet {
     var started = '<Not yet>';
     var estimated = '<finished>';
 
-      if (resource.status.code > 0) {
+    if (resource.status.code > 0) {
       started = moment(resource.status.started).fromNow();
     }
 
-    switch(resource.status.code) {
+    switch (resource.status.code) {
       case 0:
       case 1:
         estimated = '<Not yet>';
-      break;
+        break;
 
       case 2:
-        if(resource.status.estimated === null) {
+        if (resource.status.estimated === null) {
           estimated = '<Not data>';
         } else {
           estimated = moment(resource.status.estimated).fromNow();
         }
-      break;
+        break;
 
       default:
         estimated = moment(resource.status.ended).fromNow();
@@ -100,7 +106,7 @@ export default class Get extends AbstractGet {
     return [
       resource.name,
       Get.colorize(resource.status),
-      resource.status.progress+'%',
+      resource.status.progress + '%',
       started,
       estimated,
       this.timeDiff(resource),

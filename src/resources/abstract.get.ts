@@ -42,7 +42,7 @@ export const tableConfig = {
     },
     6: {
       width: 25,
-    }
+    },
   },
   drawHorizontalLine: () => {
     return false;
@@ -170,7 +170,12 @@ export default abstract class AbstractGet extends AbstractOperation {
       default:
         if (callback === null) {
           callback = resource => {
-            return [resource.name, resource.version, moment(resource.changed).fromNow(), moment(resource.created).fromNow()];
+            return [
+              resource.name,
+              resource.version,
+              moment(resource.changed).fromNow(),
+              moment(resource.created).fromNow(),
+            ];
           };
         }
 
@@ -291,7 +296,12 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     if (callback === null) {
       callback = resource => {
-        return [resource.name, resource.version, moment(resource.changed).fromNow(), moment(resource.created).fromNow()];
+        return [
+          resource.name,
+          resource.version,
+          moment(resource.changed).fromNow(),
+          moment(resource.created).fromNow(),
+        ];
       };
     }
 
@@ -336,7 +346,12 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     if (callback === null) {
       callback = resource => {
-        return [resource.name, resource.version, moment(resource.changed).fromNow(), moment(resource.created).fromNow()];
+        return [
+          resource.name,
+          resource.version,
+          moment(resource.changed).fromNow(),
+          moment(resource.created).fromNow(),
+        ];
       };
     }
 
