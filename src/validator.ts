@@ -32,6 +32,7 @@ export const identifierMap = {
   UcsEndpoint: EndpointIdentifier,
   OdataRestEndpoint: EndpointIdentifier,
   MoodleEndpoint: EndpointIdentifier,
+  SqlSrvUsersEndpoint: EndpointIdentifier,
   DataObject: DataObjectIdentifier,
   DataObjectRelation: RelationIdentifier,
   Workflow: WorkflowIdentifier,
