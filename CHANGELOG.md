@@ -1,3 +1,11 @@
+## 1.0.0-beta19
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Wed Apr 08 10:10:02 CEST 2020
+
+### Features
+* Added support for endpoint SrvSQLUsers
+
+
 ## 1.0.0-beta18
 **Maintainer**: Raffael Sahli <sahli@gyselroth.com>\
 **Date**: Tue Jan 28 14:34:02 CET 2019
