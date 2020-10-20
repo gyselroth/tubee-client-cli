@@ -44,7 +44,7 @@
     "keytar": "https://github.com/raffis/node-keytar/tarball/master",
     "lodash.merge": "^4.6.2",
     "moment": "^2.24.0",
-    "object-path": "^0.11.4",
+    "object-path": "^0.11.5",
     "password-prompt": "^1.1.2",
     "patch-module": "^0.1.0",
     "pretty-ms": "^5.1.0",
