@@ -40,7 +40,7 @@ deploy:
     secure: "SgbEZ87lxs7dRNzw7r6Vl1OEtwhSVnDJehSLjSmZXGyiGLE1JHOv6DCbUrndRE1PTvWLvyq9a1RrOiVwAv5gtnIl2+sBiiQUv+42TRo3C9gHUtp5Q9Oxump4yNbkCXTlDfjNT1yrVSnh/OktRmucAOdvZIODC9GoCNTqg4Aokojv5VY2IAr9T9q7Stbx/qfE6L4q5gvNdfEiM2lC2eGx9hy97EDnCabzyf5J/VXgS6GtZnMxYVEpCMVMmqXxe24cFKH2+9lpZPrMhcbX/PWf5b4axactXtCB+f6a/KaM69RGzYUpUfb+iNZ80UJh0xXhc+saF0yM5S3SlRMyrieLwnkd/TcGh7Fan6X2AaLHsWCNIgjmoriUYE92PJdfaCchDdIpC+ujXjjt57onbgAoXglPwl+9dN1TbR+41/4IPZnQm7wSJxjFsXjo9pz9YIkL+aIq6YRqMN02qw+hv68so6N4Iou+BDgYowgmbMnWt3PBCyNSFnncWnJj5Bo/4T6RhQcoeGP8qfQiiZhErVh4WJtYG/tzdKqeaPovGS1+l3EC3TKhLwcR/AfGBugNhVrXT3GJ+Q37JZz3bAsSghxvhpEqwQ4guTJCAW4X2hXNUQJ20fUmk2oPTpzlVQlvFsjLKQnueOHvdNyJw6xiedk0qeH8wXH7mjNTstwFcSFPxJo="
   file_glob: true
   file: dist/*
-  cleanup: false
+  skip_cleanup: true
   on:
     tags: true
 #- provider: bintray
