@@ -1,4 +1,3 @@
-sudo: required
 language: node_js
 arch:
   - arm64
@@ -41,7 +40,7 @@ deploy:
     secure: "YLMI8gMgtPdlS6lbvwe+iz8SAaE17ZUtS8vCa9zLT7fmMOlGJaesUDhMpQ47z06WWtvbA3/mGxEF7djdxhE7Fk6x2+ycjOzCiw6zQwoW+aO4OA+dzFb7M4qtRTSDFmxZnToDnPjbSjumMuHfDQzLYnoxjFCjL3isPZcIPQeS5tGG1bwiriqSagtDJ+5JUmi36v2I0vnw4zpDkIsr+nobxkgRen84jYMXIEAdf1tpBQzOvy5NvPCrDezPHXC8JzjGAm5vYgaMAfw58pmK3Dy9PKAzEsEP5qn3he2I5T7pR9uZVTf3NnYeut5+tyio64E8QnAOTpiTzRsD3g9O9sFF7fjLypNjb6WSQMRbAe9FQNw/nHUbjKJKWjpqOOk972b/gkZHDeD/ndQ+TMc/NL7uxn8zf1RdavEmn16QJ0iZ2XJArqNKde5dsnLn5n+2eES3+ooXGQYhYa68GR4PyYGmWVDT2q6gEvsspeKVPVqhtxhf8Od0vsNTntdBjHyNYdOUGxnBQ3FvUIoARNFxIbBXhPP/SPNuRwZxMapWpkh0+qhpNjUsqRgMycEs0ryGgfci14PFUdxk0fjZZcwqd8GNoYqXWIkvaGXRKtOJx88/rVeJs8mW+B+ZRC/XSzJmiSJ/+u2j5e5bI3V9+eItJmtBCp3CDWqhHXVHTDd3JU1wGwM="
   file_glob: true
   file: dist/*
-  skip_cleanup: true
+  cleanup: false
   on:
     tags: true
 #- provider: bintray
