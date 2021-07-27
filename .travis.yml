@@ -6,7 +6,7 @@ cache:
   directories:
   - homebrew-core
 node_js:
-  - 8
+  - node
 before_script:
   - npm update
   - export version=$TRAVIS_TAG
