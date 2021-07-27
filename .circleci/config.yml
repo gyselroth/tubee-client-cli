@@ -1,0 +1,16 @@
+version: '2.1'
+orbs:
+  node: circleci/node@4.5.1
+jobs:
+  install-node-example:
+    docker:
+      - image: 'cimg/16.5.0'
+    steps:
+      - checkout
+      - node/install:
+          install-yarn: true
+      - run: node --version
+workflows:
+  test_my_app:
+    jobs:
+      - install-node-example
