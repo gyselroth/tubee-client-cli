@@ -90,17 +90,6 @@ jobs:
           name: npm update
           command: npm update
       - run:
-          name: set version
-          command:  |
-            if [ -z "${CIRCLE_TAG}"];
-            then
-              version=$CIRCLE_BUILD_NUM;
-            else
-              version=$CIRCLE_TAG;
-              if [ "${version:0:1}" == "v" ]; then version=${CIRCLE_TAG:1}; fi;
-              if [ "${version}" == "" ]; then version=${CIRCLE_BUILD_NUM}; fi;
-            fi;
-      - run:
           name: build
           command: |
             npm run build
