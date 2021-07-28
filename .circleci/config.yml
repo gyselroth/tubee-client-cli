@@ -62,12 +62,12 @@ jobs:
               fi;
 
               export date=$(date +%Y-%m-%d);
-              cp packaging/debian/bintray.json
+              cp /tmp/tubee-cli/packaging/debian/bintray.json
               bintray.json; sed -i s/'{version}'/$version/g bintray.json; sed -i s/'{date}'/$date/g
               bintray.json; sed -i s/'{deb_distribution}'/$deb_distribution/g bintray.json; make deb VERSION=$version;
             fi;
       - store_artifacts:
-          path: /tmp/tubee/dist
+          path: /tmp/tubee-cli/dist
       - persist_to_workspace:
           root: .
           paths:
