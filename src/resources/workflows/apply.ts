@@ -19,14 +19,14 @@ export default class Apply extends AbstractApply {
     var update = false;
     return this.api
       .getWorkflow(namespace, collection, endpoint, resource.name)
-      .then(async response => {
+      .then(async (response) => {
         update = true;
         let to = resource;
         let from = response.response.toJSON().body;
         let patch = jsonpatch.compare(from, to);
         return this.api.updateWorkflow(namespace, collection, endpoint, resource.name, patch);
       })
-      .catch(error => {
+      .catch((error) => {
         if (update === true) {
           throw error;
         }

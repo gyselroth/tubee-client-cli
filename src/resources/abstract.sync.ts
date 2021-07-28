@@ -30,7 +30,7 @@ export default abstract class AbstractSync extends AbstractGet {
 
     resource.data.filter = this.createQuery(opts, args);
 
-    return this.api.addProcess(namespace, resource).then(result => {
+    return this.api.addProcess(namespace, resource).then((result) => {
       this.sync(result, opts, namespace);
     });
   }
@@ -59,7 +59,7 @@ export default abstract class AbstractSync extends AbstractGet {
       true,
     );
     processUpdates.pipe(JSONStream.parse('*')).pipe(
-      es.mapSync(function(data) {
+      es.mapSync(function (data) {
         process.stdout.write(
           util.format(
             '%s process %s is now %s\n',

@@ -218,10 +218,10 @@ export default class Apply {
         stack.push(
           result
             .apply(resource)
-            .then(response => {
+            .then((response) => {
               console.log('[%s] %s <%s> updated', colors.green.bold('OK'), resource.kind, resource.name);
             })
-            .catch(error => {
+            .catch((error) => {
               console.log(
                 '[%s] %s <%s> failed [%s: %s]',
                 colors.red.bold('ERROR'),

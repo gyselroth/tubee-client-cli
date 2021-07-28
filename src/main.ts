@@ -31,7 +31,7 @@ for (let operation of map) {
   operation.factory(root, client);
 }
 
-commandpost.exec(root, process.argv).catch(err => {
+commandpost.exec(root, process.argv).catch((err) => {
   if (err.response && err.response.body) {
     console.log('%s: %s [code: %s]', err.response.body.error, err.response.body.message, err.response.body.code);
   }

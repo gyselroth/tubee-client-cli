@@ -76,7 +76,7 @@ export default class Get extends AbstractGet {
    */
   public async recursive(resource, opts, args) {
     for (let child of this.children) {
-      let requested = child.names.filter(value => -1 !== opts.whitelist.indexOf(value));
+      let requested = child.names.filter((value) => -1 !== opts.whitelist.indexOf(value));
       let newArgs = Object.assign({}, args);
 
       newArgs.collection = resource.name;

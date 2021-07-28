@@ -14,10 +14,10 @@ export default class Apply extends AbstractApply {
 
     return this.api
       .getProcess(namespace, resource.name)
-      .then(response => {
+      .then((response) => {
         //process can not be updated
       })
-      .catch(error => {
+      .catch((error) => {
         return this.api.addProcess(namespace, resource);
       });
   }

@@ -17,7 +17,7 @@ export default class Apply extends AbstractApply {
 
     return this.api
       .getEndpoint(namespace, collection, resource.name)
-      .then(response => {
+      .then((response) => {
         update = true;
         let to = resource;
         let from = response.response.toJSON().body;
@@ -25,7 +25,7 @@ export default class Apply extends AbstractApply {
 
         return this.api.updateEndpoint(namespace, collection, resource.name, patch);
       })
-      .catch(error => {
+      .catch((error) => {
         if (update === true) {
           throw error;
         }

@@ -17,14 +17,14 @@ export default class Apply extends AbstractApply {
 
     return this.api
       .getObject(namespace, collection, resource.name)
-      .then(response => {
+      .then((response) => {
         update = true;
         let to = resource;
         let from = response.response.toJSON().body;
         let patch = jsonpatch.compare(from, to);
         return this.api.updateObject(namespace, collection, resource.name, patch);
       })
-      .catch(error => {
+      .catch((error) => {
         if (update === true) {
           throw error;
         }

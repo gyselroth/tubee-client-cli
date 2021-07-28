@@ -102,7 +102,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       }
 
       this.names.push('all');
-      var requested = this.names.filter(value => -1 !== opts.whitelist.indexOf(value));
+      var requested = this.names.filter((value) => -1 !== opts.whitelist.indexOf(value));
 
       if (requested.length === 0) {
         return;
@@ -152,7 +152,7 @@ export default abstract class AbstractGet extends AbstractOperation {
           values.push(col.split(':')[1]);
         }
 
-        callback = resource => {
+        callback = (resource) => {
           var result = [];
           for (let value of values) {
             value = objectPath.get(resource, value);
@@ -169,7 +169,7 @@ export default abstract class AbstractGet extends AbstractOperation {
       case 'list':
       default:
         if (callback === null) {
-          callback = resource => {
+          callback = (resource) => {
             return [
               resource.name,
               resource.version,
@@ -180,7 +180,7 @@ export default abstract class AbstractGet extends AbstractOperation {
         }
 
         var data = [];
-        data.push(fields.map(x => colors.bold(x)));
+        data.push(fields.map((x) => colors.bold(x)));
 
         if (response.response.body.kind === 'List') {
           for (let resource of response.response.body.data) {
@@ -291,11 +291,11 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     if (!opts.output[0] || opts.output[0] === 'list') {
       var stream = createStream(config);
-      stream.write(fields.map(x => colors.bold(x)));
+      stream.write(fields.map((x) => colors.bold(x)));
     }
 
     if (callback === null) {
-      callback = resource => {
+      callback = (resource) => {
         return [
           resource.name,
           resource.version,
@@ -307,7 +307,7 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
-      es.mapSync(function(data) {
+      es.mapSync(function (data) {
         if (data.kind === 'StreamError') {
           console.log(data);
           process.exit();
@@ -341,11 +341,11 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     if (!opts.output[0] || opts.output[0] === 'list') {
       var stream = createStream(config);
-      stream.write(fields.map(x => colors.bold(x)));
+      stream.write(fields.map((x) => colors.bold(x)));
     }
 
     if (callback === null) {
-      callback = resource => {
+      callback = (resource) => {
         return [
           resource.name,
           resource.version,
@@ -357,7 +357,7 @@ export default abstract class AbstractGet extends AbstractOperation {
 
     var that = this;
     request.pipe(JSONStream.parse('*')).pipe(
-      es.mapSync(function(data) {
+      es.mapSync(function (data) {
         if (data[1].kind === 'StreamError') {
           console.log(data);
           process.exit();

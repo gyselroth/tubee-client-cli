@@ -65,7 +65,7 @@ export default class Get extends AbstractGet {
         args,
         opts,
         ['Name', 'Last status', 'Last execution', 'Last started at', 'Last ended at'],
-        resource => {
+        (resource) => {
           return this.prettify(resource);
         },
       );

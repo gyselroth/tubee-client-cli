@@ -40,7 +40,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     } else if (opts.stdin) {
       var content: string = '';
       process.stdin.resume();
-      var reader = function(buf) {
+      var reader = function (buf) {
         content += buf.toString();
       };
       process.stdin.on('data', reader);
@@ -53,7 +53,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
         }
 
         var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.yml');
-        await fs.writeFile(path, content, function(err) {
+        await fs.writeFile(path, content, function (err) {
           if (err) {
             return console.log(err);
           }
@@ -81,7 +81,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           body += this.createTemplate(resources, mergeAllOf(api.components.schemas[resourceType]).properties);
         }
 
-        await fs.writeFile(path, body, function(err) {
+        await fs.writeFile(path, body, function (err) {
           if (err) {
             return console.log(err);
           }
@@ -99,7 +99,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
       }
 
       path = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + (opts.input[0] || 'yml'));
-      await fs.writeFile(path, body, function(err) {
+      await fs.writeFile(path, body, function (err) {
         if (err) {
           return console.log(err);
         }
@@ -165,14 +165,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
     }
 
     if (typeof value == 'object' && value !== null && !(value instanceof Array)) {
-      return (
-        '\n' +
-        ''.padStart(depth, ' ') +
-        yaml
-          .dump(value)
-          .trim()
-          .replace(/\n/, '\n    ')
-      );
+      return '\n' + ''.padStart(depth, ' ') + yaml.dump(value).trim().replace(/\n/, '\n    ');
     }
 
     return JSON.stringify(value);
@@ -193,7 +186,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
    * Open editor to edit resources
    */
   protected async openEditor(path: string, input: string, existing?: string) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       var child = child_process.spawn(editor, [path], {
         stdio: 'inherit',
       });
@@ -211,18 +204,18 @@ export default abstract class AbstractCreate extends AbstractOperation {
 
             case 'yaml':
             default:
-              update = yaml.safeLoad(body);
+              update = yaml.load(body);
           }
           new_hash = JSON.stringify(update);
 
-          await this.applyObjects(update).catch(response => {
+          await this.applyObjects(update).catch((response) => {
             if (response.response) {
               var msg = '';
               if (response.response.body.more) {
                 msg += yaml
                   .dump(response.response.body.more)
                   .split('\n')
-                  .map(s => `# ${s}`)
+                  .map((s) => `# ${s}`)
                   .join('\n');
               } else {
                 msg = response.response.body.error + ' - ' + response.response.body.message;
@@ -242,7 +235,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
           }
 
           body = '#' + error + '\n' + body;
-          await fs.writeFile(path, body, function(err) {
+          await fs.writeFile(path, body, function (err) {
             if (err) {
               return console.log(err);
             }
@@ -257,7 +250,7 @@ export default abstract class AbstractCreate extends AbstractOperation {
   /**
    * Create
    */
-  abstract async create(resource);
+  abstract create(resource);
 
   /**
    * Update Objects

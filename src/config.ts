@@ -44,7 +44,7 @@ export class ConfigStore {
 
     if (fs.existsSync(ConfigStore.path)) {
       try {
-        config = yaml.safeLoad(fs.readFileSync(ConfigStore.path, 'utf8')) as Config;
+        config = yaml.load(fs.readFileSync(ConfigStore.path, 'utf8')) as Config;
       } catch (e) {
         console.log(e);
       }

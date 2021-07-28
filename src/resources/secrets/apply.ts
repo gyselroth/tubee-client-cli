@@ -15,14 +15,14 @@ export default class Apply extends AbstractApply {
 
     return this.api
       .getSecret(namespace, resource.name)
-      .then(response => {
+      .then((response) => {
         update = true;
         let to = resource;
         let from = response.response.toJSON().body;
         let patch = jsonpatch.compare(from, to);
         return this.api.updateSecret(namespace, resource.name, patch);
       })
-      .catch(error => {
+      .catch((error) => {
         if (update === true) {
           throw error;
         }

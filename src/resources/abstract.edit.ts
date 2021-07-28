@@ -43,7 +43,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
 
     var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + (opts.output[0] || 'yml'));
 
-    await fs.writeFile(path, body, function(err) {
+    await fs.writeFile(path, body, function (err) {
       if (err) {
         return console.log(err);
       }
@@ -56,7 +56,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
    * Open editor to edit resources
    */
   protected async openEditor(callback, objects, path: string, output: string, existing?: string) {
-    return new Promise(async (resolve, reject) => {
+    return new Promise<void>(async (resolve, reject) => {
       var child = child_process.spawn(editor, [path], {
         stdio: 'inherit',
       });
@@ -74,11 +74,11 @@ export default abstract class AbstractEdit extends AbstractOperation {
 
             case 'yaml':
             default:
-              update = yaml.safeLoad(body);
+              update = yaml.load(body);
           }
 
           new_hash = JSON.stringify(update);
-          await this.updateObjects(objects, update, callback).catch(response => {
+          await this.updateObjects(objects, update, callback).catch((response) => {
             throw new Error(response.response.body.error + ' - ' + response.response.body.message);
           });
 
@@ -90,7 +90,7 @@ export default abstract class AbstractEdit extends AbstractOperation {
           }
 
           body = '#' + error + '\n' + body;
-          await fs.writeFile(path, body, function(err) {
+          await fs.writeFile(path, body, function (err) {
             if (err) {
               return console.log(err);
             }

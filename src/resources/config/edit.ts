@@ -56,7 +56,7 @@ export default class Edit extends AbstractEdit {
 
     var path: string = fspath.join(os.tmpdir(), '.' + randomstring.generate(7) + '.' + (opts.output[0] || 'yml'));
 
-    await fs.writeFile(path, body, function(err) {
+    await fs.writeFile(path, body, function (err) {
       if (err) {
         return console.log(err);
       }

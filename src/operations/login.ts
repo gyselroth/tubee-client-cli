@@ -88,7 +88,7 @@ export default class Login {
 
         client
           .getV1()
-          .then(result => {
+          .then((result) => {
             if (result.response.body.name !== 'tubee') {
               console.error('server is not a tubee server');
             }
@@ -97,7 +97,7 @@ export default class Login {
             var writePath = optparse.parsedOpts.config[0] || configPath;
             ConfigStore.writeContext(writePath, contextName, context);
           })
-          .catch(err => {
+          .catch((err) => {
             console.error('Connection error encountered (use --debug to display more)');
 
             if (optparse.parsedOpts.debug === true) {

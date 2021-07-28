@@ -8,7 +8,7 @@ export default abstract class AbstractOperation {
    * Execute operation
    */
   protected static executeOperation(operation) {
-    operation.catch(e => {
+    operation.catch((e) => {
       if (e.response && e.response.statusCode === 404) {
         console.log('No such resource found.');
       } else if (e.response) {

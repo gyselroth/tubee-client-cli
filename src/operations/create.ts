@@ -119,7 +119,7 @@ export default class Create {
 
         case 'yaml':
         default:
-          resources = yaml.safeLoad(body);
+          resources = yaml.load(body);
       }
 
       this.create(resources);
@@ -148,7 +148,7 @@ export default class Create {
           .then(() => {
             console.log('Created new resource %s', resource.name);
           })
-          .catch(error => {
+          .catch((error) => {
             console.log(
               '%s <%s> failed [%s: %s]',
               resource.kind,

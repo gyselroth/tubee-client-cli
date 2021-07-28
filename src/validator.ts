@@ -41,7 +41,7 @@ export const identifierMap = {
   Process: ProcessIdentifier,
 };
 
-export const validate = function(resource) {
+export const validate = function (resource) {
   if (!resource.kind || !identifierMap[resource.kind]) {
     return false;
   }

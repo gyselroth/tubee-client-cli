@@ -14,7 +14,7 @@ export function getFile(uri: string): Promise<string> {
       }
 
       var chunks = [];
-      stream.on('data', buffer => {
+      stream.on('data', (buffer) => {
         chunks.push(buffer);
       });
 
@@ -22,7 +22,7 @@ export function getFile(uri: string): Promise<string> {
         resolve(Buffer.concat(chunks).toString('utf8'));
       });
 
-      stream.on('error', error => {
+      stream.on('error', (error) => {
         resolve(error);
       });
     });

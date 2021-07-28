@@ -25,7 +25,7 @@ export default class Create extends AbstractCreate {
    * Execute
    */
   public async execute(opts, args, rest) {
-    this.createObjects('Job', args, opts, async resource => {
+    this.createObjects('Job', args, opts, async (resource) => {
       return await this.create(resource);
     });
   }
