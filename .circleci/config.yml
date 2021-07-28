@@ -1,16 +1,102 @@
-version: '2.1'
-orbs:
-  node: circleci/node@4.5.1
+version: 2
+
+defaults: &defaults
+  docker:
+    - image: circleci/node:16.5.0
+
+workspace_root: &workspace_root
+  /tmp/tubee-cli
+
+attach_workspace: &attach_workspace
+  attach_workspace:
+    at: *workspace_root
+
 jobs:
-  install-node-example:
-    docker:
-      - image: 'cimg/node:16.5.0'
+  build:
+    <<: *defaults
+    working_directory: *workspace_root
     steps:
       - checkout
-      - node/install:
-          install-yarn: true
-      - run: node --version
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: npm update
+          command: npm update
+      - run:
+          name: npm update
+          command: npm update
+      - run:
+          name: set version
+          command:  |
+            if [ -z "${CIRCLE_TAG}"];
+            then
+              version=$CIRCLE_BUILD_NUM;
+            else
+              version=$CIRCLE_TAG;
+              if [ "${version:0:1}" == "v" ]; then version=${CIRCLE_TAG:1}; fi;
+              if [ "${version}" == "" ]; then version=${CIRCLE_BUILD_NUM}; fi;
+            fi;
+      - run:
+          name: build
+          command: |
+            npm run build
+            npm run dist-linux
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - run:
+          name: bintray
+          command: |
+            if [ -z "${CIRCLE_TAG}"];
+            then
+              if [ "$CIRCLE_TAG" == *"-"* ];
+              then
+                export deb_distribution=unstable;
+              else
+                export deb_distribution=stable;
+              fi;
+              if [ "$CIRCLE_BRANCH" == "master" ];
+              then
+                export deb_distribution=nightly;
+              fi;
+
+              export date=$(date +%Y-%m-%d);
+              cp packaging/debian/bintray.json
+              bintray.json; sed -i s/'{version}'/$version/g bintray.json; sed -i s/'{date}'/$date/g
+              bintray.json; sed -i s/'{deb_distribution}'/$deb_distribution/g bintray.json; make deb VERSION=$version;
+            fi;
+      - store_artifacts:
+          path: /tmp/tubee/dist
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist/*
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    working_directory: *workspace_root
+    steps:
+      - *attach_workspace
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            if [ "$CIRCLE_TAG" != "" ];
+            then
+              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG ./dist/
+            fi;
+
 workflows:
-  test_my_app:
+  version: 2
+  build-n-release:
     jobs:
-      - install-node-example
+      - build:
+          filters:
+            tags:
+              only: /.*/
+      - publish-github-release:
+          requires:
+            - build
+          filters:
+            tags:
+              only: /^v.*/
