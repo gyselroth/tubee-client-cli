@@ -45,27 +45,27 @@ jobs:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
             - node_modules
-      - run:
-          name: bintray
-          command: |
-            if [ -z "${CIRCLE_TAG}"];
-            then
-              if [ "$CIRCLE_TAG" == *"-"* ];
-              then
-                export deb_distribution=unstable;
-              else
-                export deb_distribution=stable;
-              fi;
-              if [ "$CIRCLE_BRANCH" == "master" ];
-              then
-                export deb_distribution=nightly;
-              fi;
-
-              export date=$(date +%Y-%m-%d);
-              cp /tmp/tubee-cli/packaging/debian/bintray.json
-              bintray.json; sed -i s/'{version}'/$version/g bintray.json; sed -i s/'{date}'/$date/g
-              bintray.json; sed -i s/'{deb_distribution}'/$deb_distribution/g bintray.json; make deb VERSION=$version;
-            fi;
+#      - run:
+#          name: bintray
+#          command: |
+#            if [ -z "${CIRCLE_TAG}"];
+#            then
+#              if [ "$CIRCLE_TAG" == *"-"* ];
+#              then
+#                export deb_distribution=unstable;
+#              else
+#                export deb_distribution=stable;
+#              fi;
+#              if [ "$CIRCLE_BRANCH" == "master" ];
+#              then
+#                export deb_distribution=nightly;
+#              fi;
+#
+#              export date=$(date +%Y-%m-%d);
+#              cp /tmp/tubee-cli/packaging/debian/bintray.json
+#              bintray.json; sed -i s/'{version}'/$version/g bintray.json; sed -i s/'{date}'/$date/g
+#              bintray.json; sed -i s/'{deb_distribution}'/$deb_distribution/g bintray.json; make deb VERSION=$version;
+#            fi;
       - store_artifacts:
           path: /tmp/tubee-cli/dist
       - persist_to_workspace:
