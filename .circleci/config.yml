@@ -77,7 +77,8 @@ jobs:
             - dist/*
 
   build_windows:
-    executor: win/default # executor type
+    executor: win/default
+    working_directory: *workspace_root
 
     steps:
       - checkout
