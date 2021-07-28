@@ -81,7 +81,40 @@ jobs:
 
     steps:
       - checkout
-      - run: Write-Host 'Hello, Windows'
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: npm update
+          command: npm update
+      - run:
+          name: npm update
+          command: npm update
+      - run:
+          name: set version
+          command:  |
+            if [ -z "${CIRCLE_TAG}"];
+            then
+              version=$CIRCLE_BUILD_NUM;
+            else
+              version=$CIRCLE_TAG;
+              if [ "${version:0:1}" == "v" ]; then version=${CIRCLE_TAG:1}; fi;
+              if [ "${version}" == "" ]; then version=${CIRCLE_BUILD_NUM}; fi;
+            fi;
+      - run:
+          name: build
+          command: |
+            npm run build
+            npm run dist-windows
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - store_artifacts:
+          path: /tmp/tubee-cli/dist
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist/*
   publish-github-release:
     docker:
       - image: cibuilds/github:0.10
