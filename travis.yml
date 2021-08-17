@@ -1,0 +1,49 @@
+language: node_js
+cache:
+  directories:
+  - homebrew-core
+node_js:
+  - node
+before_script:
+  - npm update
+  - export version=$TRAVIS_TAG
+  - if [[ "${version:0:1}" == "v" ]]; then version=${version:1}; fi;
+  - if [ "$version" == "" ]; then version=$TRAVIS_BUILD_NUMBER; fi;
+script:
+  - npm run build
+  - npm run dist-$TRAVIS_OS_NAME
+os:
+  - osx
+addons:
+  apt:
+    packages:
+    - python
+    - libsecret-1-0
+    - libsecret-1-dev
+    - libgnome-keyring-dev
+python:
+  - "2.7"
+deploy:
+- provider: releases
+  api_key:
+    secure: "SgbEZ87lxs7dRNzw7r6Vl1OEtwhSVnDJehSLjSmZXGyiGLE1JHOv6DCbUrndRE1PTvWLvyq9a1RrOiVwAv5gtnIl2+sBiiQUv+42TRo3C9gHUtp5Q9Oxump4yNbkCXTlDfjNT1yrVSnh/OktRmucAOdvZIODC9GoCNTqg4Aokojv5VY2IAr9T9q7Stbx/qfE6L4q5gvNdfEiM2lC2eGx9hy97EDnCabzyf5J/VXgS6GtZnMxYVEpCMVMmqXxe24cFKH2+9lpZPrMhcbX/PWf5b4axactXtCB+f6a/KaM69RGzYUpUfb+iNZ80UJh0xXhc+saF0yM5S3SlRMyrieLwnkd/TcGh7Fan6X2AaLHsWCNIgjmoriUYE92PJdfaCchDdIpC+ujXjjt57onbgAoXglPwl+9dN1TbR+41/4IPZnQm7wSJxjFsXjo9pz9YIkL+aIq6YRqMN02qw+hv68so6N4Iou+BDgYowgmbMnWt3PBCyNSFnncWnJj5Bo/4T6RhQcoeGP8qfQiiZhErVh4WJtYG/tzdKqeaPovGS1+l3EC3TKhLwcR/AfGBugNhVrXT3GJ+Q37JZz3bAsSghxvhpEqwQ4guTJCAW4X2hXNUQJ20fUmk2oPTpzlVQlvFsjLKQnueOHvdNyJw6xiedk0qeH8wXH7mjNTstwFcSFPxJo="
+  file_glob: true
+  file: dist/*
+  skip_cleanup: true
+  on:
+    tags: true
+#after_deploy:
+#- git config --global user.email "travis@travis-ci.org"
+#- git config --global user.name "Travis CI"
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sha256=$(shasum -a 256 dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && git clone https://github.com/gyselroth/homebrew-core
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sed -i '' 's/sha256.*$/sha256 "'$sha256'"/g' homebrew-core/Formula/tubectl.rb
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sed -i '' 's/version.*$/version "'$version'"/g' homebrew-core/Formula/tubectl.rb
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && sed -i '' 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/v'$version'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl.rb
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && cd homebrew-core
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && git commit --message "tubectl release $version" Formula/tubectl.rb
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && git remote set-url --push origin https://${GITHUB_TOKEN}@github.com/gyselroth/homebrew-core.git > /dev/null 2>&1
+#- test "$TRAVIS_TAG" != "" && test "$TRAVIS_OS_NAME" == "osx" && git push origin master > /dev/null 2>&1
+env:
+  global:
+    secure: V0Nr/IvWbokmjviv1QG0Ia7IzCne8tfY6bXdoRKFSBo5lF7HOj132N1+kLmPNNbzk5i7a6ZvdyxxBOxiEEe2RMsXF91YWrX8tCrOC2AYG0pDBMiyJMlCfufNzhg5cWdSLtBExfSLMEDiiLWJUckEqbkUl7G8pEVgM3iJNeotAzf67jV1E5zOZGPe9qKx9WxXJSm/0vVnicCnFkFV1k0P3YQxjG5p4jN/eeibqgcqFZasFtY5yTAo+kokUJ4luLD13y0JUhOb0pmRD+eqkBx8sNmut7O39PqYA/2o1CvQSKUMUVQlKzfGpQmpI7JdbV1IbW8hoHKLhkSnUhYCp2dwxMLQyoPbAVgYwJEoz7+KQ0iJfzhhratN65hP5gJsmSjB0w3PkKfdxdO4GGhCKgCib3OkVEAqjsaF+K6gCfDXh+ZWQ4K5bHYVfAc0srNZx14qOTy07mExpefHbaQ/R+vh7vWphpmPxEcwldQvCd/PNnFUS+iKgu4lh08Ei+iMfx898Gem3H1vUnTkNtNyH4ecjDTGr2XFNroQ/F258ojyyUYYtIGBqimu/sbwYB9jsn4Ng+UjH8MHFbG2a0GBZmTi2iXFXUPdi3O+QqrVLvB3xgtx4uvR5TwRZTizjYlKs9ag58SLmKuBgaITMzxBlNJpw3Tbwcq83NBllGjb+44zGOM=
