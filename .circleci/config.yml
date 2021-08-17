@@ -26,9 +26,6 @@ jobs:
           name: npm update
           command: npm update
       - run:
-          name: npm update
-          command: npm update
-      - run:
           name: set version
           command:  |
             if [ -z "${CIRCLE_TAG}"];
@@ -84,9 +81,6 @@ jobs:
       - checkout
       - restore_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: npm update
-          command: npm update
       - run:
           name: npm update
           command: npm update
