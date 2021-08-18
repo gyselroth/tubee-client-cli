@@ -125,7 +125,7 @@ export default class Apply {
 
         case 'yaml':
         default:
-          resources = yaml.safeLoadAll(body);
+          resources = yaml.loadAll(body);
       }
 
       var inbound = [];

@@ -1,4 +1,11 @@
-## 1.0.0-beta20
+## 1.1.0
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Wed Aug 18 14:15:00 CEST 2021
+
+### Features
+* Added timeout option when creating a new job
+
+## 1.0.0
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Wed Aug 18 10:15:00 CEST 2021
 
