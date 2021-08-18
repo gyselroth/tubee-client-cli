@@ -1,3 +1,10 @@
+## 1.0.0-beta20
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Wed Aug 18 10:15:00 CEST 2021
+
+### Features
+* Added support for interval_reference on job creation
+
 ## 1.0.0-beta19
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Wed Apr 08 10:10:02 CEST 2020
