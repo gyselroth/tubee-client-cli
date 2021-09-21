@@ -44,7 +44,7 @@
     "keytar": "https://github.com/gyselroth/node-keytar/tarball/master",
     "lodash.merge": "^4.6.2",
     "moment": "^2.29.1",
-    "object-path": "^0.11.5",
+    "object-path": "^0.11.8",
     "password-prompt": "^1.1.2",
     "patch-module": "^0.1.0",
     "pretty-ms": "^7.0.1",
