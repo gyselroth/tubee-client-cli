@@ -1,3 +1,10 @@
+## 1.2.0
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Tue Feb 01 16:45:00 CEST 2022
+
+### Features
+* Added data container for OdataRestEndpoint
+
 ## 1.1.0
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Wed Aug 18 14:15:00 CEST 2021
