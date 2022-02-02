@@ -128,7 +128,7 @@ workflows:
       - publish-github-release:
           requires:
             - build_linux
-            - build_windows
+#            - build_windows
           filters:
             tags:
               only: /^v.*/
