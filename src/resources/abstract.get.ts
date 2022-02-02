@@ -26,7 +26,7 @@ export const tableConfig = {
   },
   columns: {
     0: {
-      width: 25,
+      width: 40,
     },
     2: {
       width: 25,
