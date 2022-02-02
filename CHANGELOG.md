@@ -1,6 +1,13 @@
+## 1.2.1
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Tue Feb 02 14:00:00 CEST 2022
+
+### Bugfixes
+* Error: table error
+
 ## 1.2.0
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
-**Date**: Wed Feb 02 12:00:00 CEST 2022
+**Date**: Tue Feb 02 11:45:00 CEST 2022
 
 ### Features
 * Added data container for OdataRestEndpoint
