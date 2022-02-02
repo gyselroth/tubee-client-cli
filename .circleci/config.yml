@@ -99,19 +99,19 @@ jobs:
 #          root: .
 #          paths:
 #            - dist/tubectl-win-x64.exe
-#  publish-github-release:
-#    docker:
-#      - image: cibuilds/github:0.10
-#    working_directory: *workspace_root
-#    steps:
-#      - *attach_workspace
-#      - run:
-#          name: "Publish Release on GitHub"
-#          command: |
-#            if [ "$CIRCLE_TAG" != "" ];
-#            then
-#              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG ./dist/
-#            fi;
+  publish-github-release:
+    docker:
+      - image: cibuilds/github:0.10
+    working_directory: *workspace_root
+    steps:
+      - *attach_workspace
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            if [ "$CIRCLE_TAG" != "" ];
+            then
+              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG ./dist/
+            fi;
 
 workflows:
   version: 2
