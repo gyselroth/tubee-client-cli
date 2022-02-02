@@ -73,45 +73,45 @@ jobs:
           paths:
             - dist/tubectl-linux-x64
 
-  build_windows:
-    executor: win/default
-    working_directory: *workspace_root
-
-    steps:
-      - checkout
-      - restore_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-      - run:
-          name: npm update
-          command: npm update
-      - run:
-          name: build
-          command: |
-            npm run build
-            npm run dist-windows
-      - save_cache:
-          key: dependency-cache-{{ checksum "package-lock.json" }}
-          paths:
-            - node_modules
-      - store_artifacts:
-          path: /tmp/tubee-cli/dist
-      - persist_to_workspace:
-          root: .
-          paths:
-            - dist/tubectl-win-x64.exe
-  publish-github-release:
-    docker:
-      - image: cibuilds/github:0.10
-    working_directory: *workspace_root
-    steps:
-      - *attach_workspace
-      - run:
-          name: "Publish Release on GitHub"
-          command: |
-            if [ "$CIRCLE_TAG" != "" ];
-            then
-              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG ./dist/
-            fi;
+#  build_windows:
+#    executor: win/default
+#    working_directory: *workspace_root
+#
+#    steps:
+#      - checkout
+#      - restore_cache:
+#          key: dependency-cache-{{ checksum "package-lock.json" }}
+#      - run:
+#          name: npm update
+#          command: npm update
+#      - run:
+#          name: build
+#          command: |
+#            npm run build
+#            npm run dist-windows
+#      - save_cache:
+#          key: dependency-cache-{{ checksum "package-lock.json" }}
+#          paths:
+#            - node_modules
+#      - store_artifacts:
+#          path: /tmp/tubee-cli/dist
+#      - persist_to_workspace:
+#          root: .
+#          paths:
+#            - dist/tubectl-win-x64.exe
+#  publish-github-release:
+#    docker:
+#      - image: cibuilds/github:0.10
+#    working_directory: *workspace_root
+#    steps:
+#      - *attach_workspace
+#      - run:
+#          name: "Publish Release on GitHub"
+#          command: |
+#            if [ "$CIRCLE_TAG" != "" ];
+#            then
+#              ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG ./dist/
+#            fi;
 
 workflows:
   version: 2
@@ -121,10 +121,10 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - build_windows:
-          filters:
-            tags:
-              only: /.*/
+#      - build_windows:
+#          filters:
+#            tags:
+#              only: /.*/
       - publish-github-release:
           requires:
             - build_linux
