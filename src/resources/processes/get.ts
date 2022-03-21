@@ -99,6 +99,11 @@ export default class Get extends AbstractGet {
         }
         break;
 
+      case 5:
+        started = '<Not data>';
+        estimated = '<Not data>';
+        break;
+
       default:
         estimated = moment(resource.status.ended).fromNow();
     }

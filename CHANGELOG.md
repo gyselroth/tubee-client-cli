@@ -1,3 +1,10 @@
+## 1.2.2
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Mon Mar 21 11:00:00 CEST 2022
+
+### Bugfixes
+* Error: when process is canceled no date (start and estimated) is displayed anymore
+
 ## 1.2.1
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Tue Feb 02 14:00:00 CEST 2022
