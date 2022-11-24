@@ -30,7 +30,7 @@
   },
   "homepage": "https://github.com/gyselroth/tubee-client-cli#readme",
   "dependencies": {
-    "@gyselroth/tubee-sdk-node": "1.1.0",
+    "@gyselroth/tubee-sdk-node": "1.2.3",
     "@types/request": "^2.48.6",
     "bluebird": "^3.7.2",
     "colors": "^1.4.0",

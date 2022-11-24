@@ -1,3 +1,10 @@
+## 1.3.0
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Thu Nov 22 17:45:00 CEST 2022
+
+### Feature
+* Added support for notification identifier on job creation
+
 ## 1.2.2
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Mon Mar 21 11:00:00 CEST 2022
