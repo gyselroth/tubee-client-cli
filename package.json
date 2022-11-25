@@ -43,7 +43,7 @@
     "JSONStream": "^1.3.5",
     "keytar": "https://github.com/gyselroth/node-keytar/tarball/master",
     "lodash.merge": "^4.6.2",
-    "moment": "^2.29.1",
+    "moment": "^2.29.4",
     "object-path": "^0.11.5",
     "password-prompt": "^1.1.2",
     "patch-module": "^0.1.0",
