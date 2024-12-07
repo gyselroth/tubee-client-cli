@@ -36,7 +36,7 @@
     "colors": "^1.4.0",
     "commandpost": "https://github.com/raffis/commandpost/tarball/dev",
     "event-stream": "^4.0.1",
-    "fast-json-patch": "^2.2.1",
+    "fast-json-patch": "^3.1.1",
     "get-uri": "^3.0.2",
     "js-yaml": "^4.1.0",
     "json-stream": "^1.0.0",

@@ -28,7 +28,9 @@ export default abstract class AbstractSync extends AbstractGet {
       resource.data.simulate = opts.simulate;
     }
 
-    resource.data.filter = this.createQuery(opts, args);
+    if ((opts.jsonQuery && opts.jsonQuery[0]) || (opts.fieldSelector && opts.fieldSelector[0])) {
+      resource.data.filter = this.createQuery(opts, args);
+    }
 
     return this.api.addProcess(namespace, resource).then((result) => {
       this.sync(result, opts, namespace);
