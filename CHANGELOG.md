@@ -1,3 +1,10 @@
+## 1.3.1
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Sun Dec 07 22:45:00 CEST 2024
+
+### Bugfixes
+* Apply job filter when starting a job manually
+
 ## 1.3.0
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Fri Nov 25 08:15:00 CEST 2022
