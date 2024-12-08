@@ -5,7 +5,7 @@ orbs:
 
 defaults: &defaults
   docker:
-    - image: circleci/node:16.5.0
+    - image: cimg/node:23.3
 
 workspace_root: &workspace_root
   /tmp/tubee-cli
