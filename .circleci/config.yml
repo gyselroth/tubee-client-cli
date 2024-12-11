@@ -158,10 +158,11 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
+             git config --global user.email "no-reply@gyselroth.net"
+             git config --global user.name "circleci Build"
 #            if [ "$CIRCLE_TAG" != "" ];
 #            then
-              git config --global user.email "no-reply@gyselroth.net"
-              git config --global user.name "circleci Build"
+
 #              sha256=$(sha256sum dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256
               git clone --depth 1 https://github.com/gyselroth/homebrew-core > /dev/null 2>&1
 #              sed -i 's/sha256.*$/sha256 "'$sha256'"/g' homebrew-core/Formula/tubectl.rb
