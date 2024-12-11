@@ -99,6 +99,37 @@ jobs:
           root: .
           paths:
             - dist/tubectl-win-x64.exe
+
+  build_osx:
+    macos:
+      xcode: 16.1.0
+    resource_class: m2pro.medium
+
+    working_directory: *workspace_root
+
+    steps:
+      - checkout
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+      - run:
+          name: npm update
+          command: npm update
+      - run:
+          name: build
+          command: |
+            npm run build
+            npm run dist-osx
+      - save_cache:
+          key: dependency-cache-{{ checksum "package-lock.json" }}
+          paths:
+            - node_modules
+      - store_artifacts:
+          path: /tmp/tubee-cli/dist
+      - persist_to_workspace:
+          root: .
+          paths:
+            - dist/tubectl-osx-x64
+
   publish-github-release:
     docker:
       - image: cibuilds/github:0.10
@@ -113,22 +144,54 @@ jobs:
               ghr -t $GITHUB_TOKEN -u $CIRCLE_PROJECT_USERNAME -r $CIRCLE_PROJECT_REPONAME -c $CIRCLE_SHA1 $CIRCLE_TAG ./dist/
             fi;
 
+  publish-macos-release-to-homebrew:
+    docker:
+      - image: cibuilds/github:0.10
+    working_directory: *workspace_root
+    steps:
+      - *attach_workspace
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            if [ "$CIRCLE_TAG" != "" ];
+            then
+              git config --global user.email "no-reply@gyselroth.net"
+              git config --global user.name "circleci Build"
+              sha256=$(shasum -a 256 dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256
+              git clone --depth 1 https://${GITHUB_TOKEN}@github.com/homebrew-core > /dev/null 2>&1
+              sed -i '' 's/sha256.*$/sha256 "'$sha256'"/g' homebrew-core/Formula/tubectl.rb
+              sed -i '' 's/version.*$/version "'$version'"/g' homebrew-core/Formula/tubectl.rb
+              sed -i '' 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/v'$version'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl.rb
+              cd homebrew-core
+              git commit --message "tubectl release $version" Formula/tubectl.rb
+              git remote set-url --push origin https://${GITHUB_TOKEN}@github.com/gyselroth/homebrew-core.git > /dev/null 2>&1
+              git push origin master > /dev/null 2>&1
+            fi;
+
 workflows:
   version: 2
   build-n-release:
     jobs:
-      - build_linux:
-          filters:
-            tags:
-              only: /.*/
-      - build_windows:
+#      - build_linux:
+#          filters:
+#            tags:
+#              only: /.*/
+#      - build_windows:
+#          filters:
+#            tags:
+#              only: /.*/
+      - build_osx:
           filters:
             tags:
               only: /.*/
       - publish-github-release:
           requires:
-            - build_linux
-            - build_windows
+#            - build_linux
+#            - build_windows
+            - build_osx
+      - publish-macos-release-to-homebrew:
+          requires:
+            - build_osx
           filters:
             tags:
               only: /^v.*/
