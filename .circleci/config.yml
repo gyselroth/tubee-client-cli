@@ -172,22 +172,22 @@ workflows:
   version: 2
   build-n-release:
     jobs:
-#      - build_linux:
-#          filters:
-#            tags:
-#              only: /.*/
-#      - build_windows:
-#          filters:
-#            tags:
-#              only: /.*/
+      - build_linux:
+          filters:
+            tags:
+              only: /.*/
+      - build_windows:
+          filters:
+            tags:
+              only: /.*/
       - build_osx:
           filters:
             tags:
               only: /.*/
       - publish-github-release:
           requires:
-#            - build_linux
-#            - build_windows
+            - build_linux
+            - build_windows
             - build_osx
       - publish-macos-release-to-homebrew:
           requires:
