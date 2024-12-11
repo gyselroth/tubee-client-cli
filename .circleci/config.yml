@@ -163,6 +163,7 @@ jobs:
               git clone --depth 1 https://github.com/gyselroth/homebrew-core > /dev/null 2>&1
               cd homebrew-core
               echo ABC > test.txt
+              git add .
               git commit --message "test circleci build" test.txt
               git remote set-url origin git@github.com:gyselroth/homebrew-core.git
               git push origin master > /dev/null 2>&1
