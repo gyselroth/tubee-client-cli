@@ -158,23 +158,14 @@ jobs:
       - run:
           name: "Publish Release on GitHub"
           command: |
-             git config --global user.email "no-reply@gyselroth.net"
-             git config --global user.name "circleci Build"
-#            if [ "$CIRCLE_TAG" != "" ];
-#            then
-
-#              sha256=$(sha256sum dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256
+              git config --global user.email "no-reply@gyselroth.net"
+              git config --global user.name "circleci Build"
               git clone --depth 1 https://github.com/gyselroth/homebrew-core > /dev/null 2>&1
-#              sed -i 's/sha256.*$/sha256 "'$sha256'"/g' homebrew-core/Formula/tubectl.rb
-#              sed -i 's/version.*$/version "'$CIRCLE_TAG'"/g' homebrew-core/Formula/tubectl.rb
-#              sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/v'$CIRCLE_TAG'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl.rb
               cd homebrew-core
               echo ABC > test.txt
-#              git commit --message "tubectl release $CIRCLE_TAG" Formula/tubectl.rb
               git commit --message "test circleci build" test.txt
               git remote set-url origin git@github.com:gyselroth/homebrew-core.git
               git push origin master > /dev/null 2>&1
-#            fi;
 
 workflows:
   version: 2
