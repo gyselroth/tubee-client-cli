@@ -132,7 +132,7 @@ jobs:
 
   publish-github-release:
     docker:
-      - image: cibuilds/github:0.10
+      - image: cibuilds/github:0.13.0
     working_directory: *workspace_root
     steps:
       - *attach_workspace
@@ -146,7 +146,7 @@ jobs:
 
   publish-macos-release-to-homebrew:
     docker:
-      - image: cibuilds/github:0.10
+      - image: cibuilds/github:0.13.0
     working_directory: *workspace_root
     steps:
       - *attach_workspace
@@ -164,7 +164,7 @@ jobs:
               sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/v'$CIRCLE_TAG'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl.rb
               cd homebrew-core
               git commit --message "tubectl release $CIRCLE_TAG" Formula/tubectl.rb
-              git remote add origin git@github.com:gyselroth/homebrew-core.git
+              git remote set-url --push origin git@github.com:gyselroth/homebrew-core.git > /dev/null 2>&1
               git push origin master > /dev/null 2>&1
             fi;
 
