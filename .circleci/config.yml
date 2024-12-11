@@ -153,6 +153,8 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "SHA256:zisxsB/ccjleyOvK/JRg+AtKyPCABqWIbheN2UD+r50"
+      - run: mkdir -p ~/.ssh
+      - run: ssh-keyscan github.com >> ~/.ssh/known_hosts
       - run:
           name: "Publish Release on GitHub"
           command: |
@@ -175,22 +177,22 @@ workflows:
   version: 2
   build-n-release:
     jobs:
-      - build_linux:
-          filters:
-            tags:
-              only: /.*/
-      - build_windows:
-          filters:
-            tags:
-              only: /.*/
+#      - build_linux:
+#          filters:
+#            tags:
+#              only: /.*/
+#      - build_windows:
+#          filters:
+#            tags:
+#              only: /.*/
       - build_osx:
           filters:
             tags:
               only: /.*/
       - publish-github-release:
           requires:
-            - build_linux
-            - build_windows
+#            - build_linux
+#            - build_windows
             - build_osx
           filters:
             tags:
