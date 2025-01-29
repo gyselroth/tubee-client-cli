@@ -145,6 +145,11 @@ jobs:
           name: npm update
           command: npm update
       - run:
+            name: "replace keytar.node with x64 version"
+            command: |
+                rm -rf node_modules/keytar/build/Release/keytar.node
+                cp keytar/keytar.node node_modules/keytar/build/Release/
+      - run:
           name: build
           command: |
             npm run build
