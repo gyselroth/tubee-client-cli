@@ -224,14 +224,14 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - publish-github-release:
+#      - publish-github-release:
 #          requires:
 #            - build_linux
 #            - build_windows
 #            - build_osx
-          filters:
-            tags:
-              only: /^v.*/
+#          filters:
+#            tags:
+#              only: /^v.*/
 #      - publish-macos-release-to-homebrew:
 #          requires:
 #            - build_osx
