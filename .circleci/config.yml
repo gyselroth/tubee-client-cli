@@ -100,7 +100,7 @@ jobs:
           paths:
             - dist/tubectl-win-x64.exe
 
-  build_osx:
+  build_osx_arm64:
     macos:
       xcode: 16.1.0
     resource_class: macos.m1.medium.gen1
@@ -118,7 +118,7 @@ jobs:
           name: build
           command: |
             npm run build
-            npm run dist-osx
+            npm run dist-osx-arm64
       - save_cache:
           key: dependency-cache-{{ checksum "package-lock.json" }}
           paths:
@@ -128,7 +128,7 @@ jobs:
       - persist_to_workspace:
           root: .
           paths:
-            - dist/tubectl-osx
+            - dist/tubectl-osx-arm64
 
   build_osx_x64:
     macos:
@@ -200,10 +200,10 @@ jobs:
               git config --global user.name "circleci Build"
               git clone --depth 1 https://github.com/gyselroth/homebrew-core > /dev/null 2>&1
 
-              sha256=$(sha256sum dist/tubectl-osx | cut -d ' ' -f1) && echo $sha256
+              sha256=$(sha256sum dist/tubectl-osx-arm64 | cut -d ' ' -f1) && echo $sha256
               sed -i 's/sha256.*$/sha256 "'$sha256'"/g' homebrew-core/Formula/tubectl.rb
               sed -i 's/version.*$/version "'$version'"/g' homebrew-core/Formula/tubectl.rb
-              sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$CIRCLE_TAG'\/tubectl-osx"/g' homebrew-core/Formula/tubectl.rb
+              sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$CIRCLE_TAG'\/tubectl-osx-arm64"/g' homebrew-core/Formula/tubectl.rb
 
               sha256=$(sha256sum dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256
               sed -i 's/sha256.*$/sha256 "'$sha256'"/g' homebrew-core/Formula/tubectl-x64.rb
@@ -211,7 +211,7 @@ jobs:
               sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$CIRCLE_TAG'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl-x64.rb
 
               cd homebrew-core
-              git commit --message "tubectl release $CIRCLE_TAG" Formula/tubectl.rb
+              git commit --message "tubectl release arm64 $CIRCLE_TAG" Formula/tubectl.rb
               git commit --message "tubectl release x64 $CIRCLE_TAG" Formula/tubectl-x64.rb
               git remote set-url origin git@github.com:gyselroth/homebrew-core.git
               git push origin master > /dev/null 2>&1
@@ -229,7 +229,7 @@ workflows:
           filters:
             tags:
               only: /.*/
-      - build_osx:
+      - build_osx_arm64:
           filters:
             tags:
               only: /.*/
@@ -241,14 +241,14 @@ workflows:
           requires:
             - build_linux
             - build_windows
-            - build_osx
+            - build_osx_arm64
             - build_osx_x64
           filters:
             tags:
               only: /^v.*/
 #      - publish-macos-release-to-homebrew:
 #          requires:
-#            - build_osx
+#            - build_osx_arm64
 #            - build_osx_x64
 #          filters:
 #            tags:
