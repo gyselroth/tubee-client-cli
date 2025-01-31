@@ -207,7 +207,7 @@ jobs:
               sha256_arm64=$(sha256sum dist/tubectl-osx-arm64 | cut -d ' ' -f1) && echo $sha256_arm64
               sed -i '/on_arm/,/end/{s/sha256.*/sha256 "'$sha256_arm64'"/}' homebrew-core/Formula/tubectltest.rb
 
-              sha256_x64=$(sha256sum dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256
+              sha256_x64=$(sha256sum dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256_x64
               sed -i '/on_intel/,/end/{s/sha256.*/sha256 "'$sha256_x64'"/}' homebrew-core/Formula/tubectltest.rb
 
               cd homebrew-core
