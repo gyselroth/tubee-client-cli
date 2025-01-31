@@ -200,18 +200,18 @@ jobs:
               git config --global user.name "circleci Build"
               git clone --depth 1 https://github.com/gyselroth/homebrew-core > /dev/null 2>&1
 
-              sed -i 's/version.*$/version "'$version'"/g' homebrew-core/Formula/tubectltest.rb
-              sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$CIRCLE_TAG'\/tubectl-osx-arm64"/g' homebrew-core/Formula/tubectltest.rb
-              sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$CIRCLE_TAG'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectltest.rb
+              sed -i 's/version.*$/version "'$version'"/g' homebrew-core/Formula/tubectl.rb
+              sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$CIRCLE_TAG'\/tubectl-osx-arm64"/g' homebrew-core/Formula/tubectl.rb
+              sed -i 's/url.*$/url "https:\/\/github.com\/gyselroth\/tubee-client-cli\/releases\/download\/'$CIRCLE_TAG'\/tubectl-osx-x64"/g' homebrew-core/Formula/tubectl.rb
 
               sha256_arm64=$(sha256sum dist/tubectl-osx-arm64 | cut -d ' ' -f1) && echo $sha256_arm64
-              sed -i '/on_arm/,/end/{s/sha256.*/sha256 "'$sha256_arm64'"/}' homebrew-core/Formula/tubectltest.rb
+              sed -i '/on_arm/,/end/{s/sha256.*/sha256 "'$sha256_arm64'"/}' homebrew-core/Formula/tubectl.rb
 
               sha256_x64=$(sha256sum dist/tubectl-osx-x64 | cut -d ' ' -f1) && echo $sha256_x64
-              sed -i '/on_intel/,/end/{s/sha256.*/sha256 "'$sha256_x64'"/}' homebrew-core/Formula/tubectltest.rb
+              sed -i '/on_intel/,/end/{s/sha256.*/sha256 "'$sha256_x64'"/}' homebrew-core/Formula/tubectl.rb
 
               cd homebrew-core
-              git commit --message "tubectl release $CIRCLE_TAG" Formula/tubectltest.rb
+              git commit --message "tubectl release $CIRCLE_TAG" Formula/tubectl.rb
               git remote set-url origin git@github.com:gyselroth/homebrew-core.git
               git push origin master > /dev/null 2>&1
             fi;
