@@ -28,6 +28,7 @@ export const identifierMap = {
   ImageEndpoint: EndpointIdentifier,
   LdapEndpoint: EndpointIdentifier,
   BalloonEndpoint: EndpointIdentifier,
+  MattermostEndpoint: EndpointIdentifier,
   MicrosoftGraphEndpoint: EndpointIdentifier,
   UcsEndpoint: EndpointIdentifier,
   OdataRestEndpoint: EndpointIdentifier,
