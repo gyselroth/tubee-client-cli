@@ -1,3 +1,10 @@
+## 1.3.4
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Wed June 11 16:00:00 CEST 2025
+
+### Features
+* Updated tubee-sdk to v1.2.5
+
 ## 1.3.3
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Sat May 03 15:20:00 CEST 2025
