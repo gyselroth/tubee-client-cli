@@ -12,8 +12,7 @@
     "coveralls": "coveralls < coverage/lcov.info",
     "dist-linux": "nexe --verbose -r node_modules/@gyselroth/tubee-sdk-node/openapi.yml -r node_modules/keytar/build/Release/keytar.node -i build/main.js -o dist/tubectl-linux-x64 -t linux-x64-8.12.0",
     "dist-windows": "nexe --verbose -r node_modules/@gyselroth/tubee-sdk-node/openapi.yml -r node_modules/keytar/build/Release/keytar.node -i build/main.js -o dist/tubectl-win-x64 -t windows-x64-8.12.0",
-    "dist-osx-arm64": "nexe --verbose -r node_modules/@gyselroth/tubee-sdk-node/openapi.yml -r node_modules/keytar/build/Release/keytar.node -i build/main.js -o dist/tubectl-osx-arm64 -t mac-x64-8.12.0",
-    "dist-osx-x64": "nexe --verbose -r node_modules/@gyselroth/tubee-sdk-node/openapi.yml -r node_modules/keytar/build/Release/keytar.node -i build/main.js -o dist/tubectl-osx-x64 -t mac-x64-8.12.0"
+    "dist-osx": "nexe --verbose -r node_modules/@gyselroth/tubee-sdk-node/openapi.yml -r node_modules/keytar/build/Release/keytar.node -i build/main.js -o dist/tubectl-osx-x64 -t mac-x64-8.12.0",
   },
   "repository": {
     "type": "git",
