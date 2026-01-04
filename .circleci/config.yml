@@ -183,29 +183,29 @@ workflows:
   version: 2
   build-n-release:
     jobs:
-#      - build_linux:
-#          filters:
-#            tags:
-#              only: /.*/
-#      - build_windows:
-#          filters:
-#            tags:
-#              only: /.*/
+      - build_linux:
+          filters:
+            tags:
+              only: /.*/
+      - build_windows:
+          filters:
+            tags:
+              only: /.*/
       - build_osx:
           filters:
             tags:
               only: /.*/
-#      - publish-github-release:
-#          requires:
-#            - build_linux
-#            - build_windows
-#            - build_osx
-#          filters:
-#            tags:
-#              only: /^v.*/
-#      - publish-macos-release-to-homebrew:
-#          requires:
-#            - build_osx
-#          filters:
-#            tags:
-#              only: /^v.*/
+      - publish-github-release:
+          requires:
+            - build_linux
+            - build_windows
+            - build_osx
+          filters:
+            tags:
+              only: /^v.*/
+      - publish-macos-release-to-homebrew:
+          requires:
+            - build_osx
+          filters:
+            tags:
+              only: /^v.*/
