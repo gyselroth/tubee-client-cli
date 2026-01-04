@@ -1,3 +1,10 @@
+## 1.3.5
+**Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
+**Date**: Mon Jan 05 01:00:00 CEST 2026
+
+### Bugfixes
+* MacOS circleci build for arm64 architecture removed
+
 ## 1.3.4
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
 **Date**: Wed June 13 15:30:00 CEST 2025
