@@ -1,9 +1,9 @@
 ## 1.3.6
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
-**Date**: Tue Apr 21 21:45:00 CEST 2026
+**Date**: Tue Apr 21 22:30:00 CEST 2026
 
 ### Features
-* Updated tubee-sdk to v1.2.6 and implemented PolyrightEndpoint
+* Updated tubee-sdk to v1.2.7 and implemented PolyrightEndpoint
 
 ## 1.3.5
 **Maintainer**: Sandro Aebischer <aebischer@gyselroth.com>\
